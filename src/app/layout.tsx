@@ -34,6 +34,10 @@ export default function RootLayout({
       className="h-full antialiased"
       data-nav-direction="forward"
     >
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#2563EB" />
+      </head>
       <body
         className={`${urbanist.variable} min-h-full flex flex-col`}
       >
