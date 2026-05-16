@@ -92,6 +92,25 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+html,
+body {
+  overscroll-behavior-y: contain;
+}
+
+.app-refresh-wrapper,
+.app-refresh-wrapper .ptr,
+.app-refresh-wrapper .ptr__children {
+  min-height: 0;
+
+  height: 100%;
+}
+
+.app-refresh-wrapper .ptr__children {
+  overscroll-behavior-y: contain;
+
+  -webkit-overflow-scrolling: touch;
+}
+
 #__next {
   height: 100%;
 

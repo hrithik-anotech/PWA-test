@@ -113,7 +113,6 @@ export function OnboardingScreen({
 
             <Link
               href={step.next}
-              replace={isLastStep}
               onClick={() => {
                 handleForward();
 

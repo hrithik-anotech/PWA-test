@@ -83,9 +83,27 @@ export default function RootPage() {
         // SPLASH DELAY
         // -----------------------------
 
-        await new Promise((resolve) =>
-          setTimeout(resolve, 1800)
-        );
+        const shouldShowSplash = (() => {
+          try {
+            const key = "snibto-splash-shown";
+            const hasShownSplash =
+              sessionStorage.getItem(key) === "1";
+
+            if (!hasShownSplash) {
+              sessionStorage.setItem(key, "1");
+            }
+
+            return !hasShownSplash;
+          } catch {
+            return true;
+          }
+        })();
+
+        if (shouldShowSplash) {
+          await new Promise((resolve) =>
+            setTimeout(resolve, 900)
+          );
+        }
 
         // -----------------------------
         // APP STATE

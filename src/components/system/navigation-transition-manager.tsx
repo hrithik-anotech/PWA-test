@@ -39,6 +39,22 @@ export function NavigationTransitionManager() {
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
 
+    if (process.env.NODE_ENV !== "production") {
+      // Avoid stale SW behavior while testing on mobile via next dev.
+      navigator.serviceWorker
+        .getRegistrations()
+        .then((registrations) => {
+          registrations.forEach((registration) => {
+            registration.unregister();
+          });
+        })
+        .catch(() => {
+          // noop
+        });
+
+      return;
+    }
+
     const onLoad = () => {
       navigator.serviceWorker
         .register("/sw.js")
