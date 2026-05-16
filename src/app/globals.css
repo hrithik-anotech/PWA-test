@@ -1,26 +1,234 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ---------------------------------- */
+/* THEME TOKENS */
+/* ---------------------------------- */
+
+@theme {
+  /* COLORS */
+
+  --color-primary: #5b2fd1;
+  --color-primary-light: #8b5cf6;
+  --color-primary-dark: #2b174d;
+
+  --color-accent: #7c3aed;
+
+  --color-background: #fcfcff;
+  --color-surface: #ffffff;
+
+  --color-text: #111111;
+  --color-text-secondary: #6b7280;
+
+  --color-border: #ececf3;
+
+  --color-success: #16a34a;
+  --color-danger: #dc2626;
+
+  /* GRADIENTS */
+
+  --gradient-primary:
+    linear-gradient(
+      135deg,
+      #5b2fd1 0%,
+      #8b5cf6 100%
+    );
+
+  /* SHADOWS */
+
+  --shadow-soft:
+    0 0.25rem 1.25rem rgba(0, 0, 0, 0.05);
+
+  --shadow-card:
+    0 0.625rem 2.5rem rgba(0, 0, 0, 0.08);
+
+  --shadow-primary:
+    0 0.625rem 2rem rgba(91, 47, 209, 0.28);
+
+  /* RADIUS */
+
+  --radius-screen: 2.5rem;
+  --radius-card: 2rem;
+  --radius-button: 9999px;
+
+  /* EASING */
+
+  --ease-snappy:
+    cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* ---------------------------------- */
+/* ROOT */
+/* ---------------------------------- */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  height: 100%;
+
+  overflow: hidden;
+
+  overscroll-behavior: none;
+
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  height: 100%;
+
+  overflow: hidden;
+
+  font-family: var(--font-urbanist);
+
+  background: var(--color-background);
+
+  color: var(--color-text);
+
+  text-rendering: optimizeLegibility;
+
+  -webkit-font-smoothing: antialiased;
+
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#__next {
+  height: 100%;
+}
+
+/* ---------------------------------- */
+/* MOBILE APP FEEL */
+/* ---------------------------------- */
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  user-select: none;
+
+  -webkit-user-drag: none;
+}
+
+/* ---------------------------------- */
+/* SCROLLBAR */
+/* ---------------------------------- */
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---------------------------------- */
+/* VIEW TRANSITIONS */
+/* ---------------------------------- */
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 380ms;
+
+  animation-timing-function:
+    cubic-bezier(0.22, 1, 0.36, 1);
+
+  transform-origin: center;
+
+  animation-fill-mode: both;
+  will-change: transform;
+}
+
+::view-transition-group(root) {
+  overflow: clip;
+}
+
+html[data-nav-direction="back"]::view-transition-old(root) {
+  animation-name: app-pop-out;
+}
+
+html[data-nav-direction="back"]::view-transition-new(root) {
+  animation-name: app-pop-in;
+}
+
+html:not([data-nav-direction="back"])::view-transition-old(root) {
+  animation-name: app-push-out;
+}
+
+html:not([data-nav-direction="back"])::view-transition-new(root) {
+  animation-name: app-push-in;
+}
+
+@keyframes app-push-in {
+  from {
+    transform: translate3d(100%, 0, 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes app-push-out {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-30%, 0, 0);
+  }
+}
+
+@keyframes app-pop-in {
+  from {
+    transform: translate3d(-30%, 0, 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes app-pop-out {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(100%, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 1ms;
+
+    animation-name: none;
+  }
+}
+
+/* ---------------------------------- */
+/* SAFE AREA */
+/* ---------------------------------- */
+
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-bottom {
+  padding-bottom: env(
+    safe-area-inset-bottom
+  );
+}
+
+/* ---------------------------------- */
+/* SELECTION */
+/* ---------------------------------- */
+
+::selection {
+  background: rgba(91, 47, 209, 0.18);
 }
