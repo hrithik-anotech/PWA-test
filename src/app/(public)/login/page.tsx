@@ -5,11 +5,11 @@ import { useState } from "react";
 import { AuthHeader } from "@/components/auth/auth-header";
 import { AuthLayout } from "@/components/auth/auth-layout";
 import { PrimaryButton } from "@/components/ui/primary-button";
-import { useTransitionRouter } from "next-view-transitions";
+import { useRouter } from "next/navigation";
 import { markForwardNavigation } from "@/lib/navigation-transition";
 
 export default function LoginPage() {
-  const router = useTransitionRouter();
+  const router = useRouter();
 
   const [phone, setPhone] = useState("");
 

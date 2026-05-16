@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import {
   markBackNavigation,
   markForwardNavigation,
 } from "@/lib/navigation-transition";
 
 export function NavigationTransitionManager() {
+  const pathname = usePathname();
+
   useEffect(() => {
     markForwardNavigation();
 
@@ -18,49 +21,39 @@ export function NavigationTransitionManager() {
       markForwardNavigation();
     };
 
-    window.addEventListener(
-      "popstate",
-      handlePopState
-    );
-
-    window.addEventListener(
-      "pointerdown",
-      handlePointerDown
-    );
+    window.addEventListener("popstate", handlePopState);
+    window.addEventListener("pointerdown", handlePointerDown);
 
     return () => {
-      window.removeEventListener(
-        "popstate",
-        handlePopState
-      );
-
-      window.removeEventListener(
-        "pointerdown",
-        handlePointerDown
-      );
+      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("pointerdown", handlePointerDown);
     };
   }, []);
 
   useEffect(() => {
-    if (!('serviceWorker' in navigator)) return;
+    // After each completed navigation, reset to forward so stale "back"
+    // direction does not leak into the next tap navigation.
+    markForwardNavigation();
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!("serviceWorker" in navigator)) return;
 
     const onLoad = () => {
       navigator.serviceWorker
-        .register('/sw.js')
+        .register("/sw.js")
         .then((reg) => {
-          // registration successful
-          console.debug('Service worker registered:', reg.scope);
+          console.debug("Service worker registered:", reg.scope);
         })
         .catch((err) => {
-          console.warn('Service worker registration failed:', err);
+          console.warn("Service worker registration failed:", err);
         });
     };
 
-    window.addEventListener('load', onLoad);
+    window.addEventListener("load", onLoad);
 
-    return () => window.removeEventListener('load', onLoad);
+    return () => window.removeEventListener("load", onLoad);
   }, []);
 
   return null;
 }
-

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
+import type { Viewport } from "next";
 import "./globals.css";
 
 import { urbanist } from "@/lib/fonts";
-import { ViewTransitions } from "next-view-transitions";
 import { NavigationTransitionManager } from "@/components/system/navigation-transition-manager";
 
 export const metadata: Metadata = {
@@ -23,6 +23,11 @@ export const metadata: Metadata = {
 
 };
 
+export const viewport: Viewport = {
+  themeColor: "#FCFCFF",
+  viewportFit: "cover",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -33,16 +38,16 @@ export default function RootLayout({
       lang="en"
       className="h-full antialiased"
       data-nav-direction="forward"
+      suppressHydrationWarning
     >
       <head>
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#2563EB" />
       </head>
       <body
         className={`${urbanist.variable} min-h-full flex flex-col`}
       >
         <NavigationTransitionManager />
-        <ViewTransitions>{children}</ViewTransitions>
+        {children}
       </body>
     </html>
   );
