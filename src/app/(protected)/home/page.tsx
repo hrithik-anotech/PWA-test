@@ -1,5 +1,11 @@
+import type { Viewport } from "next";
 import { PageContainer } from "@/components/ui/page-container";
 import Image from "next/image";
+
+export const viewport: Viewport = {
+  themeColor: "#5F30CA",
+  viewportFit: "cover",
+};
 
 export default function HomePage() {
   const services = [
@@ -32,8 +38,8 @@ export default function HomePage() {
   return (
     <PageContainer>
         {/* Home Screen */}
-        <section className="overflow-hidden rounded-[2.25rem] bg-white shadow-[0_8px_1.875rem_rgba(0,0,0,0.06)]">
-          <div className="rounded-b-[2.5rem] bg-gradient-to-br from-[#5B2FD1] to-[#7C3AED] px-5 pb-8 pt-6 text-white">
+        <section className="overflow-hidden rounded-[2.25rem] bg-[#5F30CA] shadow-[0_8px_1.875rem_rgba(0,0,0,0.06)]">
+          <div className="rounded-b-[2.5rem] bg-gradient-to-br from-[#5F30CA] to-[#7C3AED] px-5 pb-8 pt-6 text-white">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm text-white/70">Snibto in</p>

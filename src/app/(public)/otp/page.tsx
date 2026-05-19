@@ -9,7 +9,6 @@ export default function OTPPage() {
   const router = useRouter();
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [timer, setTimer] = useState(20);
-  const [canResend, setCanResend] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   // Phone number from storage
@@ -20,10 +19,8 @@ export default function OTPPage() {
 
   // Countdown timer
   useEffect(() => {
-    if (timer === 0) {
-      setCanResend(true);
-      return;
-    }
+    if (timer === 0) return;
+
     const interval = setInterval(() => setTimer((t) => t - 1), 1000);
     return () => clearInterval(interval);
   }, [timer]);
@@ -50,7 +47,6 @@ export default function OTPPage() {
   const handleResend = () => {
     if (!canResend) return;
     setTimer(20);
-    setCanResend(false);
     setOtp(["", "", "", ""]);
     inputRefs.current[0]?.focus();
   };
@@ -63,6 +59,7 @@ export default function OTPPage() {
   };
 
   const isComplete = otp.every((d) => d !== "");
+  const canResend = timer === 0;
 
   return (
     <div className="flex min-h-screen flex-col bg-white px-6 pt-12">
@@ -79,7 +76,7 @@ export default function OTPPage() {
 
       {/* Subtitle */}
       <p className="mt-2 text-sm leading-6 text-gray-500">
-        We've send you the verification code on
+        We&apos;ve send you the verification code on
         <br />
         <span className="font-medium text-gray-800">+91 {phone}</span>
       </p>

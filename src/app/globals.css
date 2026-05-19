@@ -282,6 +282,41 @@ html:not([data-nav-direction="back"])::view-transition-new(root) {
   }
 }
 
+@keyframes pwa-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pwa-slide-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.25rem, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes pwa-soft-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.92);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
 /* ---------------------------------- */
 /* SAFE AREA */
 /* ---------------------------------- */

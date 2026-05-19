@@ -1,74 +1,131 @@
-// Minimal service worker for basic offline caching
-const CACHE_NAME = 'snibto-sw-v2';
-const URLS_TO_CACHE = [
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.svg',
-  '/favicon.ico'
+const CACHE_VERSION = "snibto-pwa-v4";
+const STATIC_CACHE = `${CACHE_VERSION}-static`;
+const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
+
+const STATIC_ASSETS = [
+  "/",
+  "/offline.html",
+  "/manifest.json",
+  "/icons/icon-192.png",
+  "/icons/icon-512.png",
+  "/icons/maskable-icon-512.png",
+  "/icons/apple-touch-icon.png",
+  "/images/logos/login-logo.png",
+  "/images/logos/splash-logo.png"
 ];
 
-self.addEventListener('install', (event) => {
+const isHttpRequest = (request) =>
+  request.url.startsWith("http://") ||
+  request.url.startsWith("https://");
+
+const addAssetsToCache = async () => {
+  const cache = await caches.open(STATIC_CACHE);
+
+  await Promise.allSettled(
+    STATIC_ASSETS.map((url) =>
+      cache.add(new Request(url, { cache: "reload" }))
+    )
+  );
+};
+
+self.addEventListener("install", (event) => {
   self.skipWaiting();
+  event.waitUntil(addAssetsToCache());
+});
+
+self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(URLS_TO_CACHE))
+    caches
+      .keys()
+      .then((cacheNames) =>
+        Promise.all(
+          cacheNames
+            .filter((cacheName) =>
+              cacheName.startsWith("snibto-pwa-")
+            )
+            .filter(
+              (cacheName) =>
+                cacheName !== STATIC_CACHE &&
+                cacheName !== RUNTIME_CACHE
+            )
+            .map((cacheName) => caches.delete(cacheName))
+        )
+      )
+      .then(() => self.clients.claim())
   );
 });
 
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys
-          .filter((key) => key !== CACHE_NAME)
-          .map((key) => caches.delete(key))
-      )
-    ).then(() => self.clients.claim())
-  );
-});
+const networkFirstNavigation = async (request) => {
+  try {
+    const response = await fetch(request);
 
-self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
+    if (response && response.ok) {
+      const cache = await caches.open(RUNTIME_CACHE);
+      cache.put(request, response.clone());
+    }
 
-  const requestUrl = new URL(event.request.url);
+    return response;
+  } catch {
+    const cachedPage = await caches.match(request);
+    const offlinePage = await caches.match("/offline.html");
 
-  if (requestUrl.origin !== self.location.origin) return;
-
-  if (event.request.mode === 'navigate') {
-    // Keep history/back behavior stable: never force-fallback to "/".
-    event.respondWith(
-      fetch(event.request).catch(() =>
-        caches.match(event.request)
-      )
+    return (
+      cachedPage ||
+      offlinePage ||
+      new Response("You are offline.", {
+        status: 503,
+        headers: { "Content-Type": "text/plain" }
+      })
     );
+  }
+};
+
+const staleWhileRevalidate = async (request) => {
+  const cachedResponse = await caches.match(request);
+  const cache = await caches.open(RUNTIME_CACHE);
+
+  const networkResponsePromise = fetch(request)
+    .then((response) => {
+      if (response && response.ok) {
+        cache.put(request, response.clone());
+      }
+
+      return response;
+    })
+    .catch(() => cachedResponse);
+
+  return cachedResponse || networkResponsePromise;
+};
+
+self.addEventListener("fetch", (event) => {
+  const { request } = event;
+
+  if (request.method !== "GET" || !isHttpRequest(request)) {
+    return;
+  }
+
+  const requestUrl = new URL(request.url);
+
+  if (requestUrl.origin !== self.location.origin) {
+    return;
+  }
+
+  if (request.mode === "navigate") {
+    event.respondWith(networkFirstNavigation(request));
     return;
   }
 
   const shouldCache =
-    event.request.destination === 'script' ||
-    event.request.destination === 'style' ||
-    event.request.destination === 'image' ||
-    event.request.destination === 'font' ||
-    requestUrl.pathname === '/manifest.json' ||
-    requestUrl.pathname === '/favicon.ico';
+    request.destination === "script" ||
+    request.destination === "style" ||
+    request.destination === "image" ||
+    request.destination === "font" ||
+    requestUrl.pathname === "/manifest.json" ||
+    requestUrl.pathname.startsWith("/icons/");
 
-  if (!shouldCache) return;
+  if (!shouldCache) {
+    return;
+  }
 
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-
-      return fetch(event.request).then((response) => {
-        if (!response || !response.ok) {
-          return response;
-        }
-
-        const responseToCache = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
-
-        return response;
-      });
-    })
-  );
+  event.respondWith(staleWhileRevalidate(request));
 });
