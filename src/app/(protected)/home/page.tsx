@@ -3,7 +3,7 @@ import { PageContainer } from "@/components/ui/page-container";
 import Image from "next/image";
 
 export const viewport: Viewport = {
-  themeColor: "#5F30CA",
+  themeColor: "transparent",
   viewportFit: "cover",
 };
 
