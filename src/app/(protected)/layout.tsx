@@ -12,7 +12,7 @@ export default function ProtectedLayout({
     <MobileShell>
       <PageTransitionProvider>
         <AppRefreshWrapper>
-          <div className="min-h-0 flex-1 pb-28">
+          <div className="min-h-0 flex-1 overflow-y-auto pb-28">
             {children}
           </div>
         </AppRefreshWrapper>

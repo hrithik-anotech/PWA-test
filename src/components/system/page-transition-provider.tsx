@@ -85,7 +85,7 @@ export function PageTransitionProvider({
             duration: 0.32,
             ease: [0.22, 1, 0.36, 1],
           }}
-          className="absolute inset-0 flex min-h-full w-full flex-col bg-[#FCFCFF] will-change-transform"
+          className="absolute inset-0 flex h-full min-h-0 w-full flex-col bg-[#FCFCFF] will-change-transform"
         >
           {children}
         </motion.div>

@@ -1,40 +1,80 @@
 "use client";
 
-import Link from "next/link";
+import { useState } from "react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function ProfileSetupPage() {
+  const router = useRouter();
+  const [name, setName] = useState("");
+
   const handleContinue = () => {
+    const trimmedName = name.trim();
+
+    if (!trimmedName) {
+      return;
+    }
+
     localStorage.setItem("hasProfile", "true");
+    localStorage.setItem("userName", trimmedName);
+    router.push("/location/access");
   };
 
   return (
-    <main className="min-h-screen bg-[#FCFCFF] p-6 font-[var(--font-urbanist)]">
-      <div className="mx-auto flex max-w-md flex-col gap-6 rounded-[2rem] border border-black/5 bg-white p-6 shadow-lg">
-        <div>
-          <h1 className="text-3xl font-bold text-[#111111]">Profile Setup</h1>
-          <p className="mt-3 text-sm text-black/70">
-            Complete your profile so we can personalize the best home helper recommendations.
-          </p>
+    <main className="relative min-h-screen flex flex-col items-center justify-center font-(--font-urbanist) overflow-hidden">
+      {/* Blurred gradient background layer only */}
+      <div
+        className="absolute inset-0 blur-2xl scale-110"
+        style={{
+          background:
+            "radial-gradient(ellipse at top left, #651EC8 0%, white 40%, white 60%, #651EC8 100%)",
+        }}
+      />
+
+      {/* All content sits above the blur — no blur applied here */}
+      <div className="relative z-10 flex flex-col items-center w-full">
+        {/* Avatar */}
+        <div className="mb-12">
+          <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full  shadow-lg">
+            <div className="relative h-full w-full">
+              <Image
+                alt="profile placeholder"
+                src="/images/login/profile-placeholder.png"
+                fill
+                sizes="86px"
+                className="object-cover rounded-full"
+              />
+            </div>
+          </div>
         </div>
 
-        <div className="space-y-4">
-          <div className="rounded-[1.5rem] border border-black/10 bg-[#F8F8FF] p-4">
-            <p className="font-semibold text-[#111111]">Name</p>
-            <p className="text-sm text-black/60">Your display name and preferred greeting.</p>
-          </div>
-          <div className="rounded-[1.5rem] border border-black/10 bg-[#F8F8FF] p-4">
-            <p className="font-semibold text-[#111111]">Location</p>
-            <p className="text-sm text-black/60">Where you want helpers to arrive.</p>
-          </div>
-        </div>
+        {/* Card content */}
+        <div className="w-full max-w-sm px-8 flex flex-col items-center gap-6">
+          <h1 className="text-[1.75rem] font-semibold text-[#111111] text-center leading-snug">
+            What should we call{" "}
+            <span className="text-[#651EC8]">you</span>?
+          </h1>
 
-        <Link
-          href="/location-access"
-          onClick={handleContinue}
-          className="inline-flex h-[3.5rem] items-center justify-center rounded-[1.5rem] bg-[#5B2FD1] px-5 text-white shadow-lg transition hover:bg-[#6d3ef0]"
-        >
-          Continue to Location Access
-        </Link>
+          <input
+            type="text"
+            placeholder="Enter Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full rounded-2xl bg-white px-5 py-4 text-[#111111] placeholder-gray-400 shadow-sm outline-none focus:ring-2 focus:ring-[#651EC8]/30 text-base"
+            style={{ border: "none" }}
+          />
+
+          <button
+            type="button"
+            onClick={handleContinue}
+            className="w-full flex items-center justify-center rounded-2xl py-4 text-white font-semibold tracking-widest text-sm uppercase shadow-md transition-opacity hover:opacity-90"
+            style={{
+              background: "linear-gradient(135deg, #8b5fd4 0%, #7c4bc8 50%, #8b6bd4 100%)",
+            }}
+          >
+            Continue
+          </button>
+        </div>
       </div>
     </main>
   );

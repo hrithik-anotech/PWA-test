@@ -48,15 +48,15 @@ export function OnboardingScreen({
       {/* TOP CONTENT */}
       <OnboardingContent>
         {/* APP SCREEN MOCKUP */}
-        <div className="relative mt-[clamp(0.5rem,2.5vw,1rem)] w-full">
-          <div className="relative mx-auto h-[clamp(18rem,52dvh,32.5rem)] max-h-[clamp(18rem,52dvh,32.5rem)] w-full max-w-[clamp(14rem,72vw,17.5rem)] overflow-hidden rounded-[clamp(1.5rem,6vw,2.625rem)]">
+        <div className="relative flex min-h-0 w-full flex-1 items-center justify-center">
+          <div className="relative h-full max-h-full w-full max-w-[clamp(20rem,105vw,28rem)] overflow-hidden rounded-[clamp(1.25rem,5vw,2.5rem)]">
             <Image
               src={step.image}
               alt={step.title}
               fill
-              sizes="(max-width: 640px) 78vw, 280px"
+              sizes="(max-width: 640px) 105vw, 448px"
               priority
-              className="object-contain"
+              className="object-contain [mask-image:linear-gradient(to_bottom,black_72%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_72%,transparent_100%)]"
             />
           </div>
         </div>
@@ -64,20 +64,9 @@ export function OnboardingScreen({
 
       {/* BOTTOM CONTENT */}
       <OnboardingFooter>
-        <div className="flex h-full min-h-0 flex-col">
-          {/* TEXT */}
-          <div>
-            <h1 className="text-center text-[clamp(1.6rem,7vw,2.375rem)] font-bold leading-[1.2] tracking-[-0.02em] text-white">
-              {step.title}
-            </h1>
-
-            <p className="mt-[clamp(0.5rem,2.5vw,1.25rem)] text-center text-[clamp(0.9375rem,3.8vw,1.125rem)] font-medium leading-[1.6] text-white/80">
-              {step.description}
-            </p>
-          </div>
-
+        <div className="mx-auto flex h-full w-full max-w-md flex-col justify-between gap-2">
           {/* DOTS */}
-          <div className="mt-[clamp(0.5rem,2.8vw,1.5rem)] flex items-center justify-center gap-2">
+          <div className="flex items-center justify-center gap-2">
             {[1, 2, 3].map((item) => {
               const isActive =
                 item === step.id;
@@ -86,19 +75,29 @@ export function OnboardingScreen({
                 <div
                   key={item}
                   className={cn(
-                    "h-2",
+                    "h-1.5",
                     "rounded-full",
                     "transition-all",
                     "duration-300",
-                    isActive ? "w-8 bg-white" : "w-2 bg-white/35"
+                    isActive ? "w-7 bg-white" : "w-1.5 bg-white/35"
                   )}
                 />
               );
             })}
           </div>
+          {/* TEXT */}
+          <div className="mx-auto w-full max-w-md px-2 pb-[clamp(0.75rem,2dvh,1.25rem)] text-center">
+            <h1 className="text-[clamp(1.45rem,6vw,2.25rem)] font-bold leading-[1.12] tracking-[-0.02em] text-[#ffffff]">
+              {step.title}
+            </h1>
+
+            <p className="mt-[clamp(0.375rem,1.1dvh,0.75rem)] text-[clamp(0.875rem,3.4vw,1.0625rem)] font-medium leading-[1.4] text-white/65">
+              {step.description}
+            </p>
+          </div>
 
           {/* ACTIONS */}
-          <div className="mt-auto flex items-center justify-between gap-3 pb-2">
+          <div className="flex items-center justify-between gap-3">
             <Link
               replace
               href="/login"
@@ -106,7 +105,7 @@ export function OnboardingScreen({
                 handleForward();
                 handleComplete();
               }}
-              className="text-[clamp(1rem,4vw,1.25rem)] font-semibold text-white/55 transition-opacity active:opacity-60"
+              className="text-[clamp(0.9375rem,3.6vw,1.125rem)] font-semibold text-white/55 transition-opacity active:opacity-60"
             >
               Skip
             </Link>
@@ -122,14 +121,14 @@ export function OnboardingScreen({
               }}
               className={cn(
                 "flex",
-                "h-[clamp(2.875rem,9vw,3.5rem)]",
+                "h-[clamp(2.375rem,6dvh,2.875rem)]",
                 "min-w-[clamp(6rem,28vw,8.125rem)]",
                 "items-center",
                 "justify-center",
                 "rounded-full",
                 "bg-white",
                 "px-[clamp(1rem,4vw,2rem)]",
-                "text-[clamp(1rem,4vw,1.25rem)]",
+                "text-[clamp(0.9375rem,3.6vw,1.125rem)]",
                 "font-bold",
                 "text-[#5B2FD1]",
                 "shadow-[0_10px_30px_rgba(255,255,255,0.18)]",

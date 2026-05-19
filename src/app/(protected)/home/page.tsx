@@ -1,4 +1,5 @@
 import { PageContainer } from "@/components/ui/page-container";
+import Image from "next/image";
 
 export default function SnibtoUIShowcase() {
   const services = [
@@ -212,7 +213,9 @@ export default function SnibtoUIShowcase() {
                   key={service.title}
                   className="overflow-hidden rounded-[1.75rem] border border-black/5 bg-white shadow-sm"
                 >
-                  <img
+                  <Image
+                  width={36}
+                  height={36}
                     src={service.image}
                     alt={service.title}
                     className="h-36 w-full object-cover"

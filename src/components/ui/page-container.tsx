@@ -13,11 +13,10 @@ export function PageContainer({
       className={cn(
         "mx-auto",
         "flex",
-        "h-dvh",
+        "min-h-full",
         "w-full",
         "max-w-[36rem]",
         "flex-col",
-        "overflow-hidden",
         "px-4",
         "sm:px-5"
       )}

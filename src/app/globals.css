@@ -111,6 +111,52 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
+/* Hide library's default puller to avoid duplicate indicators */
+.app-refresh-wrapper .ptr__puller,
+.app-refresh-wrapper .ptr__pull,
+.app-refresh-wrapper .ptr__indicator,
+.app-refresh-wrapper .ptr__loader,
+.app-refresh-wrapper .ptr__puller-icon,
+.app-refresh-wrapper .puller,
+.app-refresh-wrapper .ptr__puller__icon,
+.app-refresh-wrapper .ptr__spinner {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Refresh icon theme */
+.app-refresh-wrapper .refresh-icon {
+  color: var(--color-primary);
+  width: 24px;
+  height: 24px;
+}
+
+/* Smoothness and flicker-reduction helpers for PTR */
+.app-refresh-wrapper,
+.app-refresh-wrapper .ptr,
+.app-refresh-wrapper .ptr__children {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.app-refresh-wrapper .ptr__children {
+  will-change: transform, opacity;
+}
+
+.app-refresh-wrapper .refresh-icon {
+  transition: transform 220ms cubic-bezier(0.22,1,0.36,1),
+    opacity 180ms linear;
+  will-change: transform, opacity;
+  -webkit-transform: translateZ(0);
+}
+
+/* reduce flicker when spinner rotates */
+.app-refresh-wrapper .refresh-icon.animate-spin {
+  will-change: transform;
+}
+
 #__next {
   height: 100%;
 

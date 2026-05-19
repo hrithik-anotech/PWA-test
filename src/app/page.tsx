@@ -83,27 +83,9 @@ export default function RootPage() {
         // SPLASH DELAY
         // -----------------------------
 
-        const shouldShowSplash = (() => {
-          try {
-            const key = "snibto-splash-shown";
-            const hasShownSplash =
-              sessionStorage.getItem(key) === "1";
-
-            if (!hasShownSplash) {
-              sessionStorage.setItem(key, "1");
-            }
-
-            return !hasShownSplash;
-          } catch {
-            return true;
-          }
-        })();
-
-        if (shouldShowSplash) {
-          await new Promise((resolve) =>
-            setTimeout(resolve, 900)
-          );
-        }
+        await new Promise((resolve) =>
+          setTimeout(resolve, 1500)
+        );
 
         // -----------------------------
         // APP STATE
@@ -149,7 +131,7 @@ export default function RootPage() {
         // LOCATION
         if (!locationSelected) {
           router.replace(
-            "/location-access"
+            "/location/access"
           );
 
           return;

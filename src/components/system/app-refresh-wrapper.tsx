@@ -63,22 +63,55 @@ export function AppRefreshWrapper({
         className="h-full"
         isPullable={isPullable}
         onRefresh={handleRefresh}
+        /* Show a lightweight SVG during pulling. SVG exists in the DOM
+           from first render (no insertion during pull) and uses transform-only
+           styles to avoid repaint thrash. */
         pullingContent={
-          <div className="py-3 text-center text-xs font-medium tracking-[0.02em] text-black/45">
-            Pull to refresh
+          <div className="h-8">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              className="mx-auto refresh-icon"
+              aria-hidden
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M21 12a9 9 0 1 0-3.95 7.15" />
+              <path d="M21 3v6h-6" />
+            </svg>
           </div>
         }
         refreshingContent={
-          <div className="py-3 text-center text-xs font-semibold tracking-[0.02em] text-black/55">
-            Refreshing...
+          <div className="py-3 text-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              className="mx-auto refresh-icon animate-spin"
+              aria-hidden
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M21 12a9 9 0 1 0-3.95 7.15" />
+              <path d="M21 3v6h-6" />
+            </svg>
           </div>
         }
-        pullDownThreshold={72}
-        resistance={2.5}
-        maxPullDownDistance={100}
+        pullDownThreshold={56}
+        resistance={2.0}
+        maxPullDownDistance={80}
         backgroundColor="transparent"
       >
-        <div className="min-h-full">
+        <div className="h-full min-h-0">
           {children}
         </div>
       </PullToRefresh>
