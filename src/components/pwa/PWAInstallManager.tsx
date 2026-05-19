@@ -19,6 +19,8 @@ import {
   trackPWAEvent,
 } from "@/utils/pwa";
 
+const INSTALL_PROMPT_AUTO_OPEN_DELAY_MS = 10000;
+
 function InstallToastView({
   onClose,
   toast,
@@ -104,7 +106,7 @@ export function PWAInstallManager() {
     const timeout = window.setTimeout(() => {
       autoOpenedRef.current = true;
       openInstallExperience();
-    }, 2600);
+    }, INSTALL_PROMPT_AUTO_OPEN_DELAY_MS);
 
     return () => window.clearTimeout(timeout);
   }, [
