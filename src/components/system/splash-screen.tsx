@@ -21,7 +21,7 @@ export default function SplashScreen() {
           src="/images/logos/splash-logo.png"
           alt="Snibto"
           width={300}
-          height={100}
+          height={200}
           priority
           className="h-auto w-64 object-contain"
         />

@@ -108,7 +108,8 @@ export default function LoginPage() {
                 src="/images/login/flag-india.png"
                 alt="flag"
                 height={20}
-                width={30}
+                width={20}
+                className="shrink-0"
               />
               <span className="text-black">&#9660;</span>
             </button>

@@ -1,5 +1,5 @@
 import { OnboardingScreen } from "@/components/onboarding/onboarding-screen";
-import { onboardingSteps } from "@/features/onboarding/data";
+import { onboardingSteps } from "@/constants/onboarding/data";
 
 export default function StepTwoPage() {
   return (

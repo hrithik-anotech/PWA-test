@@ -10,6 +10,36 @@ type LocationSource = "gps" | "ip" | "default";
 
 const IP_FALLBACK_URL = "https://ipapi.co/json/";
 
+const getBrowserInfo = () => {
+  const userAgent = navigator.userAgent;
+  const isIOS =
+    /iPad|iPhone|iPod/.test(userAgent) ||
+    (navigator.platform === "MacIntel" &&
+      navigator.maxTouchPoints > 1);
+  const isSafari =
+    /Safari/i.test(userAgent) &&
+    !/CriOS|FxiOS|EdgiOS|OPiOS|Chrome|Android/i.test(
+      userAgent
+    );
+
+  return {
+    isIOS,
+    isSafari,
+    isSecureContext: window.isSecureContext,
+    userAgent,
+  };
+};
+
+const getLocationOptions = () => {
+  const { isSafari } = getBrowserInfo();
+
+  return {
+    enableHighAccuracy: !isSafari,
+    timeout: isSafari ? 25000 : 30000,
+    maximumAge: isSafari ? 300000 : 60000,
+  };
+};
+
 export default function LocationAccessPage() {
   const router = useRouter();
 
@@ -19,16 +49,9 @@ export default function LocationAccessPage() {
   const retryCountRef = useRef(0);
   const hasNavigatedRef = useRef(false);
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const requestLocationRef = useRef<() => void>(() => {});
 
   // ───────────────── HELPERS ─────────────────
-
-  const isIOS = () => {
-    return (
-      /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-      (navigator.platform === "MacIntel" &&
-        navigator.maxTouchPoints > 1)
-    );
-  };
 
   const log = (label: string, data?: unknown) => {
     console.log(`[location] ${label}`, data || "");
@@ -55,10 +78,14 @@ export default function LocationAccessPage() {
 
       log("saving location", payload);
 
-      localStorage.setItem(
-        "user_location",
-        JSON.stringify(payload)
-      );
+      try {
+        localStorage.setItem(
+          "user_location",
+          JSON.stringify(payload)
+        );
+      } catch (error) {
+        log("location storage error", error);
+      }
 
       setStatus("idle");
 
@@ -69,7 +96,7 @@ export default function LocationAccessPage() {
 
   // ───────────────── IP FALLBACK ─────────────────
 
-  const useIPFallback = useCallback(async () => {
+  const fetchIPFallback = useCallback(async () => {
     try {
       const res = await fetch(IP_FALLBACK_URL);
 
@@ -116,7 +143,13 @@ export default function LocationAccessPage() {
   // ───────────────── REQUEST LOCATION ─────────────────
 
   const requestLocation = useCallback(() => {
-    log("requesting location");
+    const browserInfo = getBrowserInfo();
+    const locationOptions = getLocationOptions();
+
+    log("requesting location", {
+      browserInfo,
+      locationOptions,
+    });
 
     navigator.geolocation.getCurrentPosition(
       handleSuccess,
@@ -128,9 +161,14 @@ export default function LocationAccessPage() {
           retry: retryCountRef.current,
         });
 
-        // Retry FIRST before trusting browser errors
+        if (error.code === 1) {
+          setStatus("blocked");
+          return;
+        }
 
-        if (retryCountRef.current < 2) {
+        const maxRetries = browserInfo.isSafari ? 1 : 2;
+
+        if (retryCountRef.current < maxRetries) {
           retryCountRef.current += 1;
 
           setErrorMessage(
@@ -140,16 +178,19 @@ export default function LocationAccessPage() {
           );
 
           retryTimeoutRef.current = setTimeout(() => {
-            requestLocation();
-          }, isIOS() ? 2500 : 1500);
+            requestLocationRef.current();
+          }, browserInfo.isIOS ? 2500 : 1500);
 
           return;
         }
 
-        // REAL permission blocked
-
-        if (error.code === 1) {
-          setStatus("blocked");
+        if (browserInfo.isSafari || browserInfo.isIOS) {
+          setErrorMessage(
+            browserInfo.isSafari
+              ? "Safari could not access GPS. Using approximate location..."
+              : "This browser could not access GPS. Using approximate location..."
+          );
+          void fetchIPFallback();
           return;
         }
 
@@ -186,13 +227,13 @@ export default function LocationAccessPage() {
         setStatus("error");
       },
 
-      {
-        enableHighAccuracy: true,
-        timeout: 30000,
-        maximumAge: 60000,
-      }
+      locationOptions
     );
-  }, [handleSuccess]);
+  }, [handleSuccess, fetchIPFallback]);
+
+  useEffect(() => {
+    requestLocationRef.current = requestLocation;
+  }, [requestLocation]);
 
   // ───────────────── MAIN BUTTON ─────────────────
 
@@ -207,6 +248,8 @@ export default function LocationAccessPage() {
       return;
     }
 
+    const browserInfo = getBrowserInfo();
+
     retryCountRef.current = 0;
 
     hasNavigatedRef.current = false;
@@ -215,8 +258,24 @@ export default function LocationAccessPage() {
 
     setStatus("loading");
 
+    if (!browserInfo.isSecureContext) {
+      log("insecure context, using fallback", browserInfo);
+      setErrorMessage(
+        "This browser needs HTTPS for GPS. Using approximate location..."
+      );
+      void fetchIPFallback();
+      return;
+    }
+
     requestLocation();
-  }, [requestLocation]);
+  }, [requestLocation, fetchIPFallback]);
+
+  const handleSkip = useCallback(() => {
+    hasNavigatedRef.current = false;
+    setErrorMessage("");
+    setStatus("loading");
+    void fetchIPFallback();
+  }, [fetchIPFallback]);
 
   // ───────────────── RETURN FROM SETTINGS ─────────────────
 
@@ -235,21 +294,27 @@ export default function LocationAccessPage() {
       requestLocation();
     };
 
-    window.addEventListener(
+    document.addEventListener(
       "visibilitychange",
       retryWhenVisible
     );
 
     window.addEventListener("focus", retryWhenVisible);
+    window.addEventListener("pageshow", retryWhenVisible);
 
     return () => {
-      window.removeEventListener(
+      document.removeEventListener(
         "visibilitychange",
         retryWhenVisible
       );
 
       window.removeEventListener(
         "focus",
+        retryWhenVisible
+      );
+
+      window.removeEventListener(
+        "pageshow",
         retryWhenVisible
       );
     };
@@ -273,7 +338,7 @@ export default function LocationAccessPage() {
       {/* Title */}
       <div className="px-6 pt-6">
         <h1 className="text-2xl font-medium tracking-tight text-black">
-          What's your{" "}
+          What&apos;s your{" "}
           <span className="text-[#6C35FF]">
             location?
           </span>
@@ -311,7 +376,7 @@ export default function LocationAccessPage() {
         </button>
 
         <button
-          onClick={useIPFallback}
+          onClick={handleSkip}
           disabled={isLoading}
           className="mt-3 text-sm text-gray-400 underline underline-offset-2"
         >
@@ -334,7 +399,7 @@ export default function LocationAccessPage() {
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#6C35FF]/10">
                 <Image
-                  src="/images/login/location-fill.png"
+                  src="/images/login/location-fill.svg"
                   alt="location"
                   width={24}
                   height={24}
@@ -347,8 +412,8 @@ export default function LocationAccessPage() {
                 </h3>
 
                 <p className="mt-1 text-sm text-gray-500">
-                  Please enable location permission
-                  from browser settings.
+                  On iPhone Safari, allow Location
+                  from Safari settings and return here.
                 </p>
               </div>
             </div>
@@ -357,11 +422,11 @@ export default function LocationAccessPage() {
               onClick={() => setStatus("idle")}
               className="mt-6 h-14 w-full rounded-full bg-[#6C35FF] text-base font-semibold text-white"
             >
-              I'll Enable It
+              I&apos;ll Enable It
             </button>
 
             <button
-              onClick={useIPFallback}
+              onClick={handleSkip}
               className="mt-3 h-14 w-full rounded-full border border-gray-200 text-base font-medium text-gray-700"
             >
               Continue Without Location

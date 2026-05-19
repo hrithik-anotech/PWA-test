@@ -1,8 +1,16 @@
 // app/confirm-location/page.tsx
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+  type ChangeEvent,
+  type CSSProperties,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useRouter } from "next/navigation";
+import { markForwardNavigation } from "@/lib/navigation-transition";
 
 type StoredLocation = {
   latitude: number;
@@ -14,15 +22,50 @@ const logLocationData = (label: string, data: unknown) => {
   console.log(`[location] ${label}:`, data);
 };
 
+const DISPLAYED_LOCATION = {
+  name: "Lions Club Road",
+  address:
+    "Lions Club Road, Kanyapur, Asansol, West Bengal, India, 713305",
+};
+
+const mapGridStyle: CSSProperties = {
+  backgroundImage:
+    "linear-gradient(#c9b8e8 1px, transparent 1px), linear-gradient(90deg, #c9b8e8 1px, transparent 1px)",
+  backgroundSize: "40px 40px",
+};
+
+const locationRippleStyle: CSSProperties = {
+  width: 180,
+  height: 180,
+  background:
+    "radial-gradient(circle, rgba(108,53,255,0.18) 0%, rgba(108,53,255,0.06) 60%, transparent 80%)",
+};
+
 export default function ConfirmLocationPage() {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const storedLocationRef = useRef<StoredLocation | null>(null);
 
-  const location = {
-    name: "Lions Club Road",
-    address: "Lions Club Road, Kanyapur, Asansol, West Bengal, India, 713305",
-  };
+  const handleBack = useCallback(() => {
+    router.back();
+  }, [router]);
+
+  const handleSearchChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setSearch(event.target.value);
+    },
+    []
+  );
+
+  const handleConfirmLocation = useCallback(() => {
+    logLocationData("confirm location clicked", {
+      storedLocation: storedLocationRef.current,
+      displayedLocation: DISPLAYED_LOCATION,
+    });
+
+    markForwardNavigation();
+    router.push("/address-details");
+  }, [router]);
 
   useEffect(() => {
     const rawLocation = localStorage.getItem("user_location");
@@ -44,7 +87,7 @@ export default function ConfirmLocationPage() {
       {/* ── Header ── */}
       <div className="flex items-center gap-3 px-4 pt-6 pb-3 bg-white z-10">
         <button
-          onClick={() => router.back()}
+          onClick={handleBack}
           className="p-1 -ml-1 text-black"
           aria-label="Go back"
         >
@@ -69,7 +112,7 @@ export default function ConfirmLocationPage() {
             type="text"
             placeholder="Search locality, sector, area"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={handleSearchChange}
             className="flex-1 text-[14px] text-gray-700 placeholder-gray-400 outline-none bg-transparent"
           />
         </div>
@@ -80,11 +123,7 @@ export default function ConfirmLocationPage() {
         {/* Grid texture */}
         <div
           className="absolute inset-0 opacity-30"
-          style={{
-            backgroundImage:
-              "linear-gradient(#c9b8e8 1px, transparent 1px), linear-gradient(90deg, #c9b8e8 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-          }}
+          style={mapGridStyle}
         />
 
         {/* Fake road lines */}
@@ -99,11 +138,7 @@ export default function ConfirmLocationPage() {
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
           <div
             className="rounded-full"
-            style={{
-              width: 180,
-              height: 180,
-              background: "radial-gradient(circle, rgba(108,53,255,0.18) 0%, rgba(108,53,255,0.06) 60%, transparent 80%)",
-            }}
+            style={locationRippleStyle}
           />
         </div>
 
@@ -151,21 +186,16 @@ export default function ConfirmLocationPage() {
           </div>
           <div>
             <p className="text-[16px] font-semibold text-black leading-tight">
-              {location.name}
+              {DISPLAYED_LOCATION.name}
             </p>
             <p className="text-[12px] text-gray-500 mt-0.5 leading-snug">
-              {location.address}
+              {DISPLAYED_LOCATION.address}
             </p>
           </div>
         </div>
 
         <button
-          onClick={() => {
-            logLocationData("confirm location clicked", {
-              storedLocation: storedLocationRef.current,
-              displayedLocation: location,
-            });
-          }}
+          onClick={handleConfirmLocation}
           className="w-full h-[54px] rounded-full bg-[#6C35FF] text-white text-[16px] font-semibold shadow-sm active:scale-[0.98] transition-transform"
         >
           Confirm Location
