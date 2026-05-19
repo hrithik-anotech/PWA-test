@@ -9,6 +9,8 @@ import { markBackNavigation } from "@/lib/navigation-transition";
 type AddressType = "home" | "family" | "other";
 
 type AddressTypeOption = {
+  iconHeight: number;
+  iconWidth: number;
   label: string;
   value: AddressType;
 };
@@ -20,14 +22,20 @@ type AddressTextFieldProps = {
 
 const ADDRESS_TYPE_OPTIONS: AddressTypeOption[] = [
   {
+    iconHeight: 20,
+    iconWidth: 20,
     label: "Home",
     value: "home",
   },
   {
+    iconHeight: 20,
+    iconWidth: 29,
     label: "Family",
     value: "family",
   },
   {
+    iconHeight: 20,
+    iconWidth: 18,
     label: "Other",
     value: "other",
   },
@@ -208,8 +216,8 @@ export default function AddressDetailsPage() {
                       isSelected
                     )}
                     alt={option.value}
-                    width={18}
-                    height={18}
+                    width={option.iconWidth}
+                    height={option.iconHeight}
                   />
                   {option.label}
                 </button>
