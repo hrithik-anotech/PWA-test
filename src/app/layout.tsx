@@ -6,10 +6,13 @@ import { urbanist } from "@/lib/fonts";
 import { NavigationTransitionManager } from "@/components/system/navigation-transition-manager";
 import { PWAInstallManager } from "@/components/pwa/PWAInstallManager";
 
+const PWA_MANIFEST_PATH =
+  "/manifest.json?v=transparent-status-bar";
+
 export const metadata: Metadata = {
   title: "Snibto",
   description: "Book trusted house helpers instantly",
-  manifest: "/manifest.json",
+  manifest: PWA_MANIFEST_PATH,
 
   applicationName: "Snibto",
 
@@ -71,7 +74,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href={PWA_MANIFEST_PATH} />
       </head>
       <body
         className={`${urbanist.variable} min-h-full flex flex-col`}

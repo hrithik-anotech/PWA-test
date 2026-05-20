@@ -87,10 +87,8 @@ export default function HomePage() {
     <div className="flex min-h-dvh flex-col bg-[#F2F2F6]">
 
       {/* ── HEADER ──────────────────────────────────────────────────────────── */}
-      <div
-        className="bg-[#6C35DE] px-5 pb-8 rounded-b-[2.25rem]"
-        style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 14px)" }}
-      >
+      <div className="bg-[#F2F2F6] pt-[env(safe-area-inset-top)]">
+        <div className="rounded-b-[2.25rem] bg-[#6C35DE] px-5 pb-8 pt-3.5">
         <div className="flex items-start justify-between">
           {/* Left: text */}
           <div>
@@ -124,6 +122,7 @@ export default function HomePage() {
               className="h-full w-full object-cover"
             />
           </div>
+        </div>
         </div>
       </div>
 
