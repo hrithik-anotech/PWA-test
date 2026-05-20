@@ -16,19 +16,19 @@
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/logos/snibto_appicon.png",
+      "src": "/images/logos/snibto_appicon.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/logos/snibto_appicon.png",
+      "src": "/images/logos/snibto_appicon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/logos/snibto_appicon.png",
+      "src": "/images/logos/snibto_appicon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -42,7 +42,7 @@
       "url": "/home?source=pwa-shortcut",
       "icons": [
         {
-          "src": "/logos/snibto_appicon.png",
+          "src": "/images/logos/snibto_appicon.png",
           "sizes": "192x192",
           "type": "image/png"
         }

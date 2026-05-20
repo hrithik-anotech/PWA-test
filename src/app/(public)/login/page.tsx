@@ -16,26 +16,27 @@ export default function LoginPage() {
     router.push("/otp");
   };
 
-  const sideImages = [
+  const columns = [
     {
-      src: "/images/login/login-1.png",
-      className:
-        "-left-3 top-[clamp(0.5rem,1.8dvh,1rem)] h-[clamp(7rem,21dvh,12.75rem)] w-[clamp(3.875rem,20vw,7rem)] scale-[1.04] sm:h-[clamp(8.5rem,24dvh,12.75rem)] sm:w-[clamp(4.75rem,24vw,7rem)] sm:scale-[1.08]",
+      images: ["/images/login/login-1.png", "/images/login/login-4.png"],
+      // bleeds outside left edge
+      wrapperClass: "-ml-3 -mt-4 sm:-ml-4 md:-ml-5",
+      colAlign: "justify-start",
+      imgW: "w-[clamp(6.5rem,14vh,10rem)]",
     },
     {
-      src: "/images/login/login-4.png",
-      className:
-        "-left-3 bottom-[clamp(1.25rem,8dvh,4.75rem)] h-[clamp(7rem,21dvh,12.75rem)] w-[clamp(3.875rem,20vw,7rem)] scale-[1.04] sm:h-[clamp(8.5rem,24dvh,12.75rem)] sm:w-[clamp(4.75rem,24vw,7rem)] sm:scale-[1.08]",
+      images: ["/images/login/login-2.png", "/images/login/login-5.png"],
+      // bleeds from top
+      wrapperClass: "-mt-20 sm:-mt-30 md:-mt-32",
+      colAlign: "justify-start",
+      imgW: "w-[clamp(7rem,15vh,10rem)]",
     },
     {
-      src: "/images/login/login-3.png",
-      className:
-        "-right-3 top-[clamp(0.5rem,1.8dvh,1rem)] h-[clamp(7rem,21dvh,12.75rem)] w-[clamp(3.875rem,20vw,7rem)] scale-[1.04] sm:h-[clamp(8.5rem,24dvh,12.75rem)] sm:w-[clamp(4.75rem,24vw,7rem)] sm:scale-[1.08]",
-    },
-    {
-      src: "/images/login/login-6.png",
-      className:
-        "-right-3 bottom-[clamp(1.25rem,8dvh,4.75rem)] h-[clamp(7rem,21dvh,12.75rem)] w-[clamp(3.875rem,20vw,7rem)] scale-[1.04] sm:h-[clamp(8.5rem,24dvh,12.75rem)] sm:w-[clamp(4.75rem,24vw,7rem)] sm:scale-[1.08]",
+      images: ["/images/login/login-3.png", "/images/login/login-6.png"],
+      // bleeds outside right edge
+      wrapperClass: "-mr-3 -mt-4 sm:-mr-4 md:-mr-5",
+      colAlign: "justify-start",
+      imgW: "w-[clamp(6.5rem,14vh,10rem)]",
     },
   ];
 
@@ -43,49 +44,35 @@ export default function LoginPage() {
     <div className="relative flex h-[100dvh] max-h-[100dvh] flex-col overflow-hidden bg-white">
       {/* Top Gallery */}
       <div className="relative min-h-0 flex-1 overflow-hidden bg-white">
-        {/* Side Images */}
-        {sideImages.map((item, index) => (
-          <div
-            key={index}
-            className={`absolute overflow-hidden rounded-2xl ${item.className}`}
-          >
-            <Image
-              src={item.src}
-              alt=""
-              fill
-              sizes="(max-width: 640px) 28vw, 112px"
-              className="object-cover"
-            />
-          </div>
-        ))}
-
-        {/* Top Center Image */}
-        <div className="absolute left-1/2 top-[clamp(-2.25rem,-5dvh,-1rem)] h-[clamp(7.25rem,22dvh,13rem)] w-[clamp(5.5rem,29vw,10.5rem)] -translate-x-1/2 scale-[1.05] overflow-hidden rounded-2xl sm:h-[clamp(8.75rem,25dvh,13rem)] sm:w-[clamp(6.75rem,35vw,10.5rem)] sm:scale-[1.12]">
-          <Image
-            src="/images/login/login-2.png"
-            alt=""
-            fill
-            sizes="(max-width: 640px) 30vw, 168px"
-            className="object-cover"
-          />
-        </div>
-
-        {/* Bottom Center Image */}
-        <div className="absolute bottom-[clamp(2.5rem,9dvh,5rem)] left-1/2 h-[clamp(7.25rem,22dvh,13rem)] w-[clamp(5.5rem,29vw,10.5rem)] -translate-x-1/2 scale-[1.05] overflow-hidden rounded-2xl sm:h-[clamp(8.75rem,25dvh,13rem)] sm:w-[clamp(6.75rem,35vw,10.5rem)] sm:scale-[1.12]">
-          <Image
-            src="/images/login/login-5.png"
-            alt=""
-            fill
-            sizes="(max-width: 640px) 30vw, 168px"
-            className="object-cover"
-          />
+        <div className="flex h-full items-stretch justify-between">
+          {columns.map((col, ci) => (
+            <div
+              key={ci}
+              className={`flex flex-col ${col.colAlign} gap-[2vh] ${col.wrapperClass}`}
+            >
+              {col.images.map((src, ii) => (
+                <div
+                  key={ii}
+                  className={`relative shrink-0 overflow-hidden rounded-2xl ${col.imgW} aspect-3/4`}
+                >
+                  <Image
+                    src={src}
+                    alt=""
+                    fill
+                    sizes="(max-width: 768px) 20vw, 15vw"
+                    className="object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          ))}
         </div>
       </div>
 
       {/* Bottom Section */}
-      <div className="flex h-[45dvh] min-h-[15rem] flex-none flex-col items-center overflow-hidden bg-white px-6 pt-[clamp(0.5rem,1.4dvh,0.875rem)] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+      <div className="flex h-[45dvh] min-h-[15rem] flex-none flex-col items-center overflow-hidden bg-white px-2 pt-[clamp(0.5rem,1.4dvh,0.875rem)] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
         {/* Logo */}
-        <div className="relative h-[clamp(5.5rem,15dvh,8rem)] w-[clamp(5.5rem,15dvh,8rem)] flex-none">
+        <div className="relative h-[clamp(6.5rem,17.5dvh,9.25rem)] w-[clamp(6.5rem,17.5dvh,9.25rem)] flex-none">
           <Image
             src="/images/logos/login-logo.png"
             alt="Snibto"
@@ -97,9 +84,8 @@ export default function LoginPage() {
         </div>
 
         {/* Phone Input */}
-        <div className="mt-[clamp(0.5rem,1.5dvh,0.875rem)] w-full max-w-sm">
+        <div className="mt-[clamp(0.5rem,1.5dvh,0.875rem)] w-full max-w-md">
           <div className="flex h-[clamp(2.75rem,6dvh,3.25rem)] items-center overflow-hidden rounded-2xl border border-[#e0d9f7] bg-white">
-            {/* Country selector */}
             <button
               type="button"
               className="flex h-full min-w-[72px] items-center gap-1.5 border-r border-[#e0d9f7] px-3 text-sm font-medium text-[#333]"
@@ -114,12 +100,8 @@ export default function LoginPage() {
               <span className="text-black">&#9660;</span>
             </button>
 
-            {/* +91 prefix */}
-            <span className="pl-3 pr-1 text-base font-semibold">
-              +91
-            </span>
+            <span className="pl-3 pr-1 text-base font-semibold">+91</span>
 
-            {/* Number input */}
             <input
               type="tel"
               inputMode="numeric"
@@ -132,7 +114,6 @@ export default function LoginPage() {
             />
           </div>
 
-          {/* Confirm Button */}
           <button
             type="button"
             onClick={handleConfirm}
@@ -146,9 +127,9 @@ export default function LoginPage() {
           </button>
         </div>
 
-        {/* Footer */}
-        <p className="mt-[clamp(0.5rem,1.3dvh,0.875rem)] max-w-sm text-center text-[0.7rem] leading-[1.35] text-[#888]">
-          By proceeding, I accept the{" "}
+        <p className="mt-[clamp(0.5rem,1.5dvh,0.875rem)] max-w-sm text-center text-[0.7rem] leading-[1.35] text-[#888]">
+          By proceeding, I accept the 
+          <br/>
           <button className="text-[#5b2fd1] underline underline-offset-2">
             Terms of use
           </button>{" "}

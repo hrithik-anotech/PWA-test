@@ -37,7 +37,7 @@ function InstallToastView({
       role="status"
       aria-live="polite"
       className={cn(
-        "fixed left-4 right-4 z-[60] mx-auto flex max-w-md items-center justify-between gap-3 rounded-2xl px-4 py-3 text-sm font-bold shadow-[0_16px_50px_rgba(0,0,0,0.16)] animate-[pwa-slide-up_220ms_ease-out]",
+        "fixed left-4 right-4 z-60 mx-auto flex max-w-md items-center justify-between gap-3 rounded-2xl px-4 py-3 text-sm font-bold shadow-[0_16px_50px_rgba(0,0,0,0.16)] animate-[pwa-slide-up_220ms_ease-out]",
         "bottom-[calc(env(safe-area-inset-bottom)+1rem)]",
         toast.tone === "success" &&
           "bg-[#16A34A] text-white",

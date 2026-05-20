@@ -84,7 +84,7 @@ const services = [
 
 export default function HomePage() {
   return (
-    <div className="flex min-h-dvh flex-col bg-[#F2F2F6]">
+    <div className="flex min-h-[100dvh] flex-col bg-[#F2F2F6]">
 
       {/* ── HEADER ──────────────────────────────────────────────────────────── */}
       <div className="bg-[#F2F2F6] pt-[env(safe-area-inset-top)]">
