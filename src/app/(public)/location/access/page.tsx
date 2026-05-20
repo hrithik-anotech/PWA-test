@@ -56,7 +56,7 @@ export default function LocationAccessPage() {
   const retryCountRef = useRef(0);
   const hasNavigatedRef = useRef(false);
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const requestLocationRef = useRef<() => void>(() => {});
+  const requestLocationRef = useRef<() => void>(() => { });
 
   // ───────────────── HELPERS ─────────────────
 
@@ -355,14 +355,9 @@ export default function LocationAccessPage() {
   const isLoading = status === "loading";
   const isBlocked = status === "blocked";
 
-  // Responsive image height based on screen size
-  const imageHeightClass = 
-    windowHeight < 700 ? "h-[30vh]" : 
-    windowHeight < 900 ? "h-[32vh]" : 
-    "h-[34vh]";
 
   return (
-    <main 
+    <main
       className="flex min-h-screen w-full flex-col bg-[#f8f8f8]"
       style={{
         minHeight: "100dvh",
@@ -371,10 +366,10 @@ export default function LocationAccessPage() {
       }}
     >
       {/* Header with safe area */}
-      <div 
+      <div
         className="flex-shrink-0 px-4 sm:px-6 pt-4"
-        style={{ 
-          paddingTop: `max(1.5rem, calc(env(safe-area-inset-top) + 1rem))` 
+        style={{
+          paddingTop: `max(1.5rem, calc(env(safe-area-inset-top) + 1rem))`
         }}
       >
         <h1 className="text-xl sm:text-2xl font-medium tracking-tight text-black leading-tight">
@@ -386,8 +381,8 @@ export default function LocationAccessPage() {
       </div>
 
       {/* Image Container - Responsive */}
-      <div 
-        className={`relative flex-shrink-0 mt-4 sm:mt-6 w-full overflow-hidden ${imageHeightClass} min-h-[14rem] max-h-[35vh]`}
+      <div
+        className="relative flex-1 mt-4 sm:mt-6 w-full overflow-hidden min-h-[14rem]"
       >
         <Image
           src="/images/login/city.jpg"
@@ -400,8 +395,8 @@ export default function LocationAccessPage() {
       </div>
 
       {/* Bottom Section - Flexes to fill remaining space */}
-      <div 
-        className="flex-1 flex flex-col items-center justify-end px-4 sm:px-6 pb-4"
+      <div
+        className="flex-shrink-0 flex flex-col items-center justify-end px-4 sm:px-6 pb-4"
         style={{
           paddingBottom: `max(1.5rem, calc(env(safe-area-inset-bottom) + 1rem))`,
         }}
@@ -412,7 +407,7 @@ export default function LocationAccessPage() {
           <button
             onClick={handleGetLocation}
             disabled={isLoading}
-            className="flex h-14 sm:h-16 w-full items-center justify-center gap-2 rounded-full bg-[#6C35FF] text-base sm:text-lg font-semibold text-white transition-all active:scale-95 disabled:opacity-60 disabled:active:scale-100 touch-highlight-transparent"
+            className="flex h-14 sm:h-16 mt-2 w-full items-center justify-center gap-2 rounded-full bg-[#6C35FF] text-base sm:text-lg font-semibold text-white transition-all active:scale-95 disabled:opacity-60 disabled:active:scale-100 touch-highlight-transparent"
             style={{
               minHeight: "44px", // iOS minimum touch target
               WebkitTapHighlightColor: "transparent",
