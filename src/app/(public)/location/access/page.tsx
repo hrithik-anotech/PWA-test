@@ -334,7 +334,7 @@ export default function LocationAccessPage() {
   const isBlocked = status === "blocked";
 
   return (
-    <main className="flex min-h-dvh flex-col bg-[#f8f8f8]">
+    <main className="flex h-screen max-h-dvh flex-col bg-[#f8f8f8]">
       {/* Title */}
       <div className="px-6 pt-6">
         <h1 className="text-2xl font-medium tracking-tight text-black">

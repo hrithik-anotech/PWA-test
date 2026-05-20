@@ -83,7 +83,7 @@ export default function ConfirmLocationPage() {
   }, []);
 
   return (
-    <main className="flex flex-col min-h-dvh bg-white font-(--font-urbanist)">
+    <main className="flex flex-col h- min-h-screen bg-white font-(--font-urbanist)">
       {/* ── Header ── */}
       <div className="flex items-center gap-3 px-4 pt-6 pb-3 bg-white z-10">
         <button

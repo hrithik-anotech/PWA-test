@@ -101,7 +101,7 @@ export default function AddressDetailsPage() {
   };
 
   return (
-    <main className="min-h-dvh bg-[#f8f8f8] font-[var(--font-urbanist)]">
+    <main className="min-h-screen bg-[#f8f8f8] font-[var(--font-urbanist)]">
       {/* Header */}
       <div className="border-b border-[#E5E5E5] bg-white px-6 pb-4 pt-5">
         <div className="flex items-start gap-3">
