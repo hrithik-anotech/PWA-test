@@ -56,12 +56,12 @@ function AddressTextField({
   const shouldFloatLabel = isFocused || value.length > 0;
 
   return (
-    <div className="relative rounded-2xl border border-[#D9D9D9] bg-white px-4 sm:px-5">
+    <div className="relative rounded-2xl border border-[#D9D9D9] bg-white px-2 sm:px-2">
       <label
         htmlFor={id}
         className={`pointer-events-none absolute transition-all duration-200 ease-out ${
           shouldFloatLabel
-            ? "-top-[10px] left-3 sm:left-4 bg-[#f8f8f8] px-2 text-[11px] sm:text-[12px] text-[#9E9E9E]"
+            ? "-top-[10px] left-3 sm:left-4 bg-[#ffffff] px-2 text-[11px] sm:text-[12px] text-[#9E9E9E]"
             : "left-4 sm:left-5 top-1/2 -translate-y-1/2 px-0 text-sm sm:text-[16px] text-[#7E7E7E]"
         }`}
       >
@@ -103,7 +103,7 @@ export default function AddressDetailsPage() {
 
   return (
     <main
-      className="bg-[#f8f8f8] font-[var(--font-urbanist)]"
+      className="bg-[#ffffff] font-[var(--font-urbanist)]"
       style={{
         minHeight: "100dvh",
         display: "flex",
@@ -167,7 +167,7 @@ export default function AddressDetailsPage() {
           {/* Area Card */}
           <div className="relative rounded-[18px] border border-[#D9D9D9] bg-white p-3 sm:p-4">
             {/* Floating Label */}
-            <div className="absolute -top-[10px] left-4 bg-[#f8f8f8] px-2">
+            <div className="absolute -top-[14px] left-4 bg-[#ffffff] px-1">
               <span className="text-[11px] sm:text-[12px] text-[#9E9E9E]">
                 Area
               </span>
