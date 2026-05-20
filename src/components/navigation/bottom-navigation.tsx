@@ -1,90 +1,141 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/cn";
 
+// ── SVG icon components ──────────────────────────────────────────────────────
+
+function HomeIcon({ active }: { active: boolean }) {
+  return active ? (
+    // Filled house for active state
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M10.707 2.293a1 1 0 011.586 0l8 8A1 1 0 0120 12h-1v8a1 1 0 01-1 1h-4v-5H10v5H6a1 1 0 01-1-1v-8H4a1 1 0 01-.707-1.707l8-8z"
+        fill="#6C35DE"
+      />
+    </svg>
+  ) : (
+    // Outline house for inactive
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+        stroke="#9CA3AF"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function BookingsIcon({ active }: { active: boolean }) {
+  const color = active ? "#6C35DE" : "#9CA3AF";
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      {/* Calendar body */}
+      <rect
+        x="3"
+        y="4"
+        width="18"
+        height="17"
+        rx="2.5"
+        stroke={color}
+        strokeWidth="1.8"
+      />
+      {/* Top bar */}
+      <path d="M3 9h18" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+      {/* Pin hooks */}
+      <path
+        d="M8 2v4M16 2v4"
+        stroke={color}
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+      {/* Checkmark inside calendar */}
+      <path
+        d="M8.5 15l2 2 4-4"
+        stroke={color}
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function WalletIcon({ active }: { active: boolean }) {
+  const color = active ? "#6C35DE" : "#9CA3AF";
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      {/* Card/wallet body */}
+      <rect
+        x="2"
+        y="6"
+        width="20"
+        height="14"
+        rx="2.5"
+        stroke={color}
+        strokeWidth="1.8"
+      />
+      {/* Top flap */}
+      <path
+        d="M2 10h20"
+        stroke={color}
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+      {/* Coin dot */}
+      <circle cx="17" cy="15" r="1.5" fill={color} />
+    </svg>
+  );
+}
+
+// ── Tab config ───────────────────────────────────────────────────────────────
+
 const tabs = [
-  {
-    label: "Home",
-    href: "/home",
-    icon: "🏠",
-  },
-  {
-    label: "Bookings",
-    href: "/bookings",
-    icon: "📅",
-  },
-  {
-    label: "Wallet",
-    href: "/wallet",
-    icon: "👛",
-  },
+  { label: "Home",     href: "/home",     Icon: HomeIcon },
+  { label: "Bookings", href: "/bookings", Icon: BookingsIcon },
+  { label: "Wallet",   href: "/wallet",   Icon: WalletIcon },
 ];
+
+// ── Component ────────────────────────────────────────────────────────────────
 
 export function BottomNavigation() {
   const pathname = usePathname();
+  const router = useRouter();
 
   return (
     <div
-      className={cn(
-        "fixed",
-        "bottom-5",
-        "left-1/2",
-        "z-50",
-        "w-[calc(100%-2.5rem)]",
-        "max-w-[36rem]",
-        "-translate-x-1/2"
-      )}
+      className="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-5"
+      style={{
+        paddingBottom: "max(env(safe-area-inset-bottom, 0px) + 10px, 18px)",
+      }}
     >
-      <div
-        className={cn(
-          "flex",
-          "items-center",
-          "justify-around",
-          "rounded-full",
-          "border",
-          "border-black/5",
-          "bg-white/95",
-          "px-4",
-          "py-4",
-          "shadow-[0_0.625rem_2.5rem_rgba(0,0,0,0.08)]",
-          "backdrop-blur-xl"
-        )}
+      <nav
+        className="flex w-full max-w-sm items-center justify-around rounded-[28px] bg-white px-5 py-3"
+        style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06)" }}
       >
-        {tabs.map((tab) => {
-          const isActive =
-            pathname === tab.href;
-
+        {tabs.map(({ label, href, Icon }) => {
+          const isActive = pathname.startsWith(href);
           return (
-            <Link
-              key={tab.href}
-              href={tab.href}
-              className={cn(
-                "flex",
-                "flex-col",
-                "items-center",
-                "gap-1"
-              )}
+            <button
+              key={href}
+              onClick={() => router.push(href)}
+              className="flex items-center gap-2 rounded-full px-3 py-1.5 transition-all duration-200"
             >
-              <span className="text-xl">
-                {tab.icon}
-              </span>
-
+              <Icon active={isActive} />
               <span
                 className={cn(
-                  "text-xs",
-                  "font-semibold",
-                  "transition-colors",
-                  isActive ? "text-[#5B2FD1]" : "text-black/45"
+                  "text-[13px] font-semibold transition-colors duration-200",
+                  isActive ? "text-[#6C35DE]" : "text-[#9CA3AF]"
                 )}
               >
-                {tab.label}
+                {label}
               </span>
-            </Link>
+            </button>
           );
         })}
-      </div>
+      </nav>
     </div>
   );
 }
