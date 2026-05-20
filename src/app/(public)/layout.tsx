@@ -11,7 +11,7 @@ export default function PublicLayout({
     <MobileShell>
       <PageTransitionProvider>
         <AppRefreshWrapper>
-          <div className="h-full min-h-0 flex-1 overflow-hidden pt-4">
+          <div className="h-full min-h-0 flex-1 overflow-hidden">
             {children}
           </div>
         </AppRefreshWrapper>
