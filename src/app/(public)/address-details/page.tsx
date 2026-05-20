@@ -89,7 +89,7 @@ export default function AddressDetailsPage() {
 
   const handleBack = () => {
     markBackNavigation();
-    router.push("/location/map");
+    router.back();
   };
 
   const handleSelectType = (type: AddressType) => {

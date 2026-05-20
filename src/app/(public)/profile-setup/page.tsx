@@ -21,7 +21,7 @@ export default function ProfileSetupPage() {
   };
 
   return (
-    <main className="relative min-h-screen flex flex-col items-center justify-center font-(--font-urbanist) overflow-hidden">
+    <main className="relative min-h-screen flex flex-col items-center justify-start pt-16 font-(--font-urbanist) overflow-hidden">
       {/* Blurred gradient background layer only */}
       <div
         className="absolute inset-0 blur-2xl scale-110"
@@ -34,7 +34,7 @@ export default function ProfileSetupPage() {
       {/* All content sits above the blur — no blur applied here */}
       <div className="relative z-10 flex flex-col items-center w-full">
         {/* Avatar */}
-        <div className="mb-12">
+        <div className="mb-10 mt-6">
           <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full  shadow-lg">
             <div className="relative h-full w-full">
               <Image
