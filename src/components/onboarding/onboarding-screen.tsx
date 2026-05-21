@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { markForwardNavigation } from "@/lib/navigation-transition";
 import { cn } from "@/lib/cn";
 
@@ -9,17 +9,14 @@ import { OnboardingLayout } from "./onboarding-layout";
 import { OnboardingContent } from "./onboarding-content";
 import { OnboardingFooter } from "./onboarding-footer";
 
+import { useTranslations } from "next-intl";
+
 type OnboardingStep = {
   id: number;
-
-  title: string;
-
-  description: string;
-
+  titleKey: string;
+  descriptionKey: string;
   image: string;
-
   next: string;
-
   previous: string | null;
 };
 
@@ -30,6 +27,7 @@ type Props = {
 export function OnboardingScreen({
   step,
 }: Props) {
+  const t = useTranslations('Onboarding');
   const isLastStep = step.id === 3;
 
   const handleComplete = () => {
@@ -52,7 +50,7 @@ export function OnboardingScreen({
           <div className="relative h-full max-h-full w-full max-w-[clamp(20rem,105vw,28rem)] overflow-hidden rounded-[clamp(1.25rem,5vw,2.5rem)]">
             <Image
               src={step.image}
-              alt={step.title}
+              alt={t(step.titleKey as any)}
               fill
               sizes="(max-width: 640px) 105vw, 448px"
               priority
@@ -88,11 +86,11 @@ export function OnboardingScreen({
           {/* TEXT */}
           <div className="mx-auto w-full max-w-md px-2 pb-[clamp(0.75rem,2dvh,1.25rem)] text-center">
             <h1 className="text-[clamp(1.45rem,6vw,2.25rem)] font-bold leading-[1.12] tracking-[-0.02em] text-[#ffffff]">
-              {step.title}
+              {t(step.titleKey as any)}
             </h1>
 
             <p className="mt-[clamp(0.375rem,1.1dvh,0.75rem)] text-[clamp(0.875rem,3.4vw,1.0625rem)] font-medium leading-[1.4] text-white/65">
-              {step.description}
+              {t(step.descriptionKey as any)}
             </p>
           </div>
 
@@ -107,11 +105,11 @@ export function OnboardingScreen({
               }}
               className="text-[clamp(0.9375rem,3.6vw,1.125rem)] font-semibold text-white/55 transition-opacity active:opacity-60"
             >
-              Skip
+              {t('skip')}
             </Link>
 
             <Link
-              href={step.next}
+              href={step.next as any}
               onClick={() => {
                 handleForward();
 
@@ -136,7 +134,7 @@ export function OnboardingScreen({
                 "active:scale-[0.98]"
               )}
             >
-              {step.id === 3 ? "Start" : "Next"}
+              {step.id === 3 ? t('start') : t('next')}
             </Link>
           </div>
         </div>

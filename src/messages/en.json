@@ -1,0 +1,138 @@
+{
+  "Onboarding": {
+    "step1": {
+      "title": "Book Trusted Home Helpers in Minutes",
+      "description": "From cleaning and laundry to cooking and daily assistance, get verified home helpers instantly."
+    },
+    "step2": {
+      "title": "Reliable Home Services, On Demand",
+      "description": "Hire trained and verified professionals for cleaning, utensils, cooking and household help."
+    },
+    "step3": {
+      "title": "Your Everyday Home Help Partner",
+      "description": "Find trusted helpers for daily tasks with quick scheduling and seamless booking experience."
+    },
+    "next": "Next",
+    "getStarted": "Get Started",
+    "skip": "Skip",
+    "start": "Start"
+  },
+  "Login": {
+    "title": "Login",
+    "phonePlaceholder": "Enter Mobile",
+    "confirm": "Confirm",
+    "termsPrefix": "By proceeding, I accept the",
+    "termsOfUse": "Terms of use",
+    "privacyPolicy": "Privacy policy",
+    "and": "&"
+  },
+  "Common": {
+    "appName": "Snibto",
+    "loading": "Loading...",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "home": "Home",
+    "bookings": "Bookings",
+    "wallet": "Wallet"
+  },
+  "Address": {
+    "title": "Address details",
+    "subtitle": "Fill in the details for better accuracy",
+    "flatFloor": "Flat no. / Floor no.",
+    "building": "Building no. / Building name.",
+    "area": "Area",
+    "change": "Change",
+    "saveAs": "Save As",
+    "home": "Home",
+    "family": "Family",
+    "other": "Other",
+    "confirm": "Confirm Address"
+  },
+  "Home": {
+    "header": {
+      "prefix": "Snibto in",
+      "time": "8 Minutes"
+    },
+    "quickActions": {
+      "schedule": {
+        "title": "Schedule",
+        "subtitle": "Pick your time"
+      },
+      "instant": {
+        "title": "Instant",
+        "badge": "Instant Help",
+        "subtitle": "Get help now"
+      }
+    },
+    "services": {
+      "title": "Services",
+      "viewAll": "View all",
+      "list": {
+        "cleaning": {
+          "title": "Cleaning",
+          "subtitle": "Keep your space\nfresh & clean"
+        },
+        "bathroom": {
+          "title": "Bathroom",
+          "subtitle": "Sparkling clean\nbathrooms"
+        },
+        "laundry": {
+          "title": "Laundry",
+          "subtitle": "Clean, fresh &\nfolded with care"
+        },
+        "utensils": {
+          "title": "Utensils",
+          "subtitle": "Hygienic &\nsparkling utensils"
+        }
+      }
+    }
+  },
+  "ConfirmLocation": {
+    "title": "Confirm location",
+    "searchPlaceholder": "Search locality, sector, area",
+    "tooltip": "Set this as your location",
+    "currentLocation": "Go to current location",
+    "currentLocationShort": "Current location",
+    "confirmButton": "Confirm Location"
+  },
+  "Offline": {
+    "title": "Oops!",
+    "message": "Something went wrong. Please check your internet connection and try again.",
+    "retry": "Try Again"
+  },
+  "OTP": {
+    "title": "Verification",
+    "subtitle": "We've sent you the verification code on",
+    "continue": "Continue",
+    "resendButton": "Resend OTP",
+    "resendText": "Resend otp in"
+  },
+  "ProfileSetup": {
+    "title": "What should we call",
+    "you": "you",
+    "placeholder": "Enter Name",
+    "continue": "Continue"
+  },
+  "LocationAccess": {
+    "title": "What's your",
+    "location": "location?",
+    "useCurrent": "Use Current Location",
+    "fetching": "Fetching Location...",
+    "skip": "Skip for now",
+    "errorSupported": "Geolocation is not supported on this device.",
+    "errorSecure": "This browser needs HTTPS for GPS. Using approximate location...",
+    "errorAccessing": "Accessing your location...",
+    "errorRetrying": "Still trying to get location...",
+    "errorSafari": "Safari could not access GPS. Using approximate location...",
+    "errorOtherBrowser": "This browser could not access GPS. Using approximate location...",
+    "errorTurnOn": "Please turn ON device location/GPS.",
+    "errorTimeout": "Location request timed out.",
+    "errorUnable": "Unable to fetch your location.",
+    "modalTitle": "Location Access Needed",
+    "modalDescIos": "On iPhone Safari, allow Location from Safari settings and return here.",
+    "modalDescOther": "Allow location access in your device settings to continue.",
+    "modalEnable": "I'll Enable It",
+    "modalSkip": "Skip for Now"
+  }
+}

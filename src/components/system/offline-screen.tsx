@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/cn";
+import { useTranslations } from "next-intl";
 
 type OfflineScreenProps = {
   onRetry?: () => void;
@@ -9,6 +10,7 @@ type OfflineScreenProps = {
 export default function OfflineScreen({
   onRetry,
 }: OfflineScreenProps) {
+  const t = useTranslations('Offline');
   return (
     <main
       className={cn(
@@ -63,11 +65,11 @@ export default function OfflineScreen({
             {/* TEXT */}
             <div>
               <h1 className="text-center text-[2.375rem] font-bold leading-[3rem] tracking-[-0.04em]">
-                Oops!
+                {t('title')}
               </h1>
 
               <p className="mt-5 text-center text-[1.125rem] font-medium leading-9 text-white/82">
-                Something went wrong. Please check your internet connection and try again.
+                {t('message')}
               </p>
             </div>
 
@@ -95,7 +97,7 @@ export default function OfflineScreen({
                   "active:scale-[0.98]"
                 )}
               >
-                Try Again
+                {t('retry')}
               </button>
             </div>
           </div>

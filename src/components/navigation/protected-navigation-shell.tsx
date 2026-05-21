@@ -1,0 +1,46 @@
+"use client";
+
+import { ReactNode } from "react";
+import { usePathname } from "@/i18n/routing";
+import { AppRefreshWrapper } from "@/components/system/app-refresh-wrapper";
+import { PageTransitionProvider } from "@/components/system/page-transition-provider";
+import { BottomNavigation } from "@/components/navigation/bottom-navigation";
+
+interface ProtectedNavigationShellProps {
+  children: ReactNode;
+}
+
+export function ProtectedNavigationShell({
+  children,
+}: ProtectedNavigationShellProps) {
+  const pathname = usePathname();
+  const showBottomNavigation = !pathname.startsWith("/bookings/schedule");
+  const bottomSpace = showBottomNavigation
+    ? "calc(env(safe-area-inset-bottom, 0px) + 80px)"
+    : "0px";
+
+  return (
+    <>
+      <PageTransitionProvider>
+        <AppRefreshWrapper>
+          <div
+            className="h-full min-h-0 flex-1 overflow-y-auto"
+            style={{
+              scrollPaddingBottom: bottomSpace,
+            }}
+          >
+            <div
+              className="min-h-full"
+              style={{
+                paddingBottom: bottomSpace,
+              }}
+            >
+              {children}
+            </div>
+          </div>
+        </AppRefreshWrapper>
+      </PageTransitionProvider>
+      {showBottomNavigation ? <BottomNavigation /> : null}
+    </>
+  );
+}

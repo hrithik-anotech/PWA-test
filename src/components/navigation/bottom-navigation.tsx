@@ -1,6 +1,7 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/cn";
 
 // ── SVG icon components ──────────────────────────────────────────────────────
@@ -93,34 +94,38 @@ function WalletIcon({ active }: { active: boolean }) {
 // ── Tab config ───────────────────────────────────────────────────────────────
 
 const tabs = [
-  { label: "Home",     href: "/home",     Icon: HomeIcon },
-  { label: "Bookings", href: "/bookings", Icon: BookingsIcon },
-  { label: "Wallet",   href: "/wallet",   Icon: WalletIcon },
-];
+  { label: "home",     href: "/home",     Icon: HomeIcon },
+  { label: "bookings", href: "/bookings", Icon: BookingsIcon },
+  { label: "wallet",   href: "/wallet",   Icon: WalletIcon },
+] as const;
 
 // ── Component ────────────────────────────────────────────────────────────────
 
 export function BottomNavigation() {
+  const t = useTranslations('Common');
   const pathname = usePathname();
   const router = useRouter();
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-5"
+      className="fixed left-0 right-0 z-50 flex justify-center px-5"
       style={{
-        paddingBottom: "max(env(safe-area-inset-bottom, 0px) + 10px, 18px)",
+        bottom: "max(calc(env(safe-area-inset-bottom, 0px) + 10px), 18px)",
       }}
     >
       <nav
         className="flex w-full max-w-sm items-center justify-around rounded-[28px] bg-white px-5 py-3"
-        style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06)" }}
+        style={{
+          boxShadow:
+            "0 4px 24px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06)",
+        }}
       >
         {tabs.map(({ label, href, Icon }) => {
           const isActive = pathname.startsWith(href);
           return (
             <button
               key={href}
-              onClick={() => router.push(href)}
+              onClick={() => router.push(href as any)}
               className="flex items-center gap-2 rounded-full px-3 py-1.5 transition-all duration-200"
             >
               <Icon active={isActive} />
@@ -130,7 +135,7 @@ export function BottomNavigation() {
                   isActive ? "text-[#6C35DE]" : "text-[#9CA3AF]"
                 )}
               >
-                {label}
+                {t(label as any)}
               </span>
             </button>
           );
