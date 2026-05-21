@@ -26,7 +26,7 @@ export function StatusBarManager() {
     let themeColor = "#FFFFFF"; // Default white
     
     if (isHome) {
-      themeColor = "#6C35DE"; // Purple for home
+      themeColor = "#5F30CA"; // Purple for home
     } else if (isSplash) {
       themeColor = "#0D002B"; // Dark blue for splash
     }
