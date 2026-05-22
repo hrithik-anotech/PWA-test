@@ -117,7 +117,7 @@ export default async function HomePage() {
             </div>
 
             {/* Ghost calendar — large, bottom-right */}
-            <div className="pointer-events-none absolute bottom-3 right-3 z-0 w-20 sm:w-20 md:w-24 aspect-square">
+            <div className="pointer-events-none absolute bottom-5 right-1 md:right-3 z-0 w-20 sm:w-20 md:w-24 aspect-square">
               <Image
                 src="/images/icons/calendar-bg.svg"
                 alt="calendar"
