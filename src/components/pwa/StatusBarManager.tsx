@@ -1,46 +1,103 @@
 "use client";
 
 import { useEffect } from "react";
+
 import { usePathname } from "@/i18n/routing";
+
 import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 
 /**
- * StatusBarManager handles dynamic PWA status bar colors.
- * - Home page: Purple (#6C35DE) for non-iOS devices.
- * - Other pages: White (#FFFFFF) for non-iOS devices.
- * - iOS: Remains transparent (black-translucent) as requested.
+ * StatusBarManager
+ *
+ * Android:
+ * - Dynamic theme-color support
+ *
+ * iOS:
+ * - Uses static black-translucent mode
+ * - DO NOT dynamically change iOS status bar style
+ * - iOS Safari/PWA caches aggressively
  */
 export function StatusBarManager() {
   const pathname = usePathname();
-  const { isIOS } = useDeviceDetection();
+
+  const { isIOS } =
+    useDeviceDetection();
 
   useEffect(() => {
-    // We only change the theme-color for non-iOS devices
-    // because iOS uses apple-mobile-web-app-status-bar-style: black-translucent
-    // for a transparent/overlay effect.
-    if (isIOS) return;
+    // -----------------------------------
+    // IOS
+    // -----------------------------------
 
-    const isHome = pathname.includes("/home");
-    const isSplash = pathname === "/" || pathname === "/en" || pathname === "/hi";
-    
-    let themeColor = "#FFFFFF"; // Default white
-    
-    if (isHome) {
-      themeColor = "#5F30CA"; // Purple for home
-    } else if (isSplash) {
-      themeColor = "#0D002B"; // Dark blue for splash
+    // iOS standalone PWAs do not properly
+    // support dynamic status bar colors.
+    //
+    // We keep:
+    // black-translucent
+    //
+    // statically inside layout.tsx
+    //
+    // So ONLY update Android theme-color.
+    if (isIOS) {
+      return;
     }
 
-    // Find or create the theme-color meta tag
-    let metaTag = document.querySelector('meta[name="theme-color"]');
-    
+    // -----------------------------------
+    // ROUTE DETECTION
+    // -----------------------------------
+
+    const isHome =
+      pathname.includes("/home");
+
+    const isSplash =
+      pathname === "/" ||
+      pathname === "/en" ||
+      pathname === "/hi";
+
+    // -----------------------------------
+    // ANDROID THEME COLORS
+    // -----------------------------------
+
+    let themeColor = "#FFFFFF";
+
+    // Splash screen
+    if (isSplash) {
+      themeColor = "#0D002B";
+    }
+
+    // Home screen
+    else if (isHome) {
+      themeColor = "#5F30CA";
+    }
+
+    // -----------------------------------
+    // META TAG
+    // -----------------------------------
+
+    let metaTag =
+      document.querySelector(
+        'meta[name="theme-color"]'
+      );
+
     if (!metaTag) {
-      metaTag = document.createElement("meta");
-      metaTag.setAttribute("name", "theme-color");
-      document.head.appendChild(metaTag);
+      metaTag =
+        document.createElement(
+          "meta"
+        );
+
+      metaTag.setAttribute(
+        "name",
+        "theme-color"
+      );
+
+      document.head.appendChild(
+        metaTag
+      );
     }
 
-    metaTag.setAttribute("content", themeColor);
+    metaTag.setAttribute(
+      "content",
+      themeColor
+    );
   }, [pathname, isIOS]);
 
   return null;

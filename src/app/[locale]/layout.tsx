@@ -12,7 +12,7 @@ import { PWAInstallManager } from "@/components/pwa/PWAInstallManager";
 import { StatusBarManager } from "@/components/pwa/StatusBarManager";
 
 const PWA_MANIFEST_PATH =
-  "/manifest.json?v=transparent-status-bar";
+  "/manifest.json?v=visible-ios-status-bar";
 
 export const metadata: Metadata = {
   title: "Snibto",
@@ -61,8 +61,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  colorScheme: "light dark",
-  themeColor: "transparent",
+  colorScheme: "light",
+  themeColor: "#FFFFFF",
   viewportFit: "cover",
 };
 

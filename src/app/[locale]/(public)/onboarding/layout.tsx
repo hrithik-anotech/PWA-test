@@ -1,7 +1,7 @@
 import type { Viewport } from "next";
 
 export const viewport: Viewport = {
-  themeColor: "transparent",
+  themeColor: "#FCFCFF",
   viewportFit: "cover",
 };
 

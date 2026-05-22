@@ -56,14 +56,14 @@ export function OnboardingScreen({
       <OnboardingContent>
         {/* APP SCREEN MOCKUP */}
         <div className="relative flex min-h-0 w-full flex-1 items-center justify-center">
-          <div className="relative h-full max-h-full w-full max-w-[clamp(20rem,105vw,28rem)] overflow-hidden rounded-[clamp(1.25rem,5vw,2.5rem)]">
+          <div className="relative h-full max-h-full w-full max-w-[clamp(22rem,95vw,32rem)] overflow-hidden rounded-[clamp(1.25rem,5vw,2.5rem)]">
             <Image
               src={step.image}
               alt={t(step.titleKey)}
               fill
-              sizes="(max-width: 640px) 105vw, 448px"
+              sizes="(max-width: 640px) 95vw, 448px"
               priority
-              className="object-contain [mask-image:linear-gradient(to_bottom,black_72%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_72%,transparent_100%)]"
+              className="object-contain mask-[linear-gradient(to_bottom,black_72%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_72%,transparent_100%)]"
             />
           </div>
         </div>

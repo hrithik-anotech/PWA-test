@@ -5,7 +5,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 export const viewport: Viewport = {
-  themeColor: "transparent",
+  themeColor: "#5F30CA",
   viewportFit: "cover",
 };
 
