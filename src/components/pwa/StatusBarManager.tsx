@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { usePathname } from "@/i18n/routing";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 
-const APP_THEME_COLOR = "#FCFCFF";
+const APP_THEME_COLOR = "#5F30CA";
 const IOS_STATUS_BAR_STYLE = "black-translucent";
 
 function setMetaContent(name: string, content: string) {
