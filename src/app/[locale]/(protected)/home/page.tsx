@@ -70,7 +70,10 @@ export default async function HomePage() {
             </div>
 
             {/* Right: avatar — h-12 w-12 already rem-based */}
-            <div className="h-12 w-12 mt-4 overflow-hidden rounded-full border-2 border-white/25">
+            <Link
+              href="/profile"
+              className="h-12 w-12 mt-4 overflow-hidden rounded-full border-2 border-white/25"
+            >
               <Image
                 src="/images/login/profile-placeholder.png"
                 alt="Avatar"
@@ -78,7 +81,7 @@ export default async function HomePage() {
                 height={44}
                 className="h-full w-full object-cover"
               />
-            </div>
+            </Link>
           </div>
         </div>
       </div>
