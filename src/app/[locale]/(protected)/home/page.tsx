@@ -33,7 +33,7 @@ const services = [
     Icon: "/images/icons/utensils.svg",
     image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?q=80&w=800&auto=format&fit=crop",
   },
-];
+] as const;
 
 // ── Page ─────────────────────────────────────────────────────────────────────
 
@@ -117,13 +117,12 @@ export default async function HomePage() {
             </div>
 
             {/* Ghost calendar — large, bottom-right */}
-            <div className="pointer-events-none absolute bottom-3 right-3 z-0">
+            <div className="pointer-events-none absolute bottom-3 right-3 z-0 w-20 sm:w-20 md:w-24 aspect-square">
               <Image
                 src="/images/icons/calendar-bg.svg"
                 alt="calendar"
-                width={100}
-                height={100}
-                style={{ height: "auto" }}
+                fill
+                className="object-contain"
               />
             </div>
           </Link>
@@ -204,14 +203,14 @@ export default async function HomePage() {
                     fill
                     sizes="(max-width: 640px) 50vw, 200px"
                     src={image}
-                    alt={t(`services.list.${key}.title` as any)}
+                    alt={t(`services.list.${key}.title`)}
                     className="object-cover rounded-xl"
                   />
                   {/* Icon badge — h-8 w-8 already rem */}
                   <div className="absolute bottom-2 left-2 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm">
                     <Image
                       src={Icon}
-                      alt={t(`services.list.${key}.title` as any)}
+                      alt={t(`services.list.${key}.title`)}
                       width={18}
                       height={18}
                       className="h-[1.125rem] w-[1.125rem] object-contain"
@@ -224,11 +223,11 @@ export default async function HomePage() {
                   <div>
                     {/* ↓ was text-[16px] → text-base (1rem) */}
                     <h3 className="text-base font-medium text-[#111]">
-                      {t(`services.list.${key}.title` as any)}
+                      {t(`services.list.${key}.title`)}
                     </h3>
                     {/* ↓ was text-[11px] */}
                     <p className="mt-0.5 whitespace-pre-line text-[2.75vw] leading-tight text-[#595959]">
-                      {t(`services.list.${key}.subtitle` as any)}
+                      {t(`services.list.${key}.subtitle`)}
                     </p>
                   </div>
                   <div className="aspect-square rounded-full bg-[#F3EDFE] p-1">

@@ -4,7 +4,7 @@ import "./../globals.css";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { routing } from '@/i18n/routing';
+import { isLocale } from '@/i18n/routing';
 
 import { urbanist } from "@/lib/fonts";
 import { NavigationTransitionManager } from "@/components/system/navigation-transition-manager";
@@ -76,7 +76,7 @@ export default async function RootLayout({
   const { locale } = await params;
 
   // Ensure that the incoming `locale` is valid
-  if (!routing.locales.includes(locale as any)) {
+  if (!isLocale(locale)) {
     notFound();
   }
 

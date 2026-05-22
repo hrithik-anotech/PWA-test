@@ -9,6 +9,11 @@ export const routing = defineRouting({
   defaultLocale: 'en'
 });
 
+export type Locale = (typeof routing.locales)[number];
+
+export const isLocale = (locale: string): locale is Locale =>
+  routing.locales.includes(locale as Locale);
+
 // Lightweight wrappers around Next.js' navigation APIs
 // that will consider the routing configuration
 export const { Link, redirect, usePathname, useRouter, getPathname } =

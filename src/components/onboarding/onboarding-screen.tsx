@@ -13,11 +13,20 @@ import { useTranslations } from "next-intl";
 
 type OnboardingStep = {
   id: number;
-  titleKey: string;
-  descriptionKey: string;
+  titleKey: "step1.title" | "step2.title" | "step3.title";
+  descriptionKey:
+    | "step1.description"
+    | "step2.description"
+    | "step3.description";
   image: string;
-  next: string;
-  previous: string | null;
+  next:
+    | "/onboarding/step-2"
+    | "/onboarding/step-3"
+    | "/login";
+  previous:
+    | "/onboarding/step-1"
+    | "/onboarding/step-2"
+    | null;
 };
 
 type Props = {
@@ -50,7 +59,7 @@ export function OnboardingScreen({
           <div className="relative h-full max-h-full w-full max-w-[clamp(20rem,105vw,28rem)] overflow-hidden rounded-[clamp(1.25rem,5vw,2.5rem)]">
             <Image
               src={step.image}
-              alt={t(step.titleKey as any)}
+              alt={t(step.titleKey)}
               fill
               sizes="(max-width: 640px) 105vw, 448px"
               priority
@@ -86,11 +95,11 @@ export function OnboardingScreen({
           {/* TEXT */}
           <div className="mx-auto w-full max-w-md px-2 pb-[clamp(0.75rem,2dvh,1.25rem)] text-center">
             <h1 className="text-[clamp(1.45rem,6vw,2.25rem)] font-bold leading-[1.12] tracking-[-0.02em] text-[#ffffff]">
-              {t(step.titleKey as any)}
+              {t(step.titleKey)}
             </h1>
 
             <p className="mt-[clamp(0.375rem,1.1dvh,0.75rem)] text-[clamp(0.875rem,3.4vw,1.0625rem)] font-medium leading-[1.4] text-white/65">
-              {t(step.descriptionKey as any)}
+              {t(step.descriptionKey)}
             </p>
           </div>
 
@@ -109,7 +118,7 @@ export function OnboardingScreen({
             </Link>
 
             <Link
-              href={step.next as any}
+              href={step.next}
               onClick={() => {
                 handleForward();
 

@@ -2,7 +2,13 @@
 
 import Image from "next/image";
 import { useRouter } from "@/i18n/routing";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { useTranslations } from "next-intl";
 
 type Status = "idle" | "loading" | "blocked" | "error";
@@ -36,6 +42,16 @@ const getBrowserInfo = () => {
   };
 };
 
+const subscribeToDeviceType = () => () => {};
+
+const getDeviceTypeSnapshot = () =>
+  typeof window === "undefined"
+    ? "other"
+    : getBrowserInfo().deviceType;
+
+const getServerDeviceTypeSnapshot = (): DeviceType =>
+  "other";
+
 const getLocationOptions = () => {
   const { isSafari } = getBrowserInfo();
 
@@ -52,8 +68,11 @@ export default function LocationAccessPage() {
 
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
-  const [deviceType, setDeviceType] = useState<DeviceType>("other");
-  const [windowHeight, setWindowHeight] = useState(0);
+  const deviceType = useSyncExternalStore(
+    subscribeToDeviceType,
+    getDeviceTypeSnapshot,
+    getServerDeviceTypeSnapshot
+  );
 
   const retryCountRef = useRef(0);
   const hasNavigatedRef = useRef(false);
@@ -67,19 +86,6 @@ export default function LocationAccessPage() {
   };
 
   // ───────────────── DETECT DEVICE & SCREEN ─────────────────
-
-  useEffect(() => {
-    const browserInfo = getBrowserInfo();
-    setDeviceType(browserInfo.deviceType);
-    setWindowHeight(window.innerHeight);
-
-    const handleResize = () => {
-      setWindowHeight(window.innerHeight);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   // ───────────────── NAVIGATE ─────────────────
 
@@ -253,7 +259,7 @@ export default function LocationAccessPage() {
 
       locationOptions
     );
-  }, [handleSuccess, fetchIPFallback]);
+  }, [handleSuccess, fetchIPFallback, t]);
 
   useEffect(() => {
     requestLocationRef.current = requestLocation;

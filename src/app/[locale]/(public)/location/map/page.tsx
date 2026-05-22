@@ -8,6 +8,7 @@ import {
   useEffect,
   useRef,
   useState,
+  useSyncExternalStore,
 } from "react";
 import { useRouter } from "@/i18n/routing";
 import { markForwardNavigation } from "@/lib/navigation-transition";
@@ -62,27 +63,44 @@ const getBrowserInfo = () => {
   };
 };
 
+const subscribeToDeviceType = () => () => {};
+
+const getDeviceTypeSnapshot = () =>
+  typeof window === "undefined"
+    ? "other"
+    : getBrowserInfo().deviceType;
+
+const getServerDeviceTypeSnapshot = (): DeviceType =>
+  "other";
+
+const subscribeToWindowResize = (
+  onStoreChange: () => void
+) => {
+  window.addEventListener("resize", onStoreChange);
+  return () =>
+    window.removeEventListener("resize", onStoreChange);
+};
+
+const getWindowHeightSnapshot = () =>
+  typeof window === "undefined" ? 0 : window.innerHeight;
+
+const getServerWindowHeightSnapshot = () => 0;
+
 export default function ConfirmLocationPage() {
   const t = useTranslations('ConfirmLocation');
   const router = useRouter();
   const [search, setSearch] = useState("");
-  const [deviceType, setDeviceType] = useState<DeviceType>("other");
-  const [windowHeight, setWindowHeight] = useState(0);
+  const deviceType = useSyncExternalStore(
+    subscribeToDeviceType,
+    getDeviceTypeSnapshot,
+    getServerDeviceTypeSnapshot
+  );
+  const windowHeight = useSyncExternalStore(
+    subscribeToWindowResize,
+    getWindowHeightSnapshot,
+    getServerWindowHeightSnapshot
+  );
   const storedLocationRef = useRef<StoredLocation | null>(null);
-
-  // ── DETECT DEVICE ──
-  useEffect(() => {
-    const browserInfo = getBrowserInfo();
-    setDeviceType(browserInfo.deviceType);
-    setWindowHeight(window.innerHeight);
-
-    const handleResize = () => {
-      setWindowHeight(window.innerHeight);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   // ── LOAD STORED LOCATION ──
   useEffect(() => {

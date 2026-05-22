@@ -23,4 +23,4 @@ export const onboardingSteps = {
     next: "/login",
     previous: "/onboarding/step-2",
   },
-};
+} as const;

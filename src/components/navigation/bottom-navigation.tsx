@@ -125,7 +125,7 @@ export function BottomNavigation() {
           return (
             <button
               key={href}
-              onClick={() => router.push(href as any)}
+              onClick={() => router.push(href)}
               className="flex items-center gap-2 rounded-full px-3 py-1.5 transition-all duration-200"
             >
               <Icon active={isActive} />
@@ -135,7 +135,7 @@ export function BottomNavigation() {
                   isActive ? "text-[#6C35DE]" : "text-[#9CA3AF]"
                 )}
               >
-                {t(label as any)}
+                {t(label)}
               </span>
             </button>
           );

@@ -246,7 +246,7 @@ export default function AddressDetailsPage() {
                       className="shrink-0"
                     />
                     <span className="truncate">
-                      {t(option.value as any)}
+                      {t(option.value)}
                     </span>
                   </button>
                 );

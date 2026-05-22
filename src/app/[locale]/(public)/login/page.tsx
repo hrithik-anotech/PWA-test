@@ -69,9 +69,9 @@ export default function LoginPage() {
       </div>
 
       {/* Bottom Section */}
-      <div className="flex h-[45dvh] min-h-[15rem] flex-none flex-col items-center overflow-hidden bg-white px-2 pt-[clamp(0.5rem,1.4dvh,0.875rem)] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+      <div className="flex h-[55dvh] min-h-60 flex-none flex-col items-center overflow-hidden bg-white px-2 pt-[clamp(0.1rem,0.5dvh,0.75rem)] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
         {/* Logo */}
-        <div className="relative h-[clamp(6.5rem,17.5dvh,9.25rem)] w-[clamp(6.5rem,17.5dvh,9.25rem)] flex-none">
+        <div className="relative h-[clamp(6.5rem,25.5dvh,15.5rem)] w-[clamp(6.5rem,25.5dvh,15.5rem)] flex-none">
           <Image
             src="/images/logos/login-logo.png"
             alt="Snibto"
@@ -88,7 +88,7 @@ export default function LoginPage() {
             <button
               type="button"
 
-              className="flex h-full min-w-[4.5rem] items-center gap-1.5 border-r border-[#e0d9f7] px-3 text-sm font-medium text-[#333]"
+              className="flex h-full min-w-18 items-center gap-1.5 border-r border-[#e0d9f7] px-3 text-sm font-medium text-[#333]"
             >
               <Image
                 src="/images/login/flag-india.png"
@@ -104,37 +104,45 @@ export default function LoginPage() {
 
             <input
               type="tel"
+              name="phone"
+              autoComplete="tel"
               inputMode="numeric"
               placeholder={t('phonePlaceholder')}
               value={phone}
-              onChange={(e) =>
-                setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))
-              }
-              className="flex-1 bg-transparent pr-4 text-base font-medium text-[#1a1a2e] outline-none placeholder:text-gray-400"
+              onChange={(e) => {
+                let digits = e.target.value.replace(/\D/g, "");
+
+                // Remove India country code if present
+                if (digits.startsWith("91") && digits.length > 10) {
+                  digits = digits.slice(-10);
+                }
+
+                setPhone(digits.slice(0, 10));
+              }}
+              className="flex-1 bg-transparent pr-4 text-base font-semibold text-[#1a1a2e] outline-none placeholder:text-gray-400"
             />
           </div>
 
           <button
             type="button"
             onClick={handleConfirm}
-            className={`mt-[clamp(0.5rem,1.4dvh,0.75rem)] h-[clamp(2.75rem,6dvh,3.15rem)] w-full rounded-2xl text-sm font-bold uppercase tracking-[0.15em] text-white transition-opacity active:opacity-80 ${
-              phone.length >= 10
-                ? "bg-gradient-to-br from-[#5b2fd1] to-[#7c3aed]"
-                : "bg-[#c4b5fd]"
-            }`}
+            className={`mt-[clamp(0.5rem,1.4dvh,0.75rem)] h-[clamp(2.75rem,6dvh,3.15rem)] w-full rounded-2xl text-sm font-bold uppercase tracking-[0.15em] text-white transition-opacity active:opacity-80 ${phone.length >= 10
+              ? "bg-linear-to-br from-primary to-accent"
+              : "bg-[#c4b5fd]"
+              }`}
           >
             {t('confirm')}
           </button>
         </div>
 
-        <p className="mt-[clamp(0.5rem,1.5dvh,0.875rem)] max-w-sm text-center text-[0.7rem] leading-[1.35] text-[#888]">
+        <p className="mt-[clamp(0.5rem,5.5dvh,6rem)] max-w-sm text-center text-[0.7rem] leading-[1.35] text-[#888]">
           {t('termsPrefix')}
-          <br/>
-          <button className="text-[#5b2fd1] underline underline-offset-2">
+          <br />
+          <button className="text-primary underline underline-offset-2">
             {t('termsOfUse')}
           </button>{" "}
           {t('and')}{" "}
-          <button className="text-[#5b2fd1] underline underline-offset-2">
+          <button className="text-primary underline underline-offset-2">
             {t('privacyPolicy')}
           </button>
         </p>
