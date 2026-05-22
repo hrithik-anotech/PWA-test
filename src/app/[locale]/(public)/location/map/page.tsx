@@ -302,10 +302,10 @@ export default function ConfirmLocationPage() {
       </div>
 
       {/* ── BOTTOM SHEET ── */}
-      <div 
-        className="bg-white px-3 sm:px-4 pt-4 border-t border-gray-100 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] flex-shrink-0"
+      <div
+        className="flex-shrink-0 bg-white px-3 pt-4 sm:px-4"
         style={{
-          paddingBottom: `max(1.5rem, calc(env(safe-area-inset-bottom) + 1rem))`,
+          paddingBottom: `calc(env(safe-area-inset-bottom, 0px) + 1rem)`,
         }}
       >
         {/* Location Info */}

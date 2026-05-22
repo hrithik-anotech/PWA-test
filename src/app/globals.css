@@ -60,10 +60,19 @@
 /* ROOT */
 /* ---------------------------------- */
 
+:root {
+  color-scheme: light;
+
+  --app-background: #fcfcff;
+  --app-surface: #ffffff;
+  --app-text: #111111;
+  --app-safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 html {
   height: 100%;
 
-  background: var(--color-background);
+  background: var(--app-background);
 
   overflow: hidden;
 
@@ -75,15 +84,13 @@ html {
 body {
   height: 100%;
 
-  background: var(--color-background);
+  background: var(--app-background);
 
   overflow: hidden;
 
   font-family: var(--font-urbanist);
 
-  background: var(--color-background);
-
-  color: var(--color-text);
+  color: var(--app-text);
 
   text-rendering: optimizeLegibility;
 
@@ -103,6 +110,8 @@ body {
   min-height: 0;
 
   height: 100%;
+
+  background: var(--app-background);
 }
 
 .app-refresh-wrapper .ptr__children {
@@ -160,7 +169,13 @@ body {
 #__next {
   height: 100%;
 
-  background: var(--color-background);
+  background: var(--app-background);
+}
+
+[data-app-root] {
+  min-height: 100%;
+
+  background: var(--app-background);
 }
 
 /* ---------------------------------- */
@@ -332,13 +347,26 @@ html:not([data-nav-direction="back"])::view-transition-new(root) {
 /* ---------------------------------- */
 
 .safe-top {
-  padding-top: env(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 .safe-bottom {
-  padding-bottom: env(
-    safe-area-inset-bottom
+  padding-bottom: var(--app-safe-bottom);
+}
+
+.safe-bottom-plus {
+  padding-bottom: calc(
+    var(--app-safe-bottom) + var(--safe-bottom-extra, 0px)
   );
+}
+
+.edge-to-edge-bg {
+  background: var(--app-background);
+}
+
+.bottom-safe-surface {
+  background: var(--app-background);
+  padding-bottom: var(--app-safe-bottom);
 }
 
 /* ---------------------------------- */

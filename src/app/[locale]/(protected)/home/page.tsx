@@ -5,7 +5,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 export const viewport: Viewport = {
-  themeColor: "#5F30CA",
+  themeColor: "#FCFCFF",
   viewportFit: "cover",
 };
 
@@ -41,10 +41,10 @@ export default async function HomePage() {
   const t = await getTranslations('Home');
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-[#F9F8FD]">
+    <div className="flex h-full min-h-0 flex-col bg-[var(--app-background)]">
 
       {/* ── HEADER ──────────────────────────────────────────────────────────── */}
-      <div className="sticky top-0 z-40 bg-[#F9F8FD] pt-[env(safe-area-inset-top)]">
+      <div className="sticky top-0 z-40 bg-[var(--app-background)] pt-[env(safe-area-inset-top)]">
         <div className="rounded-b-[2.1rem] bg-[#5F30CA] px-5 pb-8 pt-3.5">
           <div className="flex items-start justify-between">
             {/* Left: text */}

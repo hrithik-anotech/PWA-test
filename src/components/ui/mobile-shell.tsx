@@ -11,10 +11,13 @@ export function MobileShell({
   className,
 }: MobileShellProps) {
   return (
-    <main className="h-[100dvh] max-h-[100dvh] w-full overflow-hidden bg-[#FCFCFF] text-[#111111]">
+    <main
+      className="h-[100dvh] max-h-[100dvh] w-full overflow-hidden bg-[var(--app-background)] text-[var(--app-text)]"
+      data-app-root
+    >
       <div
         className={cn(
-          "mx-auto flex h-full min-h-0 w-full max-w-[36rem] flex-col overflow-hidden",
+          "mx-auto flex h-full min-h-0 w-full max-w-[36rem] flex-col overflow-hidden bg-[var(--app-background)]",
           className
         )}
       >

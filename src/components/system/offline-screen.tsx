@@ -53,9 +53,8 @@ export default function OfflineScreen({
             "to-[#B18BFF]",
             "px-7",
             "pt-9",
-            "pb-[max(1.75rem,env(safe-area-inset-bottom))]",
-            "text-white",
-            "shadow-[0_-10px_40px_rgba(91,47,209,0.25)]"
+            "pb-[calc(env(safe-area-inset-bottom,0px)+1.75rem)]",
+            "text-white"
           )}
         >
           {/* OVERLAY */}

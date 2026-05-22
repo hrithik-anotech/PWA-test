@@ -107,18 +107,9 @@ export function BottomNavigation() {
   const router = useRouter();
 
   return (
-    <div
-      className="fixed left-0 right-0 z-50 flex justify-center px-5"
-      style={{
-        bottom: "max(calc(env(safe-area-inset-bottom, 0px) + 10px), 18px)",
-      }}
-    >
+    <div className="fixed inset-x-0 bottom-0 z-50 flex justify-center bg-[var(--app-background)] px-5 pb-[calc(env(safe-area-inset-bottom,0px)+0.75rem)] pt-2">
       <nav
-        className="flex w-full max-w-sm items-center justify-around rounded-[28px] bg-white px-5 py-3"
-        style={{
-          boxShadow:
-            "0 4px 24px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06)",
-        }}
+        className="flex h-14 w-full max-w-sm items-center justify-around rounded-[28px] bg-white px-5 shadow-[0_4px_16px_rgba(17,17,17,0.04)]"
       >
         {tabs.map(({ label, href, Icon }) => {
           const isActive = pathname.startsWith(href);

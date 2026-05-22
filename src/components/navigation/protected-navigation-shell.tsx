@@ -16,7 +16,7 @@ export function ProtectedNavigationShell({
   const pathname = usePathname();
   const showBottomNavigation = !pathname.startsWith("/bookings/schedule");
   const bottomSpace = showBottomNavigation
-    ? "calc(env(safe-area-inset-bottom, 0px) + 80px)"
+    ? "calc(env(safe-area-inset-bottom, 0px) + 4.75rem)"
     : "0px";
 
   return (
@@ -24,13 +24,13 @@ export function ProtectedNavigationShell({
       <PageTransitionProvider>
         <AppRefreshWrapper>
           <div
-            className="h-full min-h-0 flex-1 overflow-y-auto"
+            className="h-full min-h-0 flex-1 overflow-y-auto bg-[var(--app-background)]"
             style={{
               scrollPaddingBottom: bottomSpace,
             }}
           >
             <div
-              className="min-h-full"
+              className="min-h-full bg-[var(--app-background)]"
               style={{
                 paddingBottom: bottomSpace,
               }}

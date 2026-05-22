@@ -70,14 +70,14 @@ export function UPIPaymentFooter({
   return (
     <footer
       className={cn(
-        'border-t border-[#D8D8D8] bg-white px-5 pt-3',
+        'bg-white px-5 pt-3',
         mode === 'fixed' &&
           'fixed bottom-0 left-1/2 z-50 w-full max-w-[36rem] -translate-x-1/2',
         mode === 'inline' && 'w-full',
         className
       )}
       style={{
-        paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 0.75rem)',
+        paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 0.75rem)',
       }}
     >
       <p className="mb-1 text-sm font-semibold text-black">

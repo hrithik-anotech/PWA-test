@@ -12,7 +12,7 @@ import { PWAInstallManager } from "@/components/pwa/PWAInstallManager";
 import { StatusBarManager } from "@/components/pwa/StatusBarManager";
 
 const PWA_MANIFEST_PATH =
-  "/manifest.json?v=visible-ios-status-bar";
+  "/manifest.json?v=edge-to-edge-safe-area";
 
 export const metadata: Metadata = {
   title: "Snibto",
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: "light",
-  themeColor: "#FFFFFF",
+  themeColor: "#5F30CA",
   viewportFit: "cover",
 };
 
@@ -95,7 +95,7 @@ export default async function RootLayout({
         <link rel="manifest" href={PWA_MANIFEST_PATH} />
       </head>
       <body
-        className={`${urbanist.variable} min-h-full flex flex-col`}
+        className={`${urbanist.variable} min-h-full flex flex-col bg-[var(--app-background)]`}
       >
         <NextIntlClientProvider messages={messages}>
           <StatusBarManager />

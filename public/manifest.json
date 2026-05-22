@@ -11,7 +11,7 @@
   "display_override": ["standalone", "browser"],
   "orientation": "portrait",
   "background_color": "#FCFCFF",
-  "theme_color": "#FFFFFF",
+  "theme_color": "#5F30CA",
   "categories": ["lifestyle", "utilities"],
   "prefer_related_applications": false,
   "icons": [

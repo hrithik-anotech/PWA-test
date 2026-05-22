@@ -258,9 +258,9 @@ export default function AddressDetailsPage() {
 
       {/* Fixed Bottom Button — safe area bottom */}
       <div
-        className="fixed bottom-0 left-0 right-0 bg-[#f8f8f8] px-4 sm:px-6 pt-3 sm:pt-4 border-t border-[#EBEBEB]"
+        className="fixed bottom-0 left-0 right-0 bg-[var(--app-background)] px-4 pt-3 sm:px-6 sm:pt-4"
         style={{
-          paddingBottom: `max(1.25rem, calc(env(safe-area-inset-bottom) + 0.75rem))`,
+          paddingBottom: `calc(env(safe-area-inset-bottom, 0px) + 0.75rem)`,
         }}
       >
         <div className="mx-auto max-w-md">
