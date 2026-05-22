@@ -5,7 +5,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 export const viewport: Viewport = {
-  themeColor: "#FCFCFF",
+  themeColor: "#5F30CA",
   viewportFit: "cover",
 };
 
@@ -44,7 +44,8 @@ export default async function HomePage() {
     <div className="flex h-full min-h-0 flex-col bg-[var(--app-background)]">
 
       {/* ── HEADER ──────────────────────────────────────────────────────────── */}
-      <div className="sticky top-0 z-40 bg-[var(--app-background)] pt-[env(safe-area-inset-top)]">
+      <div className="sticky top-0 z-40 bg-[var(--app-background)]">
+        <div aria-hidden="true" className="h-[env(safe-area-inset-top)] bg-[#5F30CA]" />
         <div className="rounded-b-[2.1rem] bg-[#5F30CA] px-5 pb-8 pt-3.5">
           <div className="flex items-start justify-between">
             {/* Left: text */}
@@ -96,7 +97,13 @@ export default async function HomePage() {
           >
             {/* Icon circle — h-9 w-9 already rem */}
             <div className="relative z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white">
-              <Image alt="calender" src="/images/icons/calendar.svg" width={18} height={18} />
+              <Image
+                alt="calender"
+                src="/images/icons/calendar.svg"
+                width={14}
+                height={15}
+                className="h-[1.125rem] w-auto"
+              />
             </div>
 
             {/* Text */}
@@ -129,13 +136,20 @@ export default async function HomePage() {
 
           {/* Instant — gradient bg, person image right */}
           {/* ↓ minHeight:140 replaced with matching aspect-ratio */}
-          <div
+          <Link
+          href="/bookings/instant"
             className="relative rounded-[1.25rem] bg-[linear-gradient(110.16deg,#E1DBFD_0%,#E8D1F9_100%)] p-4 shadow-[2px_2px_4px_1px_#00000040]"
             style={{ aspectRatio: "1.45 / 1" }}
           >
             {/* Badge */}
             <div className="inline-flex items-center gap-0.5 rounded-xl bg-[#E1D2F9] px-2 py-1">
-              <Image alt="flash" src="/images/icons/flash-color.svg" width={10} height={10} />
+              <Image
+                alt="flash"
+                src="/images/icons/flash-color.svg"
+                width={11}
+                height={14}
+                className="h-2.5 w-auto"
+              />
               {/* ↓ was text-[10px] */}
               <span className="text-[2.5vw] font-medium text-[#6C35DE]">
                 {t('quickActions.instant.badge')}
@@ -166,10 +180,11 @@ export default async function HomePage() {
                 src="/images/helper.png"
                 alt="Helper"
                 fill
+                sizes="(max-width: 640px) 24vw, 8rem"
                 className="object-cover object-top"
               />
             </div>
-          </div>
+          </Link>
         </div>
 
         {/* ── SERVICES SECTION ────────────────────────────────────────────────── */}
@@ -198,7 +213,7 @@ export default async function HomePage() {
                 style={{ border: "1px solid rgba(0,0,0,0.05)" }}
               >
                 {/* ↓ was h-[128px] fixed → aspect-ratio scales with card width */}
-                <div className="relative aspect-[4/3] w-full overflow-hidden">
+                <div className="relative aspect-3/2 w-full overflow-hidden">
                   <Image
                     fill
                     sizes="(max-width: 640px) 50vw, 200px"

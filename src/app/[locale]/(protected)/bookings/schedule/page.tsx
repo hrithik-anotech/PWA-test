@@ -17,6 +17,8 @@ const timeTabs: { label: string; value: TimeOption }[] = [
   { label: 'Evening', value: 'evening' },
 ];
 
+const unavailableTimeTabs = new Set<TimeOption>(['afternoon']);
+
 const timeSlotRows = [
   ['09:00 AM', '09:15 AM', '09:30 AM'],
   ['09:45 AM', '10:15 AM', '10:30 AM'],
@@ -42,7 +44,7 @@ export default function SchedulePage() {
   const currentPrice = durationPrices[selectedDuration];
 
   return (
-    <div className="min-h-full bg-[#F6F6F6] text-[#111111]">
+    <div className="min-h-full bg-[#F6F6F6] text-text">
       <header className="sticky top-0 z-40 border-b border-[#DCDCDC] bg-white pt-[env(safe-area-inset-top)]">
         <div className="px-4 pb-3 pt-3">
           <div className="flex items-center gap-2">
@@ -71,14 +73,16 @@ export default function SchedulePage() {
       </header>
 
       <main
-        className="space-y-3 px-4 py-4"
+        className="space-y-3 px-4 py-4 min-h-full"
         style={{
           paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 7.5rem)',
         }}
       >
-        <section className="rounded-xl border border-[#D8D8D8] bg-white px-3 py-3 shadow-[0_1px_5px_rgba(0,0,0,0.18)]">
+        {/* Select Date */}
+        {/* ↓ was shadow 1px/5px -> 0.0625rem/0.3125rem */}
+        <section className="rounded-xl border border-[#D8D8D8] bg-white px-3 py-3 shadow-[0_0.0625rem_0.3125rem_rgba(0,0,0,0.18)]">
           <h2 className="mb-3 text-sm font-normal text-black">Select Date</h2>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-3 py-3">
             {[
               { label: 'Today', value: 'today' as const },
               { label: 'Tomorrow', value: 'tomorrow' as const },
@@ -91,11 +95,12 @@ export default function SchedulePage() {
                   key={option.value}
                   type="button"
                   onClick={() => setSelectedDate(option.value)}
+                  style={{ fontWeight: isSelected ? 800 : 400 }}
                   className={cn(
-                    'h-8 rounded-[0.625rem] border text-sm font-normal transition-all active:scale-[0.98]',
+                    'h-10 rounded-[0.625rem] border text-sm transition-all active:scale-[0.98]',
                     isSelected
-                      ? 'border-[#6C35DE] bg-[#F7F2FF] text-[#6C35DE]'
-                      : 'border-[#D7D7D7] bg-[#EFEFEF] text-[#646464]'
+                      ? 'border-[#6C35DE] bg-[#F7F2FF] text-[#6C35DE] font-bold'
+                      : 'border-[#D7D7D7] bg-[#EFEFEF] text-[#646464] font-normal'
                   )}
                 >
                   {option.label}
@@ -105,9 +110,11 @@ export default function SchedulePage() {
           </div>
         </section>
 
-        <section className="rounded-xl border border-[#D8D8D8] bg-white px-3 py-3 shadow-[0_1px_5px_rgba(0,0,0,0.18)]">
+        {/* Duration */}
+        {/* ↓ was shadow 1px/5px -> 0.0625rem/0.3125rem */}
+        <section className="rounded-xl border border-[#D8D8D8] bg-white px-3 py-3 shadow-[0_0.0625rem_0.3125rem_rgba(0,0,0,0.18)]">
           <h2 className="mb-3 text-sm font-normal text-black">Duration</h2>
-          <div className="flex gap-3">
+          <div className="flex gap-3 py-2">
             {[
               { label: '60 min', value: '60' as const },
               { label: '90 min', value: '90' as const },
@@ -120,15 +127,16 @@ export default function SchedulePage() {
                   key={option.value}
                   type="button"
                   onClick={() => setSelectedDuration(option.value)}
+                  style={{ fontWeight: isSelected ? 800 : 400 }}
                   className={cn(
-                    'flex h-[6.35rem] w-[5.15rem] flex-col items-start justify-between rounded-[0.625rem] border px-3 py-3 text-left transition-all active:scale-[0.98]',
+                    'flex w-[6.35rem] aspect-square flex-col items-start justify-between rounded-[0.625rem] border px-3 py-3 text-left transition-all active:scale-[0.98]',
                     isSelected
-                      ? 'border-[#6C35DE] bg-[#F7F2FF] text-[#6C35DE]'
-                      : 'border-[#D7D7D7] bg-[#EFEFEF] text-[#555555]'
+                      ? 'border-[#6C35DE] bg-[#F7F2FF] text-[#6C35DE] font-bold'
+                      : 'border-[#D7D7D7] bg-[#EFEFEF] text-[#555555] font-normal'
                   )}
                 >
-                  <span className="text-sm font-semibold">{option.label}</span>
-                  <span className="text-sm font-semibold">
+                  <span className="text-sm">{option.label}</span>
+                  <span className="text-sm">
                     {price.priceLabel}{' '}
                     <span className="text-[0.6rem] font-normal text-[#777777] line-through">
                       {price.originalLabel}
@@ -140,24 +148,34 @@ export default function SchedulePage() {
           </div>
         </section>
 
-        <section className="rounded-xl border border-[#D8D8D8] bg-white px-3 py-3 shadow-[0_1px_5px_rgba(0,0,0,0.18)]">
+        {/* Timing */}
+        {/* ↓ was shadow 1px/5px -> 0.0625rem/0.3125rem */}
+        <section className="rounded-xl border border-[#D8D8D8] bg-white px-3 py-3 shadow-[0_0.0625rem_0.3125rem_rgba(0,0,0,0.18)]">
           <h2 className="mb-3 text-sm font-normal text-black">Timings</h2>
 
-          <div className="mb-4 grid grid-cols-3 gap-3">
+          <div className="mb-4 grid grid-cols-3 gap-3 py-3">
             {timeTabs.map((tab) => {
+              const isUnavailable = unavailableTimeTabs.has(tab.value);
               const isSelected = selectedTime === tab.value;
 
               return (
                 <button
                   key={tab.value}
                   type="button"
-                  onClick={() => setSelectedTime(tab.value)}
+                  disabled={isUnavailable}
+                  onClick={() => {
+                    if (!isUnavailable) {
+                      setSelectedTime(tab.value);
+                    }
+                  }}
+                  style={{ fontWeight: isSelected ? 800 : 400 }}
                   className={cn(
-                    'h-8 rounded-full border text-sm font-normal transition-all active:scale-[0.98]',
-                    isSelected
-                      ? 'border-[#6C35DE] bg-[#F7F2FF] text-[#6C35DE]'
-                      : 'border-[#D7D7D7] bg-[#EFEFEF] text-[#646464]',
-                    tab.value === 'afternoon' && !isSelected ? 'text-[#B9B9B9]' : false
+                    'h-10 rounded-full border text-sm transition-all',
+                    isUnavailable
+                      ? 'cursor-not-allowed border-[#D7D7D7] bg-[#EFEFEF] font-normal text-[#B9B9B9]'
+                      : isSelected
+                      ? 'border-[#6C35DE] bg-[#F7F2FF] text-[#6C35DE] font-bold'
+                      : 'border-[#D7D7D7] bg-[#EFEFEF] text-[#646464] font-normal active:scale-[0.98]'
                   )}
                 >
                   {tab.label}
@@ -166,7 +184,7 @@ export default function SchedulePage() {
             })}
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-4 pb-4">
             {timeSlotRows.flat().map((slot) => {
               const isUnavailable = unavailableSlots.has(slot);
               const isSelected = selectedSlot === slot;
@@ -176,14 +194,19 @@ export default function SchedulePage() {
                   key={slot}
                   type="button"
                   disabled={isUnavailable}
-                  onClick={() => setSelectedSlot(slot)}
+                  onClick={() => {
+                    if (!isUnavailable) {
+                      setSelectedSlot(slot);
+                    }
+                  }}
+                  style={{ fontWeight: isSelected ? 800 : 400 }}
                   className={cn(
-                    'h-8 rounded-[0.625rem] border text-xs font-normal transition-all active:scale-[0.98]',
+                    'h-10 rounded-[0.625rem] border text-xs transition-all',
                     isUnavailable
-                      ? 'border-[#E0E0E0] bg-[#F3F3F3] text-[#C9C9C9]'
+                      ? 'cursor-not-allowed border-[#E0E0E0] bg-[#F3F3F3] font-normal text-[#C9C9C9]'
                       : isSelected
-                        ? 'border-[#6C35DE] bg-[#F7F2FF] text-[#6C35DE]'
-                        : 'border-[#D7D7D7] bg-[#EFEFEF] text-[#666666]'
+                        ? 'border-[#6C35DE] bg-[#F7F2FF] text-[#6C35DE] font-bold'
+                        : 'border-[#D7D7D7] bg-[#EFEFEF] text-[#666666] font-normal active:scale-[0.98]'
                   )}
                 >
                   {slot}

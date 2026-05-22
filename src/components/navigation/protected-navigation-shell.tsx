@@ -10,11 +10,22 @@ interface ProtectedNavigationShellProps {
   children: ReactNode;
 }
 
+const bottomNavigationPaths = new Set([
+  "/home",
+  "/profile/mybookings",
+  "/wallet",
+]);
+
 export function ProtectedNavigationShell({
   children,
 }: ProtectedNavigationShellProps) {
   const pathname = usePathname();
-  const showBottomNavigation = !pathname.startsWith("/bookings/schedule");
+  const normalizedPathname =
+    pathname.length > 1 && pathname.endsWith("/")
+      ? pathname.slice(0, -1)
+      : pathname;
+  const showBottomNavigation =
+    bottomNavigationPaths.has(normalizedPathname);
   const bottomSpace = showBottomNavigation
     ? "calc(env(safe-area-inset-bottom, 0px) + 4.75rem)"
     : "0px";
