@@ -1,13 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { UPIPaymentFooter } from '@/components/payments';
 
 type DateOption = 'today' | 'tomorrow' | 'custom';
 type DurationOption = '60' | '90';
 type TimeOption = 'morning' | 'afternoon' | 'evening';
-
-const UPI_PAYEE_VPA = process.env.NEXT_PUBLIC_UPI_PAYEE_VPA ?? '';
-const UPI_PAYEE_NAME = process.env.NEXT_PUBLIC_UPI_PAYEE_NAME ?? 'Snibto';
 
 const cn = (...classes: (string | undefined | null | false)[]): string => {
   return classes.filter(Boolean).join(' ');
@@ -42,25 +40,6 @@ export default function SchedulePage() {
   const [selectedTime, setSelectedTime] = useState<TimeOption>('morning');
   const [selectedSlot, setSelectedSlot] = useState<string>('09:00 AM');
   const currentPrice = durationPrices[selectedDuration];
-
-  const handlePayNow = () => {
-    if (!UPI_PAYEE_VPA) {
-      alert('UPI receiver ID is not configured yet.');
-      return;
-    }
-
-    const transactionRef = `SNIBTO-${Date.now()}`;
-    const params = new URLSearchParams({
-      pa: UPI_PAYEE_VPA,
-      pn: UPI_PAYEE_NAME,
-      am: currentPrice.amount,
-      cu: 'INR',
-      tn: `Snibto booking - ${selectedDuration} min, ${selectedDate}, ${selectedSlot}`,
-      tr: transactionRef,
-    });
-
-    window.location.href = `upi://pay?${params.toString()}`;
-  };
 
   return (
     <div className="min-h-full bg-[#F6F6F6] text-[#111111]">
@@ -215,34 +194,10 @@ export default function SchedulePage() {
         </section>
       </main>
 
-      <footer
-        className="fixed bottom-0 left-1/2 z-50 w-full max-w-[36rem] -translate-x-1/2 border-t border-[#D8D8D8] bg-white px-5 pt-3"
-        style={{
-          paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 0.75rem)',
-        }}
-      >
-        <p className="mb-1 text-sm font-semibold text-black">
-          Pay using <span className="text-[0.55rem]">▲</span>
-        </p>
-        <div className="flex items-center gap-3">
-          <div className="flex min-w-0 flex-1 items-center gap-2">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#E2E2E2] bg-white">
-              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#5F30CA] text-[0.58rem] font-bold text-white">
-                {'\u092A\u0947'}
-              </div>
-            </div>
-            <span className="truncate text-sm font-semibold text-black">PhonePe UPI</span>
-          </div>
-
-          <button
-            type="button"
-            onClick={handlePayNow}
-            className="h-11 w-[9.25rem] rounded-lg bg-[#6330D6] text-sm font-semibold text-white transition-all active:scale-[0.98]"
-          >
-            Pay Now
-          </button>
-        </div>
-      </footer>
+      <UPIPaymentFooter
+        amount={currentPrice.amount}
+        transactionNote={`Snibto booking - ${selectedDuration} min, ${selectedDate}, ${selectedSlot}`}
+      />
     </div>
   );
 }

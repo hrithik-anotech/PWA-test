@@ -6,7 +6,7 @@ const withNextIntl = createNextIntlPlugin();
 const nextConfig: NextConfig = {
   reactCompiler: true,
 
-  allowedDevOrigins: ['192.168.1.10', '10.71.55.216'],
+  allowedDevOrigins: ['192.168.1.3', '10.71.55.216'],
 
   images: {
     remotePatterns: [

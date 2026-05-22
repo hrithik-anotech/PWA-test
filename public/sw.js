@@ -1,4 +1,4 @@
-const CACHE_VERSION = "snibto-pwa-v5";
+const CACHE_VERSION = "snibto-pwa-v7";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
