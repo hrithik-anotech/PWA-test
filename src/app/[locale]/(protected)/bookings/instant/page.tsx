@@ -4,6 +4,7 @@ import { useState, useSyncExternalStore } from 'react';
 import Image from 'next/image';
 import { UPIPaymentFooter } from '@/components/payments';
 import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/routing';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -93,14 +94,13 @@ export default function InstantPage() {
       <header className="sticky top-0 z-40 border-b border-[#DCDCDC] bg-white pt-[env(safe-area-inset-top)]">
         <div className="mx-auto max-w-5xl p-3 sm:p-4">
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => window.history.back()}
+            <Link
+              href="/home"
               className="-ml-1 flex h-8 w-8 items-center justify-center active:scale-95"
               aria-label={tCommon('back')}
             >
               <Image src="/images/arrow-left.svg" alt="back" width={24} height={24} />
-            </button>
+            </Link>
 
             <div className="min-w-0">
               <h1 className="text-base font-normal leading-none text-black sm:text-lg">

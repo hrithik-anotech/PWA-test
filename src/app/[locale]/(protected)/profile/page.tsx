@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useSyncExternalStore } from "react";
+import { useMemo, useSyncExternalStore, useState } from "react";
 import Image from "next/image";
 import { Link, useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
@@ -8,6 +8,7 @@ import {
     defaultUserProfile,
     getUserProfile,
 } from "@/lib/storage";
+import LanguageDrawer from "@/components/system/language-drawer";
 
 function subscribeToProfileStorage() {
     return () => {};
@@ -27,6 +28,8 @@ export default function ProfilePage() {
     const t = useTranslations('Profile');
     const tCommon = useTranslations('Common');
     const router = useRouter();
+    const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+    
     const profileSnapshot = useSyncExternalStore(
         subscribeToProfileStorage,
         getProfileSnapshot,
@@ -48,14 +51,11 @@ export default function ProfilePage() {
 
     return (
         <div className="flex flex-col min-h-screen bg-gray-200">
-
-
             {/* ── HEADER ── */}
             <div className="flex items-center gap-2 px-4 pt-2 pb-4">
-                <button
-                    type="button"
-                    className="flex h-10 w-10 items-center justify-center -ml-2 rounded-full"
-                    onClick={() => router.back()}
+                <Link
+                    href="/home"
+                    className="flex h-10 w-10 items-center justify-center -ml-2 rounded-full transition-transform active:scale-95"
                     aria-label={tCommon('back')}
                 >
                     <Image
@@ -64,7 +64,7 @@ export default function ProfilePage() {
                         width={24}
                         height={24}
                     />
-                </button>
+                </Link>
                 <h1 className="text-[22px] font-bold text-black tracking-tight">{t('title')}</h1>
             </div>
 
@@ -166,44 +166,56 @@ export default function ProfilePage() {
 
             {/* ── LIST ITEMS ── */}
             <div className="mx-4 mt-3 bg-white rounded-2xl shadow-sm divide-y divide-gray-100">
-                {[
-                    {
-                        icon: "/assets/icons/saved-address.svg",
-                        label: t('savedAddresses'),
-                        href: "/profile/addresses",
-                        key: 'savedAddresses'
-                    },
-                    {
-                        icon: "/assets/icons/manage-account.svg",
-                        label: t('manageAccount'),
-                        href: "/profile/manage",
-                        key: 'manageAccount'
-                    },
-                    {
-                        icon: "/assets/icons/manage-account.svg",
-                        label: t('language'),
-                        href: "/profile/language",
-                        key: 'language'
-                    },
-                ].map(({ icon, label, href, key }) => (
-                    <Link
-                        key={key}
-                        href={href}
-                        className="flex items-center justify-between px-5 py-4"
-                    >
-                        <div className="flex items-center gap-4">
-                            <Image src={icon} alt={label} width={22} height={22} />
-                            <span className="text-[14.5px] font-medium text-gray-700">{label}</span>
-                        </div>
-                        <Image
-                            src="/assets/icons/chevron-right.svg"
-                            alt=">"
-                            width={16}
-                            height={16}
-                            className="opacity-40"
-                        />
-                    </Link>
-                ))}
+                <Link
+                    href="/profile/addresses"
+                    className="flex items-center justify-between px-5 py-4"
+                >
+                    <div className="flex items-center gap-4">
+                        <Image src="/assets/icons/saved-address.svg" alt={t('savedAddresses')} width={22} height={22} />
+                        <span className="text-[14.5px] font-medium text-gray-700">{t('savedAddresses')}</span>
+                    </div>
+                    <Image
+                        src="/assets/icons/chevron-right.svg"
+                        alt=">"
+                        width={16}
+                        height={16}
+                        className="opacity-40"
+                    />
+                </Link>
+
+                <Link
+                    href="/profile/manage"
+                    className="flex items-center justify-between px-5 py-4"
+                >
+                    <div className="flex items-center gap-4">
+                        <Image src="/assets/icons/manage-account.svg" alt={t('manageAccount')} width={22} height={22} />
+                        <span className="text-[14.5px] font-medium text-gray-700">{t('manageAccount')}</span>
+                    </div>
+                    <Image
+                        src="/assets/icons/chevron-right.svg"
+                        alt=">"
+                        width={16}
+                        height={16}
+                        className="opacity-40"
+                    />
+                </Link>
+
+                <button
+                    onClick={() => setIsLanguageOpen(true)}
+                    className="w-full flex items-center justify-between px-5 py-4"
+                >
+                    <div className="flex items-center gap-4">
+                        <Image src="/assets/icons/manage-account.svg" alt={t('language')} width={22} height={22} />
+                        <span className="text-[14.5px] font-medium text-gray-700">{t('language')}</span>
+                    </div>
+                    <Image
+                        src="/assets/icons/chevron-right.svg"
+                        alt=">"
+                        width={16}
+                        height={16}
+                        className="opacity-40"
+                    />
+                </button>
             </div>
             
             {/* Logout */}
@@ -215,6 +227,12 @@ export default function ProfilePage() {
                      {t('logout')}
                 </button>
             </div>
+
+            {/* Language Drawer */}
+            <LanguageDrawer 
+                open={isLanguageOpen} 
+                onClose={() => setIsLanguageOpen(false)} 
+            />
         </div>
     );
 }

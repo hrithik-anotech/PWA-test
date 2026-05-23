@@ -1,7 +1,7 @@
 
 import type { Viewport } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";
 import HomeServicesSection from "@/components/services/HomeServicesSection";
 

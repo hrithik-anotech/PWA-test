@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/routing';
 
 type FilterType = 'all' | 'single' | 'multiple';
 type BookingStatus = 'confirmed' | 'cancelled';
@@ -85,9 +86,8 @@ export default function MyBookingsPage() {
             <header className="sticky top-0 z-40 bg-[#F9F8FD] pt-[env(safe-area-inset-top)]">
                 <div className="px-4 py-4 sm:px-6">
                     <div className="flex items-center gap-3">
-                        <button
-                            type="button"
-                            onClick={() => window.history.back()}
+                        <Link
+                            href="/home"
                             className="-ml-2 flex h-10 w-10 items-center justify-center rounded-lg text-black transition-colors hover:bg-gray-100 active:scale-95"
                             aria-label={tCommon('back')}
                         >
@@ -104,7 +104,7 @@ export default function MyBookingsPage() {
                                     d="M15 19l-7-7 7-7"
                                 />
                             </svg>
-                        </button>
+                        </Link>
                         <h1 className="text-xl font-semibold text-black">{t('title')}</h1>
                     </div>
                 </div>
