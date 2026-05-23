@@ -55,14 +55,14 @@ export const metadata: Metadata = {
 
   other: {
     "mobile-web-app-capable": "yes",
-    "apple-mobile-web-app-capable": "yes",
+ "apple-mobile-web-app-capable": "yes",
     "apple-mobile-web-app-title": "Snibto",
   },
 };
 
 export const viewport: Viewport = {
   colorScheme: "light",
-  themeColor: "#5F30CA",
+  themeColor: "transparent",
   viewportFit: "cover",
 };
 
