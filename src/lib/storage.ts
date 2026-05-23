@@ -1,5 +1,12 @@
 export const STORAGE_KEYS = {
   appState: "snibto-app-state",
+  phone: "phone",
+  userName: "userName",
+};
+
+export type UserProfile = {
+  name: string;
+  phone: string;
 };
 
 export type AppState = {
@@ -38,6 +45,11 @@ export const defaultAppState: AppState = {
   addressCompleted: false,
 };
 
+export const defaultUserProfile: UserProfile = {
+  name: "Guest",
+  phone: "",
+};
+
 function hasLegacyFlag(key: string) {
   return localStorage.getItem(key) === "true";
 }
@@ -47,8 +59,6 @@ function getLegacyAppState(): Partial<AppState> {
     onboardingCompleted: hasLegacyFlag(
       "hasCompletedOnboarding"
     ),
-
-    isLoggedIn: hasLegacyFlag("isLoggedIn"),
 
     profileCompleted: hasLegacyFlag("hasProfile"),
 
@@ -169,4 +179,25 @@ export function clearAppState() {
   localStorage.removeItem("isLoggedIn");
   localStorage.removeItem("hasProfile");
   localStorage.removeItem("hasAddress");
+  localStorage.removeItem(STORAGE_KEYS.phone);
+  localStorage.removeItem(STORAGE_KEYS.userName);
+}
+
+export function getUserProfile(): UserProfile {
+  if (typeof window === "undefined") {
+    return defaultUserProfile;
+  }
+
+  const name =
+    localStorage.getItem(STORAGE_KEYS.userName)?.trim() ||
+    defaultUserProfile.name;
+
+  const phone =
+    localStorage.getItem(STORAGE_KEYS.phone)?.trim() ||
+    defaultUserProfile.phone;
+
+  return {
+    name,
+    phone,
+  };
 }

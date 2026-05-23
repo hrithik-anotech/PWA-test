@@ -3,6 +3,7 @@ import type { Viewport } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import HomeServicesSection from "@/components/services/HomeServicesSection";
 
 export const viewport: Viewport = {
   themeColor: "#5F30CA",
@@ -35,10 +36,83 @@ const services = [
   },
 ] as const;
 
+const serviceDrawerCopy = {
+  cleaning: {
+    included: [
+      "Sweep and mop accessible floors",
+      "Dust furniture and reachable surfaces",
+      "Dispose household waste",
+    ],
+    notIncluded: [
+      "Unsafe or inaccessible areas",
+      "Moving heavy furniture",
+      "Child, elderly, pet or medical care",
+    ],
+  },
+  bathroom: {
+    included: [
+      "Scrub toilet, sink, and taps",
+      "Clean mirrors and counters",
+      "Mop bathroom floor",
+    ],
+    notIncluded: [
+      "Drain unclogging or plumbing work",
+      "Deep descaling fixtures",
+      "Pest or mold remediation",
+    ],
+  },
+  laundry: {
+    included: [
+      "Wash regular daily clothes",
+      "Dry and fold clean laundry",
+      "Sort lights and darks",
+    ],
+    notIncluded: [
+      "Dry cleaning or delicate-only garments",
+      "Stain removal guarantee",
+      "Ironing heavy garments",
+    ],
+  },
+  utensils: {
+    included: [
+      "Wash used utensils",
+      "Clean sink area after washing",
+      "Arrange cleaned dishes",
+    ],
+    notIncluded: [
+      "Cleaning burnt cookware",
+      "Appliance repair or maintenance",
+      "Kitchen deep cleaning",
+    ],
+  },
+} as const;
+
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function HomePage() {
   const t = await getTranslations('Home');
+  const serviceCards = services.map((service) => {
+    const copy =
+      serviceDrawerCopy[
+        service.key as keyof typeof serviceDrawerCopy
+      ];
+
+    return {
+      id: service.key,
+      icon: service.Icon,
+      image: service.image,
+      label: t(`services.list.${service.key}.title`),
+      subtitle: t(`services.list.${service.key}.subtitle`),
+      includedItems: copy.included.map((text) => ({
+        text,
+        icon: service.Icon,
+      })),
+      notIncludedItems: copy.notIncluded.map((text) => ({
+        text,
+        icon: service.Icon,
+      })),
+    };
+  });
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-[var(--app-background)]">
@@ -95,7 +169,7 @@ export default async function HomePage() {
           {/* ↓ minHeight:140 replaced with aspect-ratio so card scales with column width */}
           <Link
             href="/bookings/schedule"
-            className="relative overflow-hidden rounded-[1.25rem] bg-[linear-gradient(116.15deg,#815BE1_0%,#311782_100%)] p-4 shadow-[2px_2px_4px_1px_#00000040]"
+            className="relative overflow-hidden rounded-[1.25rem] bg-[linear-gradient(116.15deg,#815BE1_0%,#311782_100%)] p-4 shadow-[2px_2px_4px_1px_#000000/40]"
             style={{ aspectRatio: "1.45 / 1" }}
           >
             {/* Icon circle — h-9 w-9 already rem */}
@@ -141,7 +215,7 @@ export default async function HomePage() {
           {/* ↓ minHeight:140 replaced with matching aspect-ratio */}
           <Link
           href="/bookings/instant"
-            className="relative rounded-[1.25rem] bg-[linear-gradient(110.16deg,#E1DBFD_0%,#E8D1F9_100%)] p-4 shadow-[2px_2px_4px_1px_#00000040]"
+            className="relative rounded-[1.25rem] bg-[linear-gradient(110.16deg,#E1DBFD_0%,#E8D1F9_100%)] p-4 shadow-[2px_2px_4px_1px_#000000/40]"
             style={{ aspectRatio: "1.45 / 1" }}
           >
             {/* Badge */}
@@ -191,71 +265,11 @@ export default async function HomePage() {
         </div>
 
         {/* ── SERVICES SECTION ────────────────────────────────────────────────── */}
-        <div className="px-4 pt-6">
-          {/* Row header */}
-          <div className="flex items-center justify-between">
-            {/* ↓ was text-[26px] */}
-            <h2 className="text-[6.5vw] font-semibold tracking-tight text-[#0D0D0D]">
-              {t('services.title')}
-            </h2>
-            {/* ↓ was text-[13px] → text-sm (0.875rem) */}
-            <button className="flex items-center gap-0.5 text-sm font-semibold text-[#6C35DE]">
-              {t('services.viewAll')}
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                <path d="M9 18l6-6-6-6" stroke="#6C35DE" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Cards grid */}
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            {services.map(({ key, Icon, image }) => (
-              <div
-                key={key}
-                className="overflow-hidden rounded-xl bg-white"
-                style={{ border: "1px solid rgba(0,0,0,0.05)" }}
-              >
-                {/* ↓ was h-[128px] fixed → aspect-ratio scales with card width */}
-                <div className="relative aspect-3/2 w-full overflow-hidden">
-                  <Image
-                    fill
-                    sizes="(max-width: 640px) 50vw, 200px"
-                    src={image}
-                    alt={t(`services.list.${key}.title`)}
-                    className="object-cover rounded-xl"
-                  />
-                  {/* Icon badge — h-8 w-8 already rem */}
-                  <div className="absolute bottom-2 left-2 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm">
-                    <Image
-                      src={Icon}
-                      alt={t(`services.list.${key}.title`)}
-                      width={18}
-                      height={18}
-                      className="h-[1.125rem] w-[1.125rem] object-contain"
-                    />
-                  </div>
-                </div>
-
-                {/* Body */}
-                <div className="flex items-center justify-between p-3">
-                  <div>
-                    {/* ↓ was text-[16px] → text-base (1rem) */}
-                    <h3 className="text-base font-medium text-[#111]">
-                      {t(`services.list.${key}.title`)}
-                    </h3>
-                    {/* ↓ was text-[11px] */}
-                    <p className="mt-0.5 whitespace-pre-line text-[2.75vw] leading-tight text-[#595959]">
-                      {t(`services.list.${key}.subtitle`)}
-                    </p>
-                  </div>
-                  <div className="aspect-square rounded-full bg-[#F3EDFE] p-1">
-                    <Image alt="" src="/images/icons/arrow-left-color.svg" width={26} height={26} />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <HomeServicesSection
+          services={serviceCards}
+          title={t('services.title')}
+          viewAllLabel={t('services.viewAll')}
+        />
 
         {/* ── HOW TO BOOK ─────────────────────────────────────────────────────── */}
         <div className="px-4 pb-4 pt-7">

@@ -148,8 +148,8 @@ export default function MyBookingsPage() {
                             <div
                                 key={booking.id}
                                 className={cn(
-                                    'flex items-center gap-4 rounded-2xl border px-4 py-4 transition-all shadow-[0px_0px_4px_1px_#00000040] sm:px-5 sm:py-5',
-                                    'border-[#59595933] bg-white'
+                                    'flex items-center gap-4 rounded-2xl border px-4 py-4 transition-all shadow-[0px_0px_4px_1px_#000000/40] sm:px-5 sm:py-5',
+                                    'border-[#595959]/33 bg-white'
                                 )}
                             >
                                 {/* Icon */}

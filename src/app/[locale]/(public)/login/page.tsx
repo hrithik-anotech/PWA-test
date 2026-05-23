@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { markForwardNavigation } from "@/lib/navigation-transition";
+import { setAppState } from "@/lib/storage";
 
 export default function LoginPage() {
   const t = useTranslations('Login');
@@ -15,6 +16,12 @@ export default function LoginPage() {
     if (phone.length < 10) return;
     markForwardNavigation();
     localStorage.setItem("phone", phone);
+    setAppState({
+      isLoggedIn: false,
+      profileCompleted: false,
+      locationSelected: false,
+      addressCompleted: false,
+    });
     router.push("/otp");
   };
 

@@ -1,19 +1,67 @@
 // app/profile/page.tsx  (or pages/profile.tsx)
-"use client"
+"use client";
+
+import { useMemo, useSyncExternalStore } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Link, useRouter } from "@/i18n/routing";
+import {
+    defaultUserProfile,
+    getUserProfile,
+} from "@/lib/storage";
+
+function subscribeToProfileStorage() {
+    return () => {};
+}
+
+function getProfileSnapshot() {
+    const profile = getUserProfile();
+
+    return `${profile.name}\u0000${profile.phone}`;
+}
+
+function getDefaultProfileSnapshot() {
+    return `${defaultUserProfile.name}\u0000${defaultUserProfile.phone}`;
+}
 
 export default function ProfilePage() {
-    const router = useRouter()
+    const router = useRouter();
+    const profileSnapshot = useSyncExternalStore(
+        subscribeToProfileStorage,
+        getProfileSnapshot,
+        getDefaultProfileSnapshot
+    );
+
+    const profile = useMemo(() => {
+        const [name, phone] = profileSnapshot.split("\u0000");
+
+        return {
+            name,
+            phone,
+        };
+    }, [profileSnapshot]);
+
+    const formattedPhone = profile.phone
+        ? `+91 ${profile.phone}`
+        : "Phone number not added";
+
     return (
         <div className="flex flex-col min-h-screen bg-gray-200">
 
 
             {/* ── HEADER ── */}
             <div className="flex items-center gap-2 px-4 pt-2 pb-4">
-                <button className="p-1 -ml-1" onClick={() => router.back()}>
-                    <Image src="/assets/icons/chevron-left.svg" alt="back" width={20} height={20} />
+                <button
+                    type="button"
+                    className="flex h-10 w-10 items-center justify-center -ml-2 rounded-full"
+                    onClick={() => router.back()}
+                    aria-label="Go back"
+                >
+                    <Image
+                        src="/images/arrow-left.svg"
+                        alt="back"
+                        width={24}
+                        height={24}
+                    />
                 </button>
                 <h1 className="text-[22px] font-bold text-black tracking-tight">Profile</h1>
             </div>
@@ -22,15 +70,19 @@ export default function ProfilePage() {
             <div className="mx-4 bg-white rounded-2xl px-4 py-4 flex items-center gap-3 shadow-sm">
                 <div className="relative w-14 h-14 rounded-full overflow-hidden flex-shrink-0 border-2 border-[#EDE8FF]">
                     <Image
-                        src="/assets/images/avatar.png"
-                        alt="Sadique"
+                        src="/images/login/profile-placeholder.png"
+                        alt={profile.name}
                         fill
                         className="object-cover"
                     />
                 </div>
                 <div className="flex-1 min-w-0">
-                    <p className="text-[17px] font-bold text-black leading-tight">Sadique</p>
-                    <p className="text-[13px] text-gray-400 mt-0.5">+91 98765 43210</p>
+                    <p className="text-[17px] font-bold text-black leading-tight">
+                        {profile.name}
+                    </p>
+                    <p className="text-[13px] text-gray-400 mt-0.5">
+                        {formattedPhone}
+                    </p>
                     <Link
                         href="/profile/edit"
                         className="text-[13px] font-semibold text-[#7B5CF5] mt-0.5 inline-block"

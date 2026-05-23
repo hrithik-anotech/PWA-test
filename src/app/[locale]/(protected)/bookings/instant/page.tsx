@@ -1,91 +1,105 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
+import Image from 'next/image';
 import { UPIPaymentFooter } from '@/components/payments';
 
-type DurationOption = '60' | '90' | '120' | '150' | '180' | '210' | '240' | '300';
+// ── Types ────────────────────────────────────────────────────────────────────
 
-const cn = (...classes: (string | undefined | null | false)[]): string => {
-  return classes.filter(Boolean).join(' ');
+type DurationOption =
+  | '60' | '90' | '120' | '150' | '180' | '210'
+  | '240' | '270' | '300' | '330' | '360' | '420';
+
+type DurationPrice = {
+  label: string;
+  amount: string;
+  originalPrice: string;
+  available: boolean;
 };
 
-const durationPrices: Record<
-  DurationOption,
-  { label: string; amount: string; originalPrice: string }
-> = {
-  '60': { label: '60 min', amount: '70.00', originalPrice: '₹99' },
-  '90': { label: '90 min', amount: '130.00', originalPrice: '₹199' },
-  '120': { label: '2 hrs', amount: '179.00', originalPrice: '₹299' },
-  '150': { label: '2.5 hrs', amount: '219.00', originalPrice: '₹399' },
-  '180': { label: '3 hrs', amount: '230.00', originalPrice: '₹399' },
-  '210': { label: '3.5 hrs', amount: '280.00', originalPrice: '₹499' },
-  '240': { label: '4 hrs', amount: '320.00', originalPrice: '₹599' },
-  '300': { label: '5 hrs', amount: '420.00', originalPrice: '₹799' },
+// ── Data ─────────────────────────────────────────────────────────────────────
+
+const durationPrices: Record<DurationOption, DurationPrice> = {
+  '60':  { label: '60 min',  amount: '70.00',  originalPrice: '₹99',   available: true  },
+  '90':  { label: '90 min',  amount: '130.00', originalPrice: '₹199',  available: true  },
+  '120': { label: '2 hrs',   amount: '179.00', originalPrice: '₹299',  available: true  },
+  '150': { label: '2.5 hrs', amount: '229.00', originalPrice: '₹399',  available: true  },
+  '180': { label: '3 hrs',   amount: '230.00', originalPrice: '₹399',  available: false },
+  '210': { label: '3.5 hrs', amount: '280.00', originalPrice: '₹499',  available: true  },
+  '240': { label: '4 hrs',   amount: '320.00', originalPrice: '₹599',  available: true  },
+  '270': { label: '4.5 hrs', amount: '370.00', originalPrice: '₹699',  available: false },
+  '300': { label: '5 hrs',   amount: '420.00', originalPrice: '₹799',  available: true  },
+  '330': { label: '5.5 hrs', amount: '460.00', originalPrice: '₹899',  available: true  },
+  '360': { label: '6 hrs',   amount: '510.00', originalPrice: '₹999',  available: false },
+  '420': { label: '7 hrs',   amount: '590.00', originalPrice: '₹1199', available: true  },
 };
 
-const initialVisibleCount = 6;
+// ── Responsive visible count ──────────────────────────────────────────────────
+
+const getVisibleDurationCount = () => {
+  if (typeof window === 'undefined') return 9;
+  if (window.matchMedia('(min-width: 64rem)').matches) return 12;
+  if (window.matchMedia('(min-width: 40rem)').matches) return 9;
+  return 6;
+};
+
+const subscribeToViewportChanges = (onChange: () => void) => {
+  window.addEventListener('resize', onChange);
+  return () => window.removeEventListener('resize', onChange);
+};
+
+const getServerVisibleDurationCount = () => 9;
+
+// ── Page ─────────────────────────────────────────────────────────────────────
 
 export default function InstantPage() {
   const [selectedDuration, setSelectedDuration] = useState<DurationOption>('60');
   const [showAll, setShowAll] = useState(false);
 
-  const durationOptions = Object.entries(durationPrices).map(([key, value]) => ({
-    value: key as DurationOption,
-    ...value,
-  }));
+  const visibleDurationCount = useSyncExternalStore(
+    subscribeToViewportChanges,
+    getVisibleDurationCount,
+    getServerVisibleDurationCount,
+  );
+
+  const durationOptions = Object.entries(durationPrices)
+    .map(([key, value]) => ({
+      value: key as DurationOption,
+      ...value,
+    }))
+    .filter((option) => option.available);
 
   const visibleOptions = showAll
     ? durationOptions
-    : durationOptions.slice(0, initialVisibleCount);
+    : durationOptions.slice(0, visibleDurationCount);
 
+  const hasMoreOptions = durationOptions.length > visibleDurationCount;
   const currentPrice = durationPrices[selectedDuration];
-  const hasMoreOptions = durationOptions.length > initialVisibleCount;
 
   return (
-    <div className="min-h-full bg-gradient-to-br from-[#F6F6F6] to-[#FAFAFA]">
-      {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-[#DCDCDC] bg-white/95 backdrop-blur-sm pt-[env(safe-area-inset-top)]">
-        <div className="mx-auto max-w-2xl px-4 py-3 sm:px-6 sm:py-4">
-          <div className="flex items-center gap-3">
+    <div className="min-h-dvh bg-[#F9FAF9]">
+
+      {/* ── HEADER ─────────────────────────────────────────────────────────── */}
+      <header className="sticky top-0 z-40 border-b border-[#DCDCDC] bg-white pt-[env(safe-area-inset-top)]">
+        <div className="mx-auto max-w-5xl p-3 sm:p-4">
+          <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => window.history.back()}
-              className="-ml-2 flex h-10 w-10 items-center justify-center rounded-lg text-black transition-colors hover:bg-gray-100 active:scale-95 sm:h-8 sm:w-8"
+              className="-ml-1 flex h-8 w-8 items-center justify-center active:scale-95"
               aria-label="Go back"
             >
-              <svg
-                className="h-6 w-6 sm:h-5 sm:w-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2.2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
+              <Image src="/images/arrow-left.svg" alt="back" width={24} height={24} />
             </button>
 
-            <div className="min-w-0 flex-1">
-              <h1 className="text-lg font-semibold leading-tight text-black sm:text-base">
+            <div className="min-w-0">
+              <h1 className="text-base font-normal leading-none text-black sm:text-lg">
                 Instant
               </h1>
-              <div className="mt-1 flex items-center gap-1 text-xs leading-tight text-[#6F6F6F] sm:text-[0.65rem]">
+              <div className="mt-1 flex items-center gap-1 text-[0.625rem] leading-tight text-[#6F6F6F] sm:text-xs">
                 <span className="truncate">Genex Exotica, Asansol WB</span>
-                <svg
-                  className="h-3 w-3 shrink-0 sm:h-2 sm:w-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={3}
-                    d="M6 9l6 6 6-6"
-                  />
+                <svg className="h-2 w-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 9l6 6 6-6" />
                 </svg>
               </div>
             </div>
@@ -93,108 +107,81 @@ export default function InstantPage() {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="mx-auto max-w-2xl px-4 py-6 sm:px-6 sm:py-8">
-        {/* Duration Section */}
-        <section className="overflow-hidden rounded-2xl border border-[#D8D8D8] bg-white shadow-sm">
-          <div className="px-5 py-5 sm:px-6 sm:py-6">
-            <h2 className="text-base font-semibold text-black sm:text-lg">Duration</h2>
+      {/* ── MAIN ───────────────────────────────────────────────────────────── */}
+      <main
+        className="mx-auto w-full max-w-5xl p-4 sm:p-5 lg:p-6"
+        style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0rem) + 7.5rem)' }}
+      >
+        <section className="rounded-xl bg-white p-3 shadow-sm sm:p-4">
+          <h2 className="mb-3 text-[3.5vw] font-normal text-black sm:text-base">Duration</h2>
 
-            {/* Duration Grid */}
-            <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5">
-              {visibleOptions.map((option) => {
-                const isSelected = selectedDuration === option.value;
+          <div className="grid grid-cols-3 gap-2 min-[24rem]:gap-3 sm:gap-4 lg:grid-cols-4">
+            {visibleOptions.map((option) => {
+              const isSelected = selectedDuration === option.value;
 
-                return (
-                  <button
-                    key={option.value}
-                    type="button"
-                    onClick={() => setSelectedDuration(option.value)}
-                    className={cn(
-                      'group relative flex flex-col items-start justify-between gap-3 rounded-xl border-2 px-4 py-4 text-left transition-all active:scale-[0.98] sm:px-5 sm:py-5 sm:gap-4',
-                      isSelected
-                        ? 'border-[#6C35DE] bg-[#F7F2FF] shadow-md'
-                        : 'border-[#D7D7D7] bg-[#FAFAFA] hover:border-[#B0B0B0] hover:bg-white'
-                    )}
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => setSelectedDuration(option.value)}
+                  className={[
+                    'flex aspect-square min-h-[4.25rem] flex-col items-start justify-between rounded-[0.625rem] p-2 text-left transition-all min-[24rem]:p-2.5 sm:p-3',
+                    isSelected
+                      ? 'bg-[#5F30CA]/10 border border-[#6C35DE] active:scale-[0.98]'
+                      : 'bg-[#595959]/10 border border-transparent active:scale-[0.98]',
+                  ].join(' ')}
+                >
+                  {/* Label */}
+                  <span
+                    className={[
+                      'w-full whitespace-normal wrap-break-word text-[2.75vw] font-semibold leading-tight text-sm sm:text-lg md:text-xl',
+                      isSelected ? 'text-[#6C35DE]' : 'text-[#595959]',
+                    ].join(' ')}
                   >
-                    {/* Label */}
+                    {option.label}
+                  </span>
+
+                  {/* Price row */}
+                  <div className="flex w-full flex-wrap items-baseline gap-x-1 gap-y-0.5">
                     <span
-                      className={cn(
-                        'text-sm font-semibold sm:text-base',
-                        isSelected ? 'text-[#6C35DE]' : 'text-[#333333]'
-                      )}
+                      className={[
+                        'text-[2.75vw] font-bold leading-tight sm:text-sm',
+                        isSelected ? 'text-[#6C35DE]' : 'text-[#111]',
+                      ].join(' ')}
                     >
-                      {option.label}
+                      ₹{parseFloat(option.amount).toFixed(0)}
                     </span>
-
-                    {/* Price */}
-                    <div className="flex flex-col gap-1">
-                      <span
-                        className={cn(
-                          'text-base font-bold sm:text-lg',
-                          isSelected ? 'text-[#6C35DE]' : 'text-[#000000]'
-                        )}
-                      >
-                        ₹{parseFloat(option.amount).toFixed(0)}
-                      </span>
-                      <span className="text-xs font-normal text-[#999999] line-through sm:text-sm">
-                        {option.originalPrice}
-                      </span>
-                    </div>
-
-                    {/* Selection Indicator */}
-                    {isSelected && (
-                      <div className="absolute top-3 right-3 flex h-5 w-5 items-center justify-center rounded-full bg-[#6C35DE] sm:h-6 sm:w-6">
-                        <svg
-                          className="h-3 w-3 text-white sm:h-4 sm:w-4"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-
+                    <span
+                      className="text-[2.25vw] font-normal leading-tight line-through sm:text-xs text-[#999]"
+                    >
+                      {option.originalPrice}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
           </div>
+
+          {/* View all / View less toggle */}
+          {hasMoreOptions && (
+            <button
+              type="button"
+              onClick={() => setShowAll((v) => !v)}
+              className="mt-3 flex items-center gap-0.5 text-[3vw] font-semibold text-[#6C35DE] active:scale-[0.98] sm:text-sm"
+            >
+              {showAll ? 'View less' : 'View all'}
+              <svg
+                width="12" height="12" viewBox="0 0 24 24" fill="none"
+                className={showAll ? 'rotate-180 transition-transform' : 'transition-transform'}
+              >
+                <path d="M6 9l6 6 6-6" stroke="#6C35DE" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          )}
         </section>
-
-        {/* Selected Summary Card */}
-        <div className="mt-6 hidden rounded-xl border border-[#D8D8D8] bg-white px-5 py-4 shadow-sm sm:block">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs font-medium text-[#6F6F6F] sm:text-sm">Selected Duration</p>
-              <p className="mt-2 text-lg font-bold text-black sm:text-xl">
-                {durationPrices[selectedDuration].label}
-              </p>
-            </div>
-            <div className="text-right">
-              <p className="text-xs font-medium text-[#6F6F6F] sm:text-sm">Price</p>
-              <p className="mt-2 text-lg font-bold text-[#6C35DE] sm:text-xl">
-                ₹{parseFloat(durationPrices[selectedDuration].amount).toFixed(0)}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Info Section */}
-        <div className="mt-6 space-y-3">
-          <div className="rounded-lg bg-blue-50 border border-blue-200 px-4 py-3 sm:px-5 sm:py-4">
-            <p className="text-xs font-medium text-blue-900 sm:text-sm">
-              💡 All sessions include a 5-minute buffer for transitions
-            </p>
-          </div>
-        </div>
       </main>
 
-      {/* UPI Payment Footer */}
+      {/* ── PAY FOOTER ─────────────────────────────────────────────────────── */}
       <UPIPaymentFooter
         amount={currentPrice.amount}
         transactionNote={`Snibto booking - ${durationPrices[selectedDuration].label}`}
