@@ -67,6 +67,7 @@ export function OnboardingScreen({
               fill
               sizes="(max-width: 640px) 95vw, 448px"
               priority
+              quality={85}
               className="object-contain mask-[linear-gradient(to_bottom,black_72%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_72%,transparent_100%)]"
             />
           </div>

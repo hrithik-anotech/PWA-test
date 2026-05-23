@@ -65,7 +65,8 @@ export default function LoginPage() {
                     src={src}
                     alt=""
                     fill
-                    sizes="(max-width: 768px) 20vw, 15vw"
+                    sizes="(max-width: 768px) 34vw, 10rem"
+                    quality={85}
                     className="object-cover"
                   />
                 </div>
@@ -83,7 +84,8 @@ export default function LoginPage() {
             src="/images/logos/login-logo.png"
             alt="Snibto"
             fill
-            sizes="128px"
+            sizes="(max-width: 640px) 50vw, 15.5rem"
+            quality={90}
             className="object-contain"
             priority
           />

@@ -56,8 +56,9 @@ export const metadata: Metadata = {
 
   other: {
     "mobile-web-app-capable": "yes",
- "apple-mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-capable": "yes",
     "apple-mobile-web-app-title": "Snibto",
+    google: "notranslate",
   },
 };
 
@@ -88,7 +89,8 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className="h-full antialiased"
+      translate="no"
+      className="notranslate h-full antialiased"
       data-nav-direction="forward"
       suppressHydrationWarning
     >
@@ -96,7 +98,8 @@ export default async function RootLayout({
         <link rel="manifest" href={PWA_MANIFEST_PATH} />
       </head>
       <body
-        className={`${urbanist.variable} min-h-full flex flex-col bg-[var(--app-background)]`}
+        translate="no"
+        className={`${urbanist.variable} notranslate min-h-full flex flex-col bg-[var(--app-background)]`}
       >
         <NextIntlClientProvider messages={messages}>
           <StatusBarManager />

@@ -22,7 +22,9 @@ export default function SplashScreen() {
           alt="Snibto"
           width={300}
           height={200}
+          sizes="16rem"
           priority
+          quality={90}
           className="h-auto w-64 object-contain"
         />
       </div>

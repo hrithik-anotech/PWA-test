@@ -107,6 +107,7 @@ export default function WalletPage() {
                 fill
                 loading="eager"
                 sizes="(min-width: 640px) 9rem, 8rem"
+                quality={85}
                 className="object-contain drop-shadow-xl"
               />
             </div>

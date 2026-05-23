@@ -4,7 +4,7 @@ import { cn } from '@/lib/cn';
 import { useEffect, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslations, useLocale } from 'next-intl';
-import { useRouter, usePathname } from '@/i18n/routing';
+import { usePathname } from '@/i18n/routing';
 
 type LanguageDrawerProps = {
   open: boolean;
@@ -29,7 +29,6 @@ const LANGUAGES = [
 export default function LanguageDrawer({ open, onClose }: LanguageDrawerProps) {
   const t = useTranslations('Profile');
   const currentLocale = useLocale();
-  const router = useRouter();
   const pathname = usePathname();
 
   const hasPortalTarget = useSyncExternalStore(
@@ -58,7 +57,7 @@ export default function LanguageDrawer({ open, onClose }: LanguageDrawerProps) {
     // Use a full page reload to ensure the new locale is correctly applied 
     // across all components and the middleware.
     const newPath = `/${locale}${pathname}`;
-    window.location.href = newPath;
+    window.location.assign(newPath);
   };
 
   if (!hasPortalTarget) {

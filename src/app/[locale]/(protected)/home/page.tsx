@@ -258,6 +258,7 @@ export default async function HomePage() {
                 alt="Helper"
                 fill
                 sizes="(max-width: 640px) 24vw, 8rem"
+                quality={85}
                 className="object-cover object-top"
               />
             </div>
@@ -289,6 +290,7 @@ export default async function HomePage() {
               width={700}
               height={240}
               sizes="(max-width: 640px) calc(100vw - 2rem), 400px"
+              quality={85}
               className="h-auto w-full object-contain"
             />
           </div>

@@ -399,6 +399,7 @@ export default function LocationAccessPage() {
           alt="city"
           fill
           priority
+          quality={85}
           className="object-cover w-full h-full"
           sizes="100vw"
         />
