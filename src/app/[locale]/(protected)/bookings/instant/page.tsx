@@ -3,6 +3,7 @@
 import { useState, useSyncExternalStore } from 'react';
 import Image from 'next/image';
 import { UPIPaymentFooter } from '@/components/payments';
+import { useTranslations } from 'next-intl';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -11,7 +12,6 @@ type DurationOption =
   | '240' | '270' | '300' | '330' | '360' | '420';
 
 type DurationPrice = {
-  label: string;
   amount: string;
   originalPrice: string;
   available: boolean;
@@ -20,18 +20,18 @@ type DurationPrice = {
 // ── Data ─────────────────────────────────────────────────────────────────────
 
 const durationPrices: Record<DurationOption, DurationPrice> = {
-  '60':  { label: '60 min',  amount: '70.00',  originalPrice: '₹99',   available: true  },
-  '90':  { label: '90 min',  amount: '130.00', originalPrice: '₹199',  available: true  },
-  '120': { label: '2 hrs',   amount: '179.00', originalPrice: '₹299',  available: true  },
-  '150': { label: '2.5 hrs', amount: '229.00', originalPrice: '₹399',  available: true  },
-  '180': { label: '3 hrs',   amount: '230.00', originalPrice: '₹399',  available: false },
-  '210': { label: '3.5 hrs', amount: '280.00', originalPrice: '₹499',  available: true  },
-  '240': { label: '4 hrs',   amount: '320.00', originalPrice: '₹599',  available: true  },
-  '270': { label: '4.5 hrs', amount: '370.00', originalPrice: '₹699',  available: false },
-  '300': { label: '5 hrs',   amount: '420.00', originalPrice: '₹799',  available: true  },
-  '330': { label: '5.5 hrs', amount: '460.00', originalPrice: '₹899',  available: true  },
-  '360': { label: '6 hrs',   amount: '510.00', originalPrice: '₹999',  available: false },
-  '420': { label: '7 hrs',   amount: '590.00', originalPrice: '₹1199', available: true  },
+  '60':  { amount: '70.00',  originalPrice: '₹99',   available: true  },
+  '90':  { amount: '130.00', originalPrice: '₹199',  available: true  },
+  '120': { amount: '179.00', originalPrice: '₹299',  available: true  },
+  '150': { amount: '229.00', originalPrice: '₹399',  available: true  },
+  '180': { amount: '230.00', originalPrice: '₹399',  available: false },
+  '210': { amount: '280.00', originalPrice: '₹499',  available: true  },
+  '240': { amount: '320.00', originalPrice: '₹599',  available: true  },
+  '270': { amount: '370.00', originalPrice: '₹699',  available: false },
+  '300': { amount: '420.00', originalPrice: '₹799',  available: true  },
+  '330': { amount: '460.00', originalPrice: '₹899',  available: true  },
+  '360': { amount: '510.00', originalPrice: '₹999',  available: false },
+  '420': { amount: '590.00', originalPrice: '₹1199', available: true  },
 };
 
 // ── Responsive visible count ──────────────────────────────────────────────────
@@ -53,6 +53,8 @@ const getServerVisibleDurationCount = () => 9;
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export default function InstantPage() {
+  const t = useTranslations('Instant');
+  const tCommon = useTranslations('Common');
   const [selectedDuration, setSelectedDuration] = useState<DurationOption>('60');
   const [showAll, setShowAll] = useState(false);
 
@@ -76,6 +78,14 @@ export default function InstantPage() {
   const hasMoreOptions = durationOptions.length > visibleDurationCount;
   const currentPrice = durationPrices[selectedDuration];
 
+  // Helper to format duration labels
+  const getDurationLabel = (option: string) => {
+    const mins = parseInt(option);
+    if (mins < 120) return `${mins} ${tCommon('mins')}`;
+    const hrs = mins / 60;
+    return `${hrs} ${tCommon('hrs')}`;
+  };
+
   return (
     <div className="min-h-dvh bg-[#F9FAF9]">
 
@@ -87,14 +97,14 @@ export default function InstantPage() {
               type="button"
               onClick={() => window.history.back()}
               className="-ml-1 flex h-8 w-8 items-center justify-center active:scale-95"
-              aria-label="Go back"
+              aria-label={tCommon('back')}
             >
               <Image src="/images/arrow-left.svg" alt="back" width={24} height={24} />
             </button>
 
             <div className="min-w-0">
               <h1 className="text-base font-normal leading-none text-black sm:text-lg">
-                Instant
+                {t('title')}
               </h1>
               <div className="mt-1 flex items-center gap-1 text-[0.625rem] leading-tight text-[#6F6F6F] sm:text-xs">
                 <span className="truncate">Genex Exotica, Asansol WB</span>
@@ -113,7 +123,7 @@ export default function InstantPage() {
         style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0rem) + 7.5rem)' }}
       >
         <section className="rounded-xl bg-white p-3 shadow-sm sm:p-4">
-          <h2 className="mb-3 text-[3.5vw] font-normal text-black sm:text-base">Duration</h2>
+          <h2 className="mb-3 text-[3.5vw] font-normal text-black sm:text-base">{t('duration')}</h2>
 
           <div className="grid grid-cols-3 gap-2 min-[24rem]:gap-3 sm:gap-4 lg:grid-cols-4">
             {visibleOptions.map((option) => {
@@ -138,7 +148,7 @@ export default function InstantPage() {
                       isSelected ? 'text-[#6C35DE]' : 'text-[#595959]',
                     ].join(' ')}
                   >
-                    {option.label}
+                    {getDurationLabel(option.value)}
                   </span>
 
                   {/* Price row */}
@@ -169,7 +179,7 @@ export default function InstantPage() {
               onClick={() => setShowAll((v) => !v)}
               className="mt-3 flex items-center gap-0.5 text-[3vw] font-semibold text-[#6C35DE] active:scale-[0.98] sm:text-sm"
             >
-              {showAll ? 'View less' : 'View all'}
+              {showAll ? tCommon('viewLess') : tCommon('viewAll')}
               <svg
                 width="12" height="12" viewBox="0 0 24 24" fill="none"
                 className={showAll ? 'rotate-180 transition-transform' : 'transition-transform'}
@@ -184,8 +194,8 @@ export default function InstantPage() {
       {/* ── PAY FOOTER ─────────────────────────────────────────────────────── */}
       <UPIPaymentFooter
         amount={currentPrice.amount}
-        transactionNote={`Snibto booking - ${durationPrices[selectedDuration].label}`}
-        buttonLabel="Pay Now"
+        transactionNote={`Snibto booking - ${getDurationLabel(selectedDuration)}`}
+        buttonLabel={tCommon('payNow')}
       />
     </div>
   );

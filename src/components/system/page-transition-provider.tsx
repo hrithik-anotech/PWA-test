@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { ReactNode, useEffect, useState } from "react";
-import { usePathname } from "@/i18n/routing";
+import { usePathname } from "next/navigation";
 
 interface PageTransitionProviderProps {
   children: ReactNode;

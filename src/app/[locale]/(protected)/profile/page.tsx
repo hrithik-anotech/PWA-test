@@ -1,9 +1,9 @@
-// app/profile/page.tsx  (or pages/profile.tsx)
-"use client";
+'use client';
 
 import { useMemo, useSyncExternalStore } from "react";
 import Image from "next/image";
 import { Link, useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import {
     defaultUserProfile,
     getUserProfile,
@@ -24,6 +24,8 @@ function getDefaultProfileSnapshot() {
 }
 
 export default function ProfilePage() {
+    const t = useTranslations('Profile');
+    const tCommon = useTranslations('Common');
     const router = useRouter();
     const profileSnapshot = useSyncExternalStore(
         subscribeToProfileStorage,
@@ -42,7 +44,7 @@ export default function ProfilePage() {
 
     const formattedPhone = profile.phone
         ? `+91 ${profile.phone}`
-        : "Phone number not added";
+        : t('phoneNotAdded');
 
     return (
         <div className="flex flex-col min-h-screen bg-gray-200">
@@ -54,7 +56,7 @@ export default function ProfilePage() {
                     type="button"
                     className="flex h-10 w-10 items-center justify-center -ml-2 rounded-full"
                     onClick={() => router.back()}
-                    aria-label="Go back"
+                    aria-label={tCommon('back')}
                 >
                     <Image
                         src="/images/arrow-left.svg"
@@ -63,7 +65,7 @@ export default function ProfilePage() {
                         height={24}
                     />
                 </button>
-                <h1 className="text-[22px] font-bold text-black tracking-tight">Profile</h1>
+                <h1 className="text-[22px] font-bold text-black tracking-tight">{t('title')}</h1>
             </div>
 
             {/* ── USER CARD ── */}
@@ -87,7 +89,7 @@ export default function ProfilePage() {
                         href="/profile/edit"
                         className="text-[13px] font-semibold text-[#7B5CF5] mt-0.5 inline-block"
                     >
-                        View &amp; edit profile &gt;
+                        {t('viewEdit')} &gt;
                     </Link>
                 </div>
             </div>
@@ -96,12 +98,12 @@ export default function ProfilePage() {
             <div className="mx-4 mt-3 bg-white rounded-2xl px-2 py-4 shadow-sm">
                 <div className="flex justify-around">
                     {[
-                        { icon: "/assets/icons/bookings.svg", label: "My Bookings" },
-                        { icon: "/assets/icons/wallet.svg", label: "Wallet" },
-                        { icon: "/assets/icons/offers.svg", label: "Offers" },
-                        { icon: "/assets/icons/support.svg", label: "Help & Support" },
-                    ].map(({ icon, label }) => (
-                        <button key={label} className="flex flex-col items-center gap-2 w-[72px]">
+                        { icon: "/assets/icons/bookings.svg", label: t('myBookings'), key: 'myBookings' },
+                        { icon: "/assets/icons/wallet.svg", label: t('wallet'), key: 'wallet' },
+                        { icon: "/assets/icons/offers.svg", label: t('offers'), key: 'offers' },
+                        { icon: "/assets/icons/support.svg", label: t('support'), key: 'support' },
+                    ].map(({ icon, label, key }) => (
+                        <button key={key} className="flex flex-col items-center gap-2 w-[72px]">
                             <div className="w-12 h-12 rounded-full bg-[#F4F0FF] flex items-center justify-center">
                                 <Image src={icon} alt={label} width={24} height={24} />
                             </div>
@@ -117,13 +119,13 @@ export default function ProfilePage() {
             <div className="mx-4 mt-3 bg-[#EDE8FF] rounded-2xl px-5 py-4 flex items-center justify-between overflow-hidden relative">
                 <div className="z-10">
                     <p className="text-[15px] font-bold text-gray-800 leading-snug">
-                        Subscribe for more benefits
+                        {t('subscribeTitle')}
                     </p>
                     <p className="text-[11.5px] text-gray-500 mt-0.5">
-                        Faster bookings &amp; many more
+                        {t('subscribeSub')}
                     </p>
                     <button className="mt-3 bg-[#7B5CF5] text-white text-[13px] font-semibold px-5 py-2 rounded-full">
-                        Up to 20% off
+                        {t('subscribeButton')}
                     </button>
                 </div>
                 {/* Illustration */}
@@ -141,13 +143,13 @@ export default function ProfilePage() {
             <div className="mx-4 mt-3 bg-[#EDE8FF] rounded-2xl px-5 py-4 flex items-center justify-between overflow-hidden relative">
                 <div className="z-10">
                     <p className="text-[15px] font-bold text-gray-800 leading-snug">
-                        Invite friends &amp; earn
+                        {t('referTitle')}
                     </p>
                     <p className="text-[11.5px] text-gray-500 mt-0.5">
-                        Refer your friends and get rewards
+                        {t('referSub')}
                     </p>
                     <button className="mt-3 flex items-center gap-1 text-[#7B5CF5] text-[13px] font-semibold">
-                        Earn up to ₹100
+                        {t('referButton')}
                         <Image src="/assets/icons/chevron-right-purple.svg" alt="" width={14} height={14} />
                     </button>
                 </div>
@@ -167,22 +169,25 @@ export default function ProfilePage() {
                 {[
                     {
                         icon: "/assets/icons/saved-address.svg",
-                        label: "Saved Addresses",
+                        label: t('savedAddresses'),
                         href: "/profile/addresses",
+                        key: 'savedAddresses'
                     },
                     {
                         icon: "/assets/icons/manage-account.svg",
-                        label: "Manage Account",
+                        label: t('manageAccount'),
                         href: "/profile/manage",
+                        key: 'manageAccount'
                     },
                     {
                         icon: "/assets/icons/manage-account.svg",
-                        label: "Language",
+                        label: t('language'),
                         href: "/profile/language",
+                        key: 'language'
                     },
-                ].map(({ icon, label, href }) => (
+                ].map(({ icon, label, href, key }) => (
                     <Link
-                        key={label}
+                        key={key}
                         href={href}
                         className="flex items-center justify-between px-5 py-4"
                     >
@@ -200,15 +205,16 @@ export default function ProfilePage() {
                     </Link>
                 ))}
             </div>
-
-            {/* ── LOG OUT ── */}
-            <div className="mx-4 mt-4">
-                <button className="w-full flex items-center justify-center gap-2 border border-[#7B5CF5] rounded-full py-3.5 text-[14.5px] font-semibold text-[#7B5CF5] bg-white">
-                    <Image src="/assets/icons/logout.svg" alt="logout" width={18} height={18} />
-                    Log out
+            
+            {/* Logout */}
+            <div className="mx-4 mt-3 mb-8 bg-white rounded-2xl shadow-sm">
+                <button className="w-full flex items-center gap-4 px-5 py-4 text-red-500 font-semibold text-[14.5px]">
+                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+                     </svg>
+                     {t('logout')}
                 </button>
             </div>
-
         </div>
     );
 }

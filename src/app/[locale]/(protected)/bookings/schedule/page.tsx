@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { UPIPaymentFooter } from '@/components/payments';
+import { useTranslations } from 'next-intl';
 
 type DateOption = 'today' | 'tomorrow' | 'custom';
 type DurationOption = '60' | '90';
@@ -10,12 +11,6 @@ type TimeOption = 'morning' | 'afternoon' | 'evening';
 const cn = (...classes: (string | undefined | null | false)[]): string => {
   return classes.filter(Boolean).join(' ');
 };
-
-const timeTabs: { label: string; value: TimeOption }[] = [
-  { label: 'Morning', value: 'morning' },
-  { label: 'Afternoon', value: 'afternoon' },
-  { label: 'Evening', value: 'evening' },
-];
 
 const unavailableTimeTabs = new Set<TimeOption>(['afternoon']);
 
@@ -37,11 +32,20 @@ const durationPrices: Record<
 };
 
 export default function SchedulePage() {
+  const t = useTranslations('Schedule');
+  const tCommon = useTranslations('Common');
+  
   const [selectedDate, setSelectedDate] = useState<DateOption>('today');
   const [selectedDuration, setSelectedDuration] = useState<DurationOption>('60');
   const [selectedTime, setSelectedTime] = useState<TimeOption>('morning');
   const [selectedSlot, setSelectedSlot] = useState<string>('09:00 AM');
   const currentPrice = durationPrices[selectedDuration];
+
+  const timeTabs: { label: string; value: TimeOption }[] = [
+    { label: t('morning'), value: 'morning' },
+    { label: t('afternoon'), value: 'afternoon' },
+    { label: t('evening'), value: 'evening' },
+  ];
 
   return (
     <div className="min-h-full bg-[#F6F6F6] text-text">
@@ -52,7 +56,7 @@ export default function SchedulePage() {
               type="button"
               onClick={() => window.history.back()}
               className="-ml-1 flex h-8 w-8 items-center justify-center text-black active:scale-95"
-              aria-label="Go back"
+              aria-label={tCommon('back')}
             >
               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M15 19l-7-7 7-7" />
@@ -60,7 +64,7 @@ export default function SchedulePage() {
             </button>
 
             <div className="min-w-0">
-              <h1 className="text-base font-normal leading-none text-black">Schedule</h1>
+              <h1 className="text-base font-normal leading-none text-black">{t('title')}</h1>
               <div className="mt-1 flex items-center gap-1 text-[0.6rem] leading-none text-[#6F6F6F]">
                 <span className="truncate">Genex Exotica, Asansol WB</span>
                 <svg className="h-2 w-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -79,14 +83,13 @@ export default function SchedulePage() {
         }}
       >
         {/* Select Date */}
-        {/* ↓ was shadow 1px/5px -> 0.0625rem/0.3125rem */}
         <section className="rounded-xl border border-[#D8D8D8] bg-white px-3 py-3 shadow-[0_0.0625rem_0.3125rem_rgba(0,0,0,0.18)]">
-          <h2 className="mb-3 text-sm font-normal text-black">Select Date</h2>
+          <h2 className="mb-3 text-sm font-normal text-black">{t('selectDate')}</h2>
           <div className="grid grid-cols-3 gap-3 py-3">
             {[
-              { label: 'Today', value: 'today' as const },
-              { label: 'Tomorrow', value: 'tomorrow' as const },
-              { label: 'Custom', value: 'custom' as const },
+              { label: t('today'), value: 'today' as const },
+              { label: t('tomorrow'), value: 'tomorrow' as const },
+              { label: t('custom'), value: 'custom' as const },
             ].map((option) => {
               const isSelected = selectedDate === option.value;
 
@@ -111,13 +114,12 @@ export default function SchedulePage() {
         </section>
 
         {/* Duration */}
-        {/* ↓ was shadow 1px/5px -> 0.0625rem/0.3125rem */}
         <section className="rounded-xl border border-[#D8D8D8] bg-white px-3 py-3 shadow-[0_0.0625rem_0.3125rem_rgba(0,0,0,0.18)]">
-          <h2 className="mb-3 text-sm font-normal text-black">Duration</h2>
+          <h2 className="mb-3 text-sm font-normal text-black">{t('duration')}</h2>
           <div className="flex gap-3 py-2">
             {[
-              { label: '60 min', value: '60' as const },
-              { label: '90 min', value: '90' as const },
+              { value: '60' as const },
+              { value: '90' as const },
             ].map((option) => {
               const isSelected = selectedDuration === option.value;
               const price = durationPrices[option.value];
@@ -135,7 +137,7 @@ export default function SchedulePage() {
                       : 'border-[#D7D7D7] bg-[#EFEFEF] text-[#555555] font-normal'
                   )}
                 >
-                  <span className="text-sm">{option.label}</span>
+                  <span className="text-sm">{option.value} {tCommon('mins')}</span>
                   <span className="text-sm">
                     {price.priceLabel}{' '}
                     <span className="text-[0.6rem] font-normal text-[#777777] line-through">
@@ -149,9 +151,8 @@ export default function SchedulePage() {
         </section>
 
         {/* Timing */}
-        {/* ↓ was shadow 1px/5px -> 0.0625rem/0.3125rem */}
         <section className="rounded-xl border border-[#D8D8D8] bg-white px-3 py-3 shadow-[0_0.0625rem_0.3125rem_rgba(0,0,0,0.18)]">
-          <h2 className="mb-3 text-sm font-normal text-black">Timings</h2>
+          <h2 className="mb-3 text-sm font-normal text-black">{t('timings')}</h2>
 
           <div className="mb-4 grid grid-cols-3 gap-3 py-3">
             {timeTabs.map((tab) => {
@@ -219,7 +220,8 @@ export default function SchedulePage() {
 
       <UPIPaymentFooter
         amount={currentPrice.amount}
-        transactionNote={`Snibto booking - ${selectedDuration} min, ${selectedDate}, ${selectedSlot}`}
+        transactionNote={`Snibto booking - ${selectedDuration} ${tCommon('mins')}, ${t(selectedDate)}, ${selectedSlot}`}
+        buttonLabel={tCommon('payNow')}
       />
     </div>
   );

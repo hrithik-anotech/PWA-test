@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 type FilterType = 'all' | 'single' | 'multiple';
 type BookingStatus = 'confirmed' | 'cancelled';
@@ -28,7 +29,7 @@ const bookingsData: Booking[] = [
         type: 'single',
         duration: '60 Mins',
         status: 'confirmed',
-        icon: '/icons/lightning.png', // Replace with your icon path
+        icon: '/icons/lightning.png',
     },
     {
         id: '2',
@@ -37,7 +38,7 @@ const bookingsData: Booking[] = [
         type: 'multiple',
         duration: '60 Mins',
         status: 'cancelled',
-        icon: '/icons/calendar.png', // Replace with your icon path
+        icon: '/icons/calendar.png',
     },
     {
         id: '3',
@@ -46,7 +47,7 @@ const bookingsData: Booking[] = [
         type: 'single',
         duration: '60 Mins',
         status: 'confirmed',
-        icon: '/icons/lightning.png', // Replace with your icon path
+        icon: '/icons/lightning.png',
     },
     {
         id: '4',
@@ -55,7 +56,7 @@ const bookingsData: Booking[] = [
         type: 'multiple',
         duration: '60 Mins',
         status: 'cancelled',
-        icon: '/icons/calendar.png', // Replace with your icon path
+        icon: '/icons/calendar.png',
     },
     {
         id: '5',
@@ -64,11 +65,13 @@ const bookingsData: Booking[] = [
         type: 'multiple',
         duration: '60 Mins',
         status: 'cancelled',
-        icon: '/icons/calendar.png', // Replace with your icon path
+        icon: '/icons/calendar.png',
     },
 ];
 
 export default function MyBookingsPage() {
+    const t = useTranslations('MyBookings');
+    const tCommon = useTranslations('Common');
     const [activeFilter, setActiveFilter] = useState<FilterType>('all');
 
     const filteredBookings =
@@ -86,7 +89,7 @@ export default function MyBookingsPage() {
                             type="button"
                             onClick={() => window.history.back()}
                             className="-ml-2 flex h-10 w-10 items-center justify-center rounded-lg text-black transition-colors hover:bg-gray-100 active:scale-95"
-                            aria-label="Go back"
+                            aria-label={tCommon('back')}
                         >
                             <svg
                                 className="h-6 w-6"
@@ -102,7 +105,7 @@ export default function MyBookingsPage() {
                                 />
                             </svg>
                         </button>
-                        <h1 className="text-xl font-semibold text-black">My Bookings</h1>
+                        <h1 className="text-xl font-semibold text-black">{t('title')}</h1>
                     </div>
                 </div>
 
@@ -110,9 +113,9 @@ export default function MyBookingsPage() {
                 <div className="px-4 py-0 sm:px-6">
                     <div className="flex gap-3 overflow-x-auto pb-2 sm:gap-4">
                         {[
-                            { label: 'All bookings', value: 'all' as const, icon: null },
-                            { label: 'Single', value: 'single' as const, icon: '/images/icons/calender-1.svg' },
-                            { label: 'Multiple', value: 'multiple' as const, icon: '/images/icons/calender-1.svg' },
+                            { label: t('all'), value: 'all' as const, icon: null },
+                            { label: t('single'), value: 'single' as const, icon: '/images/icons/calender-1.svg' },
+                            { label: t('multiple'), value: 'multiple' as const, icon: '/images/icons/calender-1.svg' },
                         ].map((filter) => (
                             <button
                                 key={filter.value}
@@ -160,7 +163,6 @@ export default function MyBookingsPage() {
                                             'bg-gray-100'
                                         )}
                                     >
-                                        {/* Placeholder for icon - replace with your actual icon */}
                                         {booking.type === 'single' ? (
                                             <Image alt="flash fill" src="/images/icons/flash-fill.svg" width={40} height={40} className="h-10 w-10" priority unoptimized />
                                         ) : (
@@ -178,7 +180,7 @@ export default function MyBookingsPage() {
                                     </div>
 
                                     <p className="mt-1 text-xs text-[#595959] sm:text-sm">
-                                        {booking.type === 'single' ? 'Single' : 'Group'} -{' '}
+                                        {booking.type === 'single' ? t('single') : t('group')} -{' '}
                                         {booking.duration}
                                     </p>
 
@@ -193,17 +195,17 @@ export default function MyBookingsPage() {
                                             )}
                                         >
                                             {booking.status === 'confirmed'
-                                                ? '✓ Confirmed'
-                                                : '✕ Cancelled'}
+                                                ? `✓ ${t('confirmed')}`
+                                                : `✕ ${t('cancelled')}`}
                                         </span>
                                     </div>
                                 </div>
                             </div>
                         ))
                     ) : (
-                        <div className="flex flex-col items-center justify-center py-16 text-center">
+                        <div className="flex flex-col items-center justify-center py-20 text-center">
                             <svg
-                                className="mb-4 h-16 w-16 text-[#CCCCCC]"
+                                className="mb-4 h-16 w-16 text-gray-300"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -215,15 +217,14 @@ export default function MyBookingsPage() {
                                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                                 />
                             </svg>
-                            <p className="text-lg font-medium text-[#999999]">No bookings found</p>
+                            <p className="text-lg font-medium text-[#999999]">{t('noBookings')}</p>
                             <p className="mt-1 text-sm text-[#CCCCCC]">
-                                Try a different filter
+                                {t('tryFilter')}
                             </p>
                         </div>
                     )}
                 </div>
             </main>
-
         </div>
     );
 }

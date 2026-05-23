@@ -6,7 +6,7 @@ import { usePathname } from "@/i18n/routing";
 import { useDeviceDetection } from "@/hooks/useDeviceDetection";
 
 const APP_THEME_COLOR = "#5F30CA";
-const ANDROID_OTHER_THEME_COLOR = "transparent";
+const ANDROID_OTHER_THEME_COLOR = "#FFFFFF";
 const IOS_STATUS_BAR_STYLE = "black-translucent";
 
 function setMetaContent(name: string, content: string) {
@@ -25,8 +25,7 @@ export function StatusBarManager() {
   const pathname = usePathname();
   const { isAndroid, isIOS } = useDeviceDetection();
 
-  const pathSegments = pathname?.split("/").filter(Boolean) ?? [];
-  const isHomeScreen = pathSegments.length === 2 && pathSegments[1] === "home";
+  const isHomeScreen = pathname === "/home";
 
   useEffect(() => {
     if (isAndroid) {

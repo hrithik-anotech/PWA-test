@@ -4,6 +4,7 @@ import { cn } from '@/lib/cn';
 import Image from 'next/image';
 import { useState, useEffect, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslations } from 'next-intl';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -23,49 +24,6 @@ type ServiceDrawerProps = {
   onBookInstant?: () => void;
 };
 
-// ── Default data (replace with your real data) ────────────────────────────────
-
-export const defaultServices: Service[] = [
-  {
-    id: 'cleaning',
-    label: 'Cleaning',
-    img: '/images/cleaning.png',
-    includedItems: [
-      { text: 'Sweep and mop accessible floors',           icon: '/icons/broom.svg'    },
-      { text: 'Dust and wipe furniture and wardrobes',     icon: '/icons/wardrobe.svg' },
-      { text: 'Dust reachable walls, fans, ceilings',      icon: '/icons/fan.svg'      },
-      { text: 'Change or rearrange existing bedding',      icon: '/icons/bed.svg'      },
-      { text: 'Dispose wet and dry household waste',       icon: '/icons/trash.svg'    },
-    ],
-    notIncludedItems: [
-      { text: 'Cleaning unsafe or inaccessible areas',              icon: '/icons/warning.svg'  },
-      { text: 'Any tasks involving ladders or working at height',   icon: '/icons/ladder.svg'   },
-      { text: 'Moving heavy furniture or appliances',               icon: '/icons/sofa.svg'     },
-      { text: 'Cleaning outside home areas',                        icon: '/icons/house.svg'    },
-      { text: 'Child, elderly, pet or medical care',                icon: '/icons/heart.svg'    },
-    ],
-  },
-  {
-    id: 'bathroom',
-    label: 'Bathroom',
-    img: '/images/bathroom.png',
-    includedItems: [
-      { text: 'Scrub and disinfect toilet bowl and seat',   icon: '/icons/toilet.svg'  },
-      { text: 'Clean sink, taps, and countertops',          icon: '/icons/sink.svg'    },
-      { text: 'Wipe mirrors and glass surfaces',            icon: '/icons/mirror.svg'  },
-      { text: 'Mop bathroom floor',                         icon: '/icons/broom.svg'   },
-      { text: 'Empty waste bin inside bathroom',            icon: '/icons/trash.svg'   },
-    ],
-    notIncludedItems: [
-      { text: 'Deep descaling of plumbing fixtures',        icon: '/icons/warning.svg' },
-      { text: 'Unclogging drains or pipes',                 icon: '/icons/pipe.svg'    },
-      { text: 'Replacing hardware or accessories',          icon: '/icons/tools.svg'   },
-      { text: 'Exterior window cleaning',                   icon: '/icons/house.svg'   },
-      { text: 'Pest or mold remediation',                   icon: '/icons/heart.svg'   },
-    ],
-  },
-];
-
 const subscribeToPortalTarget = () => {
   return () => {};
 };
@@ -81,10 +39,13 @@ const getServerPortalTargetSnapshot = () => false;
 export default function ServiceDrawer({
   open,
   onClose,
-  services = defaultServices,
+  services,
   onSchedule,
   onBookInstant,
 }: ServiceDrawerProps) {
+  const t = useTranslations('Home');
+  const tHome = useTranslations('Home');
+  
   const [activeId, setActiveId] = useState(services[0]?.id ?? '');
   const hasPortalTarget = useSyncExternalStore(
     subscribeToPortalTarget,
@@ -141,10 +102,10 @@ export default function ServiceDrawer({
         {/* ── Header ── */}
         <div className="px-4 pt-2 pb-3 shrink-0">
           <h2 className="text-[1.125rem] font-bold leading-snug text-black">
-            What&apos;s included?
+            {t('services.drawer.title')}
           </h2>
           <p className="mt-0.5 text-[0.8125rem] text-[#6F6F6F]">
-            See what our expert will take care of
+             {t('services.drawer.subtitle')}
           </p>
         </div>
 
@@ -193,14 +154,14 @@ export default function ServiceDrawer({
 
           {/* Included section */}
           <IncludedSection
-            title="The expert is trained to"
+            title={t('services.drawer.includedTitle')}
             items={active.includedItems}
             variant="included"
           />
 
           <div className="mt-4">
             <IncludedSection
-              title="What is not included"
+              title={t('services.drawer.notIncludedTitle')}
               items={active.notIncludedItems}
               variant="excluded"
             />
@@ -219,14 +180,13 @@ export default function ServiceDrawer({
                 'py-3 text-sm font-semibold text-[#6C35DE] active:scale-[0.98] transition-transform',
               )}
             >
-              {/* Calendar icon — replace with your SVG */}
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                 <line x1="16" y1="2" x2="16" y2="6"/>
                 <line x1="8" y1="2" x2="8" y2="6"/>
                 <line x1="3" y1="10" x2="21" y2="10"/>
               </svg>
-              Schedule
+              {tHome('quickActions.schedule.title')}
             </button>
 
             {/* Book Instant */}
@@ -238,11 +198,10 @@ export default function ServiceDrawer({
                 'py-3 text-sm font-semibold text-white active:scale-[0.98] transition-transform',
               )}
             >
-              {/* Lightning icon — replace with your SVG */}
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M13 2L4.5 13.5H11L10 22L19.5 10.5H13L13 2Z"/>
               </svg>
-              Book Instant
+              {tHome('quickActions.instant.title')}
             </button>
           </div>
         </div>
@@ -306,7 +265,6 @@ function IncludedSection({ title, items, variant }: SectionProps) {
               </span>
               <span className="text-[0.8125rem] text-[#3A3A3A] leading-snug">{item.text}</span>
             </div>
-            {/* Right icon — your SVG image */}
             <div className="h-8 w-8 shrink-0 opacity-60">
               <Image
                 src={item.icon}

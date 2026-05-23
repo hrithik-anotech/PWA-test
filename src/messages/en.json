@@ -34,7 +34,13 @@
     "cancel": "Cancel",
     "home": "Home",
     "bookings": "Bookings",
-    "wallet": "Wallet"
+    "wallet": "Wallet",
+    "viewAll": "View all",
+    "viewLess": "View less",
+    "payNow": "Pay Now",
+    "unavailable": "Unavailable",
+    "mins": "min",
+    "hrs": "hrs"
   },
   "Address": {
     "title": "Address details",
@@ -71,20 +77,66 @@
       "list": {
         "cleaning": {
           "title": "Cleaning",
-          "subtitle": "Keep your space\nfresh & clean"
+          "subtitle": "Keep your space\nfresh & clean",
+          "included": [
+            "Sweep and mop accessible floors",
+            "Dust furniture and reachable surfaces",
+            "Dispose household waste"
+          ],
+          "notIncluded": [
+            "Unsafe or inaccessible areas",
+            "Moving heavy furniture",
+            "Child, elderly, pet or medical care"
+          ]
         },
         "bathroom": {
           "title": "Bathroom",
-          "subtitle": "Sparkling clean\nbathrooms"
+          "subtitle": "Sparkling clean\nbathrooms",
+          "included": [
+            "Scrub toilet, sink, and taps",
+            "Clean mirrors and counters",
+            "Mop bathroom floor"
+          ],
+          "notIncluded": [
+            "Drain unclogging or plumbing work",
+            "Deep descaling fixtures",
+            "Pest or mold remediation"
+          ]
         },
         "laundry": {
           "title": "Laundry",
-          "subtitle": "Clean, fresh &\nfolded with care"
+          "subtitle": "Clean, fresh &\nfolded with care",
+          "included": [
+            "Wash regular daily clothes",
+            "Dry and fold clean laundry",
+            "Sort lights and darks"
+          ],
+          "notIncluded": [
+            "Dry cleaning or delicate-only garments",
+            "Stain removal guarantee",
+            "Ironing heavy garments"
+          ]
         },
         "utensils": {
           "title": "Utensils",
-          "subtitle": "Hygienic &\nsparkling utensils"
+          "subtitle": "Hygienic &\nsparkling utensils",
+          "included": [
+            "Wash used utensils",
+            "Clean sink area after washing",
+            "Arrange cleaned dishes"
+          ],
+          "notIncluded": [
+            "Cleaning burnt cookware",
+            "Appliance repair or maintenance",
+            "Kitchen deep cleaning"
+          ]
         }
+      },
+      "drawer": {
+        "title": "What's included?",
+        "subtitle": "See what our expert will take care of",
+        "includedTitle": "The expert is trained to",
+        "notIncludedTitle": "What is not included"
       }
     }
   },
@@ -134,5 +186,69 @@
     "modalDescOther": "Allow location access in your device settings to continue.",
     "modalEnable": "I'll Enable It",
     "modalSkip": "Skip for Now"
+  },
+  "NotFound": {
+    "title": "Page Not Found",
+    "message": "The page you're looking for doesn't exist or has been moved.",
+    "button": "Go back home"
+  },
+  "Instant": {
+    "title": "Instant",
+    "duration": "Duration"
+  },
+  "Schedule": {
+    "title": "Schedule",
+    "selectDate": "Select Date",
+    "duration": "Duration",
+    "timings": "Timings",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "custom": "Custom",
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "evening": "Evening"
+  },
+  "MyBookings": {
+    "title": "My Bookings",
+    "all": "All bookings",
+    "single": "Single",
+    "multiple": "Multiple",
+    "group": "Group",
+    "confirmed": "Confirmed",
+    "cancelled": "Cancelled",
+    "noBookings": "No bookings found",
+    "tryFilter": "Try a different filter"
+  },
+  "Profile": {
+    "title": "Profile",
+    "phoneNotAdded": "Phone number not added",
+    "viewEdit": "View & edit profile",
+    "myBookings": "My Bookings",
+    "wallet": "Wallet",
+    "offers": "Offers",
+    "support": "Help & Support",
+    "subscribeTitle": "Subscribe for more benefits",
+    "subscribeSub": "Faster bookings & many more",
+    "subscribeButton": "Up to 20% off",
+    "referTitle": "Invite friends & earn",
+    "referSub": "Refer your friends and get rewards",
+    "referButton": "Earn up to ₹100",
+    "savedAddresses": "Saved Addresses",
+    "manageAccount": "Manage Account",
+    "language": "Language",
+    "logout": "Logout"
+  },
+  "Wallet": {
+    "title": "Wallet",
+    "balance": "Total Balance",
+    "addMoney": "Add Money",
+    "enterAmount": "Enter Amount",
+    "selectAmount": "Select Amount",
+    "transactions": "Recent Transactions",
+    "noTransactions": "No transactions yet"
+  },
+  "Error": {
+    "title": "Something went wrong!",
+    "retry": "Try again"
   }
 }

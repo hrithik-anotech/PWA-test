@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 const cn = (...classes: (string | undefined | null | false)[]): string => {
   return classes.filter(Boolean).join(' ');
@@ -21,9 +22,10 @@ const transactionsData: Transaction[] = [
 ];
 
 export default function WalletPage() {
-  const [currentNav, setCurrentNav] = useState<'home' | 'bookings' | 'wallet'>(
-    'wallet'
-  );
+  const t = useTranslations('Wallet');
+  const tCommon = useTranslations('Common');
+  const tProfile = useTranslations('Profile');
+
   const [balance, setBalance] = useState('0');
   const [cashAmount, setCashAmount] = useState('0');
   const [bonusAmount, setBonusAmount] = useState('0');
@@ -41,7 +43,7 @@ export default function WalletPage() {
                 type="button"
                 onClick={() => window.history.back()}
                 className="-ml-2 flex h-10 w-10 items-center justify-center rounded-lg text-black transition-colors hover:bg-gray-100 active:scale-95"
-                aria-label="Go back"
+                aria-label={tCommon('back')}
               >
                 <svg
                   className="h-6 w-6"
@@ -57,7 +59,7 @@ export default function WalletPage() {
                   />
                 </svg>
               </button>
-              <h1 className="text-xl font-semibold text-black">Wallet</h1>
+              <h1 className="text-xl font-semibold text-black">{t('title')}</h1>
             </div>
 
             <button
@@ -82,7 +84,7 @@ export default function WalletPage() {
             <div className="flex flex-col justify-between gap-5 sm:gap-7">
               <div>
                 <p className="text-sm font-medium opacity-80 tracking-wide">
-                  Available Balance
+                  {t('balance')}
                 </p>
                 <h2 className="mt-2 text-5xl font-bold leading-none sm:text-6xl">
                   ₹{balance}
@@ -93,7 +95,7 @@ export default function WalletPage() {
                 onClick={() => setShowAddMoney(true)}
                 className="inline-flex w-fit items-center gap-1 whitespace-nowrap rounded-2xl bg-white px-5 py-2.5 text-base font-bold text-[#5F30CA] shadow-md transition-transform active:scale-[0.98] sm:px-6 sm:py-3"
               >
-                Add Money <span className="font-bold">+</span>
+                {t('addMoney')} <span className="font-bold">+</span>
               </button>
             </div>
 
@@ -163,10 +165,10 @@ export default function WalletPage() {
             </div>
             <div>
               <h3 className="font-semibold text-black sm:text-base">
-                Refer & Earn ₹100
+                {tProfile('referTitle')}
               </h3>
               <p className="mt-1 text-xs text-[#666666] sm:text-sm">
-                Invite friends and earn rewards
+                {tProfile('referSub')}
               </p>
             </div>
           </div>
@@ -182,7 +184,7 @@ export default function WalletPage() {
 
         {/* Transactions Section */}
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-black sm:text-xl">Transactions</h3>
+          <h3 className="text-lg font-semibold text-black sm:text-xl">{t('transactions')}</h3>
 
           {transactions.length > 0 ? (
             <div className="mt-4 space-y-3">
@@ -228,10 +230,7 @@ export default function WalletPage() {
                   d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                 />
               </svg>
-              <p className="font-medium text-[#999999]">No transactions yet</p>
-              <p className="mt-1 text-sm text-[#CCCCCC]">
-                Your transactions will appear here
-              </p>
+              <p className="font-medium text-[#999999]">{t('noTransactions')}</p>
             </div>
           )}
         </div>
@@ -260,7 +259,7 @@ export default function WalletPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-2xl font-semibold text-black">Add Money</h2>
+              <h2 className="text-2xl font-semibold text-black">{t('addMoney')}</h2>
               <button
                 onClick={() => setShowAddMoney(false)}
                 className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100 active:scale-95"
