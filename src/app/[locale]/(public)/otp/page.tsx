@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 
 import { useRouter } from "@/i18n/routing";
 import { markForwardNavigation } from "@/lib/navigation-transition";
+import { setAppState } from "@/lib/storage";
 
 type WebOtpCredential = Credential & {
   code?: string;
@@ -211,9 +212,14 @@ export default function OTPPage() {
 
     markForwardNavigation();
 
-    router.push(
-      "/profile-setup"
-    );
+    setAppState({
+      isLoggedIn: true,
+      profileCompleted: false,
+      locationSelected: false,
+      addressCompleted: false,
+    });
+
+    router.replace("/profile-setup");
   };
 
   // -----------------------------------

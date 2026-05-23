@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "@/i18n/routing";
+import { markForwardNavigation } from "@/lib/navigation-transition";
 import {
   useCallback,
   useEffect,
@@ -119,6 +120,7 @@ export default function LocationAccessPage() {
 
       setStatus("idle");
 
+      markForwardNavigation();
       router.push("/location/map");
     },
     [router]

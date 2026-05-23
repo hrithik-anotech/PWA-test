@@ -12,6 +12,7 @@ import {
 } from "react";
 import { useRouter } from "@/i18n/routing";
 import { markForwardNavigation } from "@/lib/navigation-transition";
+import { setAppState } from "@/lib/storage";
 import { useTranslations } from "next-intl";
 
 type StoredLocation = {
@@ -136,7 +137,11 @@ export default function ConfirmLocationPage() {
     });
 
     markForwardNavigation();
-    router.push("/address-details");
+    setAppState({
+      locationSelected: true,
+      addressCompleted: false,
+    });
+    router.replace("/address-details");
   }, [router]);
 
   // Calculate responsive map height

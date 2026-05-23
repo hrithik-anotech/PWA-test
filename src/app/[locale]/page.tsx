@@ -6,7 +6,10 @@ import { useRouter } from "@/i18n/routing";
 
 import OfflineScreen from "@/components/system/offline-screen";
 import SplashScreen from "@/components/system/splash-screen";
-import { getAppState } from "@/lib/storage";
+import {
+  getAppState,
+  getRootEntryPath,
+} from "@/lib/storage";
 
 
 export default function RootPage() {
@@ -91,63 +94,9 @@ export default function RootPage() {
         // APP STATE
         // -----------------------------
 
-        const appState = getAppState();
-
-        const {
-          onboardingCompleted,
-          isLoggedIn,
-          profileCompleted,
-          locationSelected,
-          addressCompleted,
-        } = appState;
-
-        // -----------------------------
-        // ROUTING FLOW
-        // -----------------------------
-
-        // ONBOARDING
-        if (!onboardingCompleted) {
-          router.replace(
-            "/onboarding/step-1"
-          );
-
-          return;
-        }
-
-        // LOGIN
-        if (!isLoggedIn) {
-          router.replace("/login");
-
-          return;
-        }
-
-        // PROFILE
-        if (!profileCompleted) {
-          router.replace("/profile-setup");
-
-          return;
-        }
-
-        // LOCATION
-        if (!locationSelected) {
-          router.replace(
-            "/location/access"
-          );
-
-          return;
-        }
-
-        // ADDRESS
-        if (!addressCompleted) {
-          router.replace(
-            "/address-details"
-          );
-
-          return;
-        }
-
-        // HOME
-        router.replace("/home");
+        router.replace(
+          getRootEntryPath(getAppState())
+        );
       } catch (error) {
         console.error(
           "App initialization failed:",

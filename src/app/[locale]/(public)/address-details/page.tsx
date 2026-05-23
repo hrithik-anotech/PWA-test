@@ -4,7 +4,11 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/routing";
 import { useState } from "react";
-import { markBackNavigation } from "@/lib/navigation-transition";
+import {
+  markBackNavigation,
+  markForwardNavigation,
+} from "@/lib/navigation-transition";
+import { setAppState } from "@/lib/storage";
 
 type AddressType = "home" | "family" | "other";
 
@@ -99,12 +103,16 @@ export default function AddressDetailsPage() {
   };
 
   const handleFinish = () => {
-    localStorage.setItem("hasAddress", "true");
+    setAppState({
+      addressCompleted: true,
+    });
+    markForwardNavigation();
+    router.replace("/home");
   };
 
   return (
     <main
-      className="bg-[#ffffff] font-[var(--font-urbanist)]"
+      className="bg-surface font-[var(--font-urbanist)]"
       style={{
         minHeight: "100dvh",
         display: "flex",
@@ -113,7 +121,7 @@ export default function AddressDetailsPage() {
     >
       {/* Header — safe area top */}
       <div
-        className="flex-shrink-0 border-b border-[#E5E5E5] bg-white px-4 sm:px-6 pb-3 sm:pb-4"
+        className="shrink-0 border-b border-[#E5E5E5] bg-white px-4 sm:px-6 pb-3 sm:pb-4"
         style={{
           paddingTop: `max(1.25rem, calc(env(safe-area-inset-top) + 0.75rem))`,
         }}
@@ -264,14 +272,14 @@ export default function AddressDetailsPage() {
         }}
       >
         <div className="mx-auto max-w-md">
-          <Link
-            href="/home"
+          <button
+            type="button"
             onClick={handleFinish}
-            className="flex h-[52px] sm:h-[58px] w-full items-center justify-center rounded-2xl bg-[#6C35FF] text-base sm:text-[18px] font-semibold text-white shadow-sm transition-all active:scale-[0.98]"
+            className="flex h-13 sm:h-14.5 w-full items-center justify-center rounded-2xl bg-[#6C35FF] text-base sm:text-[18px] font-semibold text-white shadow-sm transition-all active:scale-[0.98]"
             style={{ WebkitTapHighlightColor: "transparent" }}
           >
             {t('confirm')}
-          </Link>
+          </button>
         </div>
       </div>
     </main>

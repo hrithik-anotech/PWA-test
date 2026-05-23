@@ -10,6 +10,7 @@ import { OnboardingContent } from "./onboarding-content";
 import { OnboardingFooter } from "./onboarding-footer";
 
 import { useTranslations } from "next-intl";
+import { setAppState } from "@/lib/storage";
 
 type OnboardingStep = {
   id: number;
@@ -40,10 +41,13 @@ export function OnboardingScreen({
   const isLastStep = step.id === 3;
 
   const handleComplete = () => {
-    localStorage.setItem(
-      "hasCompletedOnboarding",
-      "true"
-    );
+    setAppState({
+      onboardingCompleted: true,
+      isLoggedIn: false,
+      profileCompleted: false,
+      locationSelected: false,
+      addressCompleted: false,
+    });
   };
 
   const handleForward = () => {
@@ -118,6 +122,7 @@ export function OnboardingScreen({
             </Link>
 
             <Link
+              replace={isLastStep}
               href={step.next}
               onClick={() => {
                 handleForward();

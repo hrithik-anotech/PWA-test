@@ -14,7 +14,7 @@ export default function LoginPage() {
   const handleConfirm = () => {
     if (phone.length < 10) return;
     markForwardNavigation();
-    localStorage.setItem("isLoggedIn", "true");
+    localStorage.setItem("phone", phone);
     router.push("/otp");
   };
 

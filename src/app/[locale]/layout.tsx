@@ -10,6 +10,7 @@ import { urbanist } from "@/lib/fonts";
 import { NavigationTransitionManager } from "@/components/system/navigation-transition-manager";
 import { PWAInstallManager } from "@/components/pwa/PWAInstallManager";
 import { StatusBarManager } from "@/components/pwa/StatusBarManager";
+import { AppRouteGuard } from "@/components/system/app-route-guard";
 
 const PWA_MANIFEST_PATH =
   "/manifest.json?v=edge-to-edge-safe-area";
@@ -99,6 +100,7 @@ export default async function RootLayout({
       >
         <NextIntlClientProvider messages={messages}>
           <StatusBarManager />
+          <AppRouteGuard />
           <NavigationTransitionManager />
           <PWAInstallManager />
           {children}

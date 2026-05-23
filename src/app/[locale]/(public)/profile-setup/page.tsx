@@ -4,6 +4,8 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
+import { markForwardNavigation } from "@/lib/navigation-transition";
+import { setAppState } from "@/lib/storage";
 
 export default function ProfileSetupPage() {
   const t = useTranslations('ProfileSetup');
@@ -17,9 +19,14 @@ export default function ProfileSetupPage() {
       return;
     }
 
-    localStorage.setItem("hasProfile", "true");
     localStorage.setItem("userName", trimmedName);
-    router.push("/location/access");
+    setAppState({
+      profileCompleted: true,
+      locationSelected: false,
+      addressCompleted: false,
+    });
+    markForwardNavigation();
+    router.replace("/location/access");
   };
 
   return (

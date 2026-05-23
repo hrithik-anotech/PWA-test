@@ -44,7 +44,7 @@ export default async function HomePage() {
     <div className="flex h-full min-h-0 flex-col bg-[var(--app-background)]">
 
       {/* ── HEADER ──────────────────────────────────────────────────────────── */}
-      <div className="sticky top-0 z-40 bg-[var(--app-background)]">
+      <div className="sticky top-0 z-40 bg-[var(--app-background)] pb-2">
         <div aria-hidden="true" className="h-[env(safe-area-inset-top)] bg-[#5F30CA]" />
         <div className="rounded-b-[2.1rem] bg-[#5F30CA] px-5 pb-8 pt-3.5">
           <div className="flex items-start justify-between">
