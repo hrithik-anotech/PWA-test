@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState } from 'react';
 
 const cn = (...classes: (string | undefined | null | false)[]): string => {
@@ -30,9 +31,9 @@ export default function WalletPage() {
   const [showAddMoney, setShowAddMoney] = useState(false);
 
   return (
-    <div className="min-h-dvh bg-gradient-to-br from-[#F6F6F6] to-[#FAFAFA] pb-24 sm:pb-0">
+    <div className="min-h-screen bg-[#F9F8FD] ">
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-[#DCDCDC] bg-white pt-[env(safe-area-inset-top)]">
+      <header className="sticky top-0 z-40 bg-[#F9F8FD] pt-[env(safe-area-inset-top)]">
         <div className="px-4 py-4 sm:px-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -61,63 +62,64 @@ export default function WalletPage() {
 
             <button
               type="button"
-              className="flex items-center gap-2 rounded-full bg-gray-50 px-4 py-2 text-sm font-medium text-[#666666] transition-colors hover:bg-gray-100 active:scale-95"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#666666] transition-colors"
             >
-              <svg
-                className="h-4 w-4 text-[#E0A0E0]"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-              </svg>
+              <div className='bg-[#F1EDFD] p-1 rounded-full'>
+              <Image alt="secure" src="/images/icons/secure.svg" width={15} height={15} />
+              </div>
               <span>Secure</span>
             </button>
           </div>
         </div>
       </header>
 
-      <main className="px-4 py-6 sm:px-6 sm:py-8">
+      <main className="px-4 pb-6 sm:px-6 sm:pb-8">
         {/* Balance Card */}
-        <div className="mb-6 overflow-hidden rounded-3xl bg-gradient-to-br from-[#8B5CF6] via-[#7C3AED] to-[#6D28D9] p-6 text-white shadow-lg sm:p-8">
-          <div className="flex items-start justify-between mb-12">
-            <div>
-              <p className="text-sm font-medium opacity-90">Available Balance</p>
-              <h2 className="mt-3 text-5xl font-bold sm:text-6xl">₹{balance}</h2>
+        <div className="mb-6 overflow-hidden rounded-3xl bg-gradient-to-r from-[#c49eff] via-[#a97ee8] to-[#7849e0] p-5 text-white shadow-lg sm:p-6">
+          <div className="flex items-center justify-between gap-4">
+
+            {/* Left: text + button */}
+            <div className="flex flex-col justify-between gap-5 sm:gap-7">
+              <div>
+                <p className="text-sm font-medium opacity-80 tracking-wide">
+                  Available Balance
+                </p>
+                <h2 className="mt-2 text-5xl font-bold leading-none sm:text-6xl">
+                  ₹{balance}
+                </h2>
+              </div>
+
+              <button
+                onClick={() => setShowAddMoney(true)}
+                className="inline-flex w-fit items-center gap-1 whitespace-nowrap rounded-2xl bg-white px-5 py-2.5 text-base font-bold text-[#5F30CA] shadow-md transition-transform active:scale-[0.98] sm:px-6 sm:py-3"
+              >
+                Add Money <span className="font-bold">+</span>
+              </button>
             </div>
 
-            {/* Wallet Illustration SVG */}
-            <div className="shrink-0 w-32 h-32 sm:w-40 sm:h-40 opacity-80">
-              <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                {/* Wallet */}
-                <rect x="30" y="60" width="140" height="100" rx="20" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" strokeWidth="2"/>
-                <circle cx="140" cy="120" r="15" fill="rgba(255,255,255,0.3)" stroke="rgba(255,255,255,0.5)" strokeWidth="2"/>
-                
-                {/* Cards inside wallet */}
-                <rect x="45" y="50" width="30" height="50" rx="4" fill="rgba(255,255,255,0.25)" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5"/>
-                <rect x="65" y="45" width="30" height="50" rx="4" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5"/>
-                <rect x="85" y="40" width="30" height="50" rx="4" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5"/>
-              </svg>
+            {/* Right: wallet illustration */}
+            <div className="relative h-32 w-32 shrink-0 opacity-95 sm:h-36 sm:w-36">
+              <Image
+                alt="wallet"
+                src="/images/profile/wallet-bg.png"
+                fill
+                loading="eager"
+                sizes="(min-width: 640px) 9rem, 8rem"
+                className="object-contain drop-shadow-xl"
+              />
             </div>
+
           </div>
-
-          {/* Add Money Button */}
-          <button
-            onClick={() => setShowAddMoney(true)}
-            className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 font-semibold text-[#8B5CF6] transition-all hover:shadow-lg active:scale-95 sm:px-8 sm:py-4"
-          >
-            <span>Add Money</span>
-            <span className="text-lg">+</span>
-          </button>
         </div>
 
         {/* Cash & Bonus Cards */}
         <div className="mb-6 grid grid-cols-2 gap-4 sm:gap-5">
           {/* Cash Card */}
           <button
-            className="group flex items-center justify-between rounded-2xl border border-[#D8D8D8] bg-white px-4 py-5 transition-all hover:shadow-md active:scale-95 sm:px-5 sm:py-6"
+            className="group flex items-center justify-between rounded-xl border border-[#D8D8D8] bg-white px-4 py-5 transition-all hover:shadow-md active:scale-95 sm:px-5 sm:py-6"
           >
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#E8F5E9] sm:h-12 sm:w-12">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#DFF7EC] sm:h-12 sm:w-12">
                 <span className="text-lg sm:text-xl">💵</span>
               </div>
               <div className="text-left">
@@ -134,10 +136,10 @@ export default function WalletPage() {
 
           {/* Bonus Card */}
           <button
-            className="group flex items-center justify-between rounded-2xl border border-[#D8D8D8] bg-white px-4 py-5 transition-all hover:shadow-md active:scale-95 sm:px-5 sm:py-6"
+            className="group flex items-center justify-between rounded-xl border border-[#D8D8D8] bg-white px-4 py-5 transition-all hover:shadow-md active:scale-95 sm:px-5 sm:py-6"
           >
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F3E5F5] sm:h-12 sm:w-12">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F1EEFC] sm:h-12 sm:w-12">
                 <span className="text-lg sm:text-xl">🎁</span>
               </div>
               <div className="text-left">
@@ -154,9 +156,9 @@ export default function WalletPage() {
         </div>
 
         {/* Refer & Earn */}
-        <div className="mb-6 flex items-center justify-between rounded-2xl border border-[#D8D8D8] bg-white px-5 py-5 sm:px-6 sm:py-6">
+        <div className="mb-6 flex items-center justify-between rounded-xl bg-[#F7F3FD] px-5 py-5 sm:px-6 sm:py-6">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E8F5E9] sm:h-14 sm:w-14">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#DFF7EC] sm:h-14 sm:w-14">
               <span className="text-2xl">🎉</span>
             </div>
             <div>
@@ -238,7 +240,7 @@ export default function WalletPage() {
         <div className="flex items-center justify-between rounded-2xl border border-[#D8D8D8] bg-white px-5 py-4 sm:px-6 sm:py-5">
           <div className="flex items-center gap-3">
             <svg className="h-5 w-5 text-[#8B5CF6]" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+              <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
             </svg>
             <p className="text-sm font-medium text-[#666666]">
               Your payments are <span className="font-semibold">100% secure</span>
@@ -246,57 +248,6 @@ export default function WalletPage() {
           </div>
         </div>
       </main>
-
-      {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 border-t border-[#DCDCDC] bg-white pb-[env(safe-area-inset-bottom)] sm:hidden">
-        <div className="flex items-center justify-around">
-          {[
-            {
-              id: 'home',
-              label: 'Home',
-              icon: (
-                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-                </svg>
-              ),
-            },
-            {
-              id: 'bookings',
-              label: 'Bookings',
-              icon: (
-                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 9h10v2H7z" />
-                </svg>
-              ),
-            },
-            {
-              id: 'wallet',
-              label: 'Wallet',
-              icon: (
-                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M18 6h-2c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H6V8h12v10zm-6-3c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3z" />
-                </svg>
-              ),
-            },
-          ].map((nav) => (
-            <button
-              key={nav.id}
-              onClick={() =>
-                setCurrentNav(nav.id as 'home' | 'bookings' | 'wallet')
-              }
-              className={cn(
-                'flex flex-1 flex-col items-center justify-center gap-1 py-3 transition-colors',
-                currentNav === nav.id
-                  ? 'text-[#8B5CF6]'
-                  : 'text-[#999999] hover:text-[#666666]'
-              )}
-            >
-              {nav.icon}
-              <span className="text-xs font-medium">{nav.label}</span>
-            </button>
-          ))}
-        </div>
-      </nav>
 
       {/* Add Money Modal */}
       {showAddMoney && (

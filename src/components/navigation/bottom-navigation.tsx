@@ -5,29 +5,76 @@ import { usePathname, useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/cn";
 
+type NavIconProps = {
+  active: boolean;
+  activeSrc: string;
+  inactiveSrc: string;
+  activeSize: { width: number; height: number };
+  inactiveSize: { width: number; height: number };
+  label: string;
+};
+
+function NavIcon({
+  active,
+  activeSrc,
+  inactiveSrc,
+  activeSize,
+  inactiveSize,
+  label,
+}: NavIconProps) {
+  const src = active ? activeSrc : inactiveSrc;
+  const size = active ? activeSize : inactiveSize;
+
+  return (
+    <span className="flex h-[22px] w-[22px] shrink-0 items-center justify-center">
+      <Image
+        src={src}
+        alt={active ? `${label} active` : label}
+        width={size.width}
+        height={size.height}
+        style={{ height: 22, width: "auto" }}
+      />
+    </span>
+  );
+}
 
 function HomeIcon({ active }: { active: boolean }) {
-  const src = active
-    ? "/images/icons/nav-home.svg"
-    : "/images/icons/nav-home-1.svg";
-
-  return <Image src={src} alt={active ? "Bookings active" : "Bookings"} width={22} height={22} />;
+  return (
+    <NavIcon
+      active={active}
+      activeSrc="/images/icons/nav-home.svg"
+      inactiveSrc="/images/icons/nav-home-1.svg"
+      activeSize={{ width: 16, height: 18 }}
+      inactiveSize={{ width: 16, height: 18 }}
+      label="Home"
+    />
+  );
 }
 
 function BookingsIcon({ active }: { active: boolean }) {
-  const src = active
-    ? "/images/icons/nav-book.svg"
-    : "/images/icons/nav-book-1.svg";
-
-  return <Image src={src} alt={active ? "Bookings active" : "Bookings"} width={22} height={22} />;
+  return (
+    <NavIcon
+      active={active}
+      activeSrc="/images/icons/nav-book.svg"
+      inactiveSrc="/images/icons/nav-book-1.svg"
+      activeSize={{ width: 18, height: 19 }}
+      inactiveSize={{ width: 19, height: 20 }}
+      label="Bookings"
+    />
+  );
 }
 
 function WalletIcon({ active }: { active: boolean }) {
-  const src = active
-    ? "/images/icons/nav-wallet.svg"
-    : "/images/icons/nav-wallet-1.svg";
-
-  return <Image src={src} alt={active ? "Bookings active" : "Bookings"} width={22} height={22} />;
+  return (
+    <NavIcon
+      active={active}
+      activeSrc="/images/icons/nav-wallet.svg"
+      inactiveSrc="/images/icons/nav-wallet-1.svg"
+      activeSize={{ width: 20, height: 20 }}
+      inactiveSize={{ width: 20, height: 20 }}
+      label="Wallet"
+    />
+  );
 }
 
 
