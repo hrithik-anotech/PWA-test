@@ -5,6 +5,7 @@ import { Link } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";
 import HomeServicesSection from "@/components/services/HomeServicesSection";
 import { getIKUrl, HOME_SERVICE_IMAGE_TRANSFORM } from "@/lib/imagekit";
+import LocationHeader from "@/components/location/LocationHeader";
 
 export const viewport: Viewport = {
   themeColor: "#5F30CA",
@@ -138,15 +139,7 @@ export default async function HomePage() {
                 {t('header.time')}
               </h1>
               {/* Location */}
-              <div className="mt-2 flex items-center gap-1">
-                <Image alt="location" src="/images/icons/location-white.svg" height={12} width={12} />
-                <span className="text-base text-white">
-                  Genex Exotica, Asansol WB
-                </span>
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
-                  <path d="M7 10l5 5 5-5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
+              <LocationHeader />
             </div>
 
             {/* Right: avatar — h-12 w-12 already rem-based */}

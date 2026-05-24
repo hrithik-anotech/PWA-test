@@ -10,11 +10,13 @@ import {
   useState,
   useSyncExternalStore,
   useTransition,
+  Suspense,
 } from "react";
 import { useRouter } from "@/i18n/routing";
 import { markForwardNavigation } from "@/lib/navigation-transition";
 import { setAppState } from "@/lib/storage";
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 
 type StoredLocation = {
   latitude: number;
@@ -88,9 +90,13 @@ const getWindowHeightSnapshot = () =>
 
 const getServerWindowHeightSnapshot = () => 0;
 
-export default function ConfirmLocationPage() {
+function ConfirmLocationContent() {
   const t = useTranslations('ConfirmLocation');
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const action = searchParams.get('action') || 'add';
+  const id = searchParams.get('id') || '';
+
   const [search, setSearch] = useState("");
   
   const [isLoading, setIsLoading] = useState(false);
@@ -149,6 +155,9 @@ export default function ConfirmLocationPage() {
       displayedLocation: DISPLAYED_LOCATION,
     });
 
+    // Save selected location address text to localStorage
+    localStorage.setItem('confirmed_address_text', DISPLAYED_LOCATION.address);
+
     markForwardNavigation();
     setAppState({
       locationSelected: true,
@@ -158,7 +167,11 @@ export default function ConfirmLocationPage() {
     setIsLoading(false);
     
     startTransition(() => {
-      router.replace("/address-details");
+      const params = new URLSearchParams();
+      if (action) params.set('action', action);
+      if (id) params.set('id', id);
+      const queryString = params.toString() ? `?${params.toString()}` : '';
+      router.replace(`/address-details${queryString}`);
     });
   };
 
@@ -389,3 +402,12 @@ export default function ConfirmLocationPage() {
     </main>
   );
 }
+
+export default function ConfirmLocationPage() {
+  return (
+    <Suspense fallback={null}>
+      <ConfirmLocationContent />
+    </Suspense>
+  );
+}
+

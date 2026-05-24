@@ -49,20 +49,28 @@ export default function ServiceDrawer({
   const tHome = useTranslations('Home');
   
   const [activeId, setActiveId] = useState(services[0]?.id ?? '');
+  const [animateIn, setAnimateIn] = useState(false);
   const hasPortalTarget = useSyncExternalStore(
     subscribeToPortalTarget,
     getPortalTargetSnapshot,
     getServerPortalTargetSnapshot
   );
 
-  // Lock body scroll while open
+  // Lock body scroll while open and handle entrance animation
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
+      const timer = setTimeout(() => {
+        setAnimateIn(true);
+      }, 30);
+      return () => {
+        clearTimeout(timer);
+        document.body.style.overflow = '';
+      };
     } else {
+      setAnimateIn(false);
       document.body.style.overflow = '';
     }
-    return () => { document.body.style.overflow = ''; };
   }, [open]);
 
   const active = services.find((s) => s.id === activeId) ?? services[0];
@@ -78,7 +86,7 @@ export default function ServiceDrawer({
         onClick={onClose}
         className={cn(
           'fixed inset-0 z-[70] bg-black/50 transition-opacity duration-300',
-          open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none',
+          (open && animateIn) ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none',
         )}
         aria-hidden="true"
       />
@@ -92,7 +100,7 @@ export default function ServiceDrawer({
           'fixed inset-x-0 bottom-0 z-[70] flex flex-col bg-white',
           'rounded-t-[1.25rem] transition-transform duration-300 ease-out',
           'max-h-[92dvh]',
-          open ? 'translate-y-0' : 'translate-y-full',
+          (open && animateIn) ? 'translate-y-0' : 'translate-y-full',
         )}
         style={{ paddingBottom: 'env(safe-area-inset-bottom, 0rem)' }}
       >

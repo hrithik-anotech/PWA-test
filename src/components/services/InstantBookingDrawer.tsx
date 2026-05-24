@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/cn';
 import { UPIPaymentFooter } from '@/components/payments';
-import { useState, useSyncExternalStore } from 'react';
+import { useState, useSyncExternalStore, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslations } from 'next-intl';
 
@@ -94,6 +94,7 @@ export default function InstantBookingDrawer({
 
   const [selectedDuration, setSelectedDuration] = useState<DurationOption>('60');
   const [showAll, setShowAll] = useState(false);
+  const [animateIn, setAnimateIn] = useState(false);
   const visibleDurationCount = useSyncExternalStore(
     subscribeToViewportChanges,
     getVisibleDurationCount,
@@ -104,6 +105,23 @@ export default function InstantBookingDrawer({
     getPortalTargetSnapshot,
     getServerPortalTargetSnapshot
   );
+
+  // Lock body scroll while open and handle entrance animation
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+      const timer = setTimeout(() => {
+        setAnimateIn(true);
+      }, 30);
+      return () => {
+        clearTimeout(timer);
+        document.body.style.overflow = '';
+      };
+    } else {
+      setAnimateIn(false);
+      document.body.style.overflow = '';
+    }
+  }, [open]);
 
   const durationOptions = Object.entries(durationPrices).map(([key, value]) => ({
     value: key as DurationOption,
@@ -135,7 +153,7 @@ export default function InstantBookingDrawer({
         onClick={onClose}
         className={cn(
           'fixed inset-0 z-[80] bg-black/50 transition-opacity duration-300',
-          open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
+          (open && animateIn) ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
         )}
         aria-hidden="true"
       />
@@ -146,7 +164,7 @@ export default function InstantBookingDrawer({
         aria-label={t('title')}
         className={cn(
           'fixed inset-x-0 bottom-0 z-[80] flex max-h-[92dvh] flex-col rounded-t-[1.25rem] bg-white transition-transform duration-300 ease-out',
-          open ? 'translate-y-0' : 'translate-y-full'
+          (open && animateIn) ? 'translate-y-0' : 'translate-y-full'
         )}
         style={{ paddingBottom: 'env(safe-area-inset-bottom, 0rem)' }}
       >

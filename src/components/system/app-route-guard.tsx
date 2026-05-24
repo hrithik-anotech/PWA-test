@@ -47,9 +47,9 @@ function canStayOnPath(
   nextPath: AppRoute,
   appState: AppState
 ) {
-  // If fully setup, cannot visit ANY setup path
+  // If fully setup, only restrict onboarding and authentication paths
   if (isAppSetupComplete(appState)) {
-    return !isSetupPath(pathname);
+    return !isOnboardingPath(pathname) && !isAuthPath(pathname);
   }
 
   // Not fully setup, so cannot visit home

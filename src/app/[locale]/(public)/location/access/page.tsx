@@ -10,8 +10,10 @@ import {
   useState,
   useSyncExternalStore,
   useTransition,
+  Suspense,
 } from "react";
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 
 type Status = "idle" | "loading" | "blocked" | "error";
 type LocationSource = "gps" | "ip" | "default";
@@ -64,9 +66,12 @@ const getLocationOptions = () => {
   };
 };
 
-export default function LocationAccessPage() {
+function LocationAccessContent() {
   const t = useTranslations('LocationAccess');
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const action = searchParams.get('action') || 'add';
+  const id = searchParams.get('id') || '';
 
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -123,10 +128,14 @@ export default function LocationAccessPage() {
 
       markForwardNavigation();
       startTransition(() => {
-        router.push("/location/map");
+        const params = new URLSearchParams();
+        if (action) params.set('action', action);
+        if (id) params.set('id', id);
+        const queryString = params.toString() ? `?${params.toString()}` : '';
+        router.push(`/location/map${queryString}`);
       });
     },
-    [router]
+    [router, action, id]
   );
 
   // ───────────────── IP FALLBACK ─────────────────
@@ -311,6 +320,19 @@ export default function LocationAccessPage() {
     setStatus("loading");
     void fetchIPFallback();
   }, [fetchIPFallback]);
+
+  // Automatically redirect if location permission is already granted
+  useEffect(() => {
+    if (typeof window !== 'undefined' && navigator.permissions) {
+      navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+        if (result.state === 'granted') {
+          handleGetLocation();
+        }
+      }).catch((err) => {
+        console.error("Failed to query permissions", err);
+      });
+    }
+  }, [handleGetLocation]);
 
   // ───────────────── RETURN FROM SETTINGS ─────────────────
 
@@ -535,3 +557,12 @@ export default function LocationAccessPage() {
     </main>
   );
 }
+
+export default function LocationAccessPage() {
+  return (
+    <Suspense fallback={null}>
+      <LocationAccessContent />
+    </Suspense>
+  );
+}
+

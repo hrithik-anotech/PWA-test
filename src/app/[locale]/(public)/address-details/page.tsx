@@ -3,12 +3,13 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/routing";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect, Suspense } from "react";
 import {
   markBackNavigation,
   markForwardNavigation,
 } from "@/lib/navigation-transition";
 import { setAppState } from "@/lib/storage";
+import { useSearchParams } from "next/navigation";
 
 type AddressType = "home" | "family" | "other";
 
@@ -22,6 +23,8 @@ type AddressTypeOption = {
 type AddressTextFieldProps = {
   id: string;
   label: string;
+  value: string;
+  onChange: (val: string) => void;
 };
 
 const ADDRESS_TYPE_OPTIONS: AddressTypeOption[] = [
@@ -54,8 +57,9 @@ const getAddressTypeIcon = (
 function AddressTextField({
   id,
   label,
+  value,
+  onChange,
 }: AddressTextFieldProps) {
-  const [value, setValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const shouldFloatLabel = isFocused || value.length > 0;
 
@@ -76,7 +80,7 @@ function AddressTextField({
         id={id}
         type="text"
         value={value}
-        onChange={(event) => setValue(event.target.value)}
+        onChange={(event) => onChange(event.target.value)}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         className="h-[52px] sm:h-[58px] w-full bg-transparent text-sm sm:text-[16px] text-black outline-none"
@@ -86,11 +90,45 @@ function AddressTextField({
   );
 }
 
-export default function AddressDetailsPage() {
+function AddressDetailsContent() {
   const t = useTranslations('Address');
   const router = useRouter();
-  const [selectedType, setSelectedType] =
-    useState<AddressType>("home");
+  const searchParams = useSearchParams();
+  const action = searchParams.get('action') || 'add';
+  const id = searchParams.get('id') || '';
+
+  const [flatFloor, setFlatFloor] = useState("");
+  const [building, setBuilding] = useState("");
+  const [selectedType, setSelectedType] = useState<AddressType>("home");
+  const [areaText, setAreaText] = useState("Genex Exotica, Grand Trunk Road, Kumarpur, Asansol, West Bengal, 713304, near Bhagat Singh More");
+
+  useEffect(() => {
+    if (action === 'edit' && id) {
+      const stored = localStorage.getItem('user_addresses');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          const addressToEdit = parsed.find((a: any) => a.id === id);
+          if (addressToEdit) {
+            setFlatFloor(addressToEdit.flatFloor || "");
+            setBuilding(addressToEdit.building || "");
+            setSelectedType((addressToEdit.type || "home").toLowerCase() as AddressType);
+            if (addressToEdit.areaText) {
+              setAreaText(addressToEdit.areaText);
+            }
+          }
+        } catch (e) {
+          console.error("Failed to parse user addresses", e);
+        }
+      }
+    } else {
+      // Adding new address: load confirmed text from map if it exists
+      const storedText = localStorage.getItem('confirmed_address_text');
+      if (storedText) {
+        setAreaText(storedText);
+      }
+    }
+  }, [action, id]);
 
   const handleBack = () => {
     markBackNavigation();
@@ -114,6 +152,72 @@ export default function AddressDetailsPage() {
 
     // Simulate API call to save address
     await new Promise((resolve) => setTimeout(resolve, 800));
+
+    // Construct details string
+    const detailsList = [];
+    if (flatFloor) detailsList.push(flatFloor);
+    if (building) detailsList.push(building);
+    detailsList.push(areaText);
+    const details = detailsList.join(', ');
+
+    // Map selectedType to capitalized string
+    const typeMap: Record<AddressType, string> = {
+      home: 'Home',
+      family: 'Family',
+      other: 'Other'
+    };
+    const capitalizedType = typeMap[selectedType] || 'Home';
+
+    // Retrieve, update and store addresses list
+    const INITIAL_ADDRESSES = [
+      { id: '1', type: 'Home', details: 'Genex Exotica, Asansol WB' },
+      { id: '2', type: 'Work', details: 'Tech Park, Bangalore KA' },
+    ];
+
+    const stored = localStorage.getItem('user_addresses');
+    let addressesList = [];
+    if (stored) {
+      try {
+        addressesList = JSON.parse(stored);
+      } catch {
+        addressesList = [...INITIAL_ADDRESSES];
+      }
+    } else {
+      addressesList = [...INITIAL_ADDRESSES];
+    }
+
+    if (action === 'edit' && id) {
+      addressesList = addressesList.map((addr: any) => {
+        if (addr.id === id) {
+          return {
+            ...addr,
+            type: capitalizedType,
+            details,
+            flatFloor,
+            building,
+            areaText,
+          };
+        }
+        return addr;
+      });
+    } else {
+      const newAddress = {
+        id: Date.now().toString(),
+        type: capitalizedType,
+        details,
+        flatFloor,
+        building,
+        areaText,
+      };
+      addressesList.push(newAddress);
+      // Select the new address
+      localStorage.setItem('selected_address_id', newAddress.id);
+    }
+
+    localStorage.setItem('user_addresses', JSON.stringify(addressesList));
+    if (action === 'edit' && id) {
+      localStorage.setItem('selected_address_id', id);
+    }
 
     setAppState({
       addressCompleted: true,
@@ -161,11 +265,11 @@ export default function AddressDetailsPage() {
 
           <div>
             <h1 className="text-lg sm:text-[22px] font-semibold tracking-[-0.3px] text-black leading-tight">
-              {t('title')}
+              {action === 'edit' ? "Edit address" : t('title')}
             </h1>
 
             <p className="mt-0.5 text-xs sm:text-[13px] text-[#8B8B8B]">
-              {t('subtitle')}
+              {action === 'edit' ? "Update details for better accuracy" : t('subtitle')}
             </p>
           </div>
         </div>
@@ -183,11 +287,15 @@ export default function AddressDetailsPage() {
           <AddressTextField
             id="flat-floor"
             label={t('flatFloor')}
+            value={flatFloor}
+            onChange={setFlatFloor}
           />
 
           <AddressTextField
             id="building"
             label={t('building')}
+            value={building}
+            onChange={setBuilding}
           />
 
           {/* Area Card */}
@@ -203,9 +311,7 @@ export default function AddressDetailsPage() {
               {/* Address text */}
               <div className="flex-1 min-w-0">
                 <p className="text-[13px] sm:text-[15px] leading-[1.55] text-[#4B4B4B]">
-                  Genex Exotica, Grand Trunk Road,
-                  Kumarpur, Asansol, West Bengal,
-                  713304, near Bhagat Singh More
+                  {areaText}
                 </p>
               </div>
 
@@ -223,7 +329,7 @@ export default function AddressDetailsPage() {
                 </div>
 
                 <Link
-                  href="/location/map"
+                  href={`/location/map?action=${action}${id ? `&id=${id}` : ''}`}
                   className="absolute left-1/2 top-1/2 z-10 flex h-[26px] sm:h-[28px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-black px-2.5 sm:px-3 text-[9px] sm:text-[10px] font-semibold text-white whitespace-nowrap"
                   style={{ WebkitTapHighlightColor: "transparent" }}
                 >
@@ -302,10 +408,19 @@ export default function AddressDetailsPage() {
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
             ) : null}
-            {t('confirm')}
+            {action === 'edit' ? "Save Address" : t('confirm')}
           </button>
         </div>
       </div>
     </main>
   );
 }
+
+export default function AddressDetailsPage() {
+  return (
+    <Suspense fallback={null}>
+      <AddressDetailsContent />
+    </Suspense>
+  );
+}
+

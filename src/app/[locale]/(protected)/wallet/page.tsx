@@ -31,7 +31,6 @@ export default function WalletPage() {
   const [cashAmount, setCashAmount] = useState('0');
   const [bonusAmount, setBonusAmount] = useState('0');
   const [transactions, setTransactions] = useState<Transaction[]>(transactionsData);
-  const [showAddMoney, setShowAddMoney] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#F9F8FD] ">
@@ -91,12 +90,12 @@ export default function WalletPage() {
                 </h2>
               </div>
 
-              <button
-                onClick={() => setShowAddMoney(true)}
+              <Link
+                href="/wallet/addmoney"
                 className="inline-flex w-fit items-center gap-1 whitespace-nowrap rounded-2xl bg-white px-5 py-2.5 text-base font-bold text-[#5F30CA] shadow-md transition-transform active:scale-[0.98] sm:px-6 sm:py-3"
               >
                 {t('addMoney')} <span className="font-bold">+</span>
-              </button>
+              </Link>
             </div>
 
             {/* Right: wallet illustration */}
@@ -249,49 +248,6 @@ export default function WalletPage() {
         </div>
       </main>
 
-      {/* Add Money Modal */}
-      {showAddMoney && (
-        <div
-          className="fixed inset-0 z-50 flex items-end bg-black/30 sm:items-center sm:justify-center"
-          onClick={() => setShowAddMoney(false)}
-        >
-          <div
-            className="w-full max-w-md rounded-t-3xl bg-white p-6 sm:rounded-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-2xl font-semibold text-black">{t('addMoney')}</h2>
-              <button
-                onClick={() => setShowAddMoney(false)}
-                className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100 active:scale-95"
-              >
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-
-            <div className="space-y-3">
-              {[100, 500, 1000, 5000].map((amount) => (
-                <button
-                  key={amount}
-                  onClick={() => {
-                    setBalance((prev) => {
-                      const newBalance = (parseInt(prev) + amount).toString();
-                      setCashAmount(newBalance);
-                      return newBalance;
-                    });
-                    setShowAddMoney(false);
-                  }}
-                  className="w-full rounded-xl border-2 border-[#D8D8D8] bg-white py-4 font-semibold text-black transition-all hover:border-[#8B5CF6] hover:bg-[#F7F2FF] active:scale-95"
-                >
-                  ₹{amount}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
