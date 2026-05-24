@@ -1,4 +1,4 @@
-const CACHE_VERSION = "snibto-pwa-v10";
+const CACHE_VERSION = "snibto-pwa-v11";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -53,18 +53,33 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-const networkFirstNavigation = async (request) => {
+const staleWhileRevalidateNavigation = async (request) => {
+  const cachedPage = await caches.match(request);
+
+  const networkResponsePromise = fetch(request)
+    .then(async (response) => {
+      if (response && response.ok) {
+        const cache = await caches.open(RUNTIME_CACHE);
+        cache.put(request, response.clone());
+      }
+
+      return response;
+    })
+    .catch((error) => {
+      if (cachedPage) {
+        return cachedPage;
+      }
+
+      throw error;
+    });
+
+  if (cachedPage) {
+    return cachedPage;
+  }
+
   try {
-    const response = await fetch(request);
-
-    if (response && response.ok) {
-      const cache = await caches.open(RUNTIME_CACHE);
-      cache.put(request, response.clone());
-    }
-
-    return response;
+    return await networkResponsePromise;
   } catch {
-    const cachedPage = await caches.match(request);
     const offlinePage = await caches.match("/offline.html");
 
     return (
@@ -104,12 +119,16 @@ self.addEventListener("fetch", (event) => {
 
   const requestUrl = new URL(request.url);
 
-  if (requestUrl.origin !== self.location.origin) {
+  // Allow caching for both local origin and ImageKit domain
+  if (
+    requestUrl.origin !== self.location.origin &&
+    requestUrl.hostname !== "ik.imagekit.io"
+  ) {
     return;
   }
 
   if (request.mode === "navigate") {
-    event.respondWith(networkFirstNavigation(request));
+    event.respondWith(staleWhileRevalidateNavigation(request));
     return;
   }
 

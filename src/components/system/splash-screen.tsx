@@ -18,7 +18,7 @@ export default function SplashScreen() {
       {/* LOGO */}
       <div className="relative z-10">
         <Image
-          src="/images/logos/splash-logo.png"
+          src="/images/logos/splash-logo.webp"
           alt="Snibto"
           width={300}
           height={200}

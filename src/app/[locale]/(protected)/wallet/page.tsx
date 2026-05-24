@@ -103,7 +103,7 @@ export default function WalletPage() {
             <div className="relative h-32 w-32 shrink-0 opacity-95 sm:h-36 sm:w-36">
               <Image
                 alt="wallet"
-                src="/images/profile/wallet-bg.png"
+                src="/images/profile/wallet-bg.webp"
                 fill
                 loading="eager"
                 sizes="(min-width: 640px) 9rem, 8rem"

@@ -27,19 +27,19 @@ export default function LoginPage() {
 
   const columns = [
     {
-      images: ["/images/login/login-1.png", "/images/login/login-4.png"],
+      images: ["/images/login/login-1.webp", "/images/login/login-4.webp"],
       wrapperClass: "-ml-3 -mt-4 sm:-ml-4 md:-ml-5",
       colAlign: "justify-start",
       imgW: "w-[clamp(6.5rem,14vh,10rem)]",
     },
     {
-      images: ["/images/login/login-2.png", "/images/login/login-5.png"],
+      images: ["/images/login/login-2.webp", "/images/login/login-5.webp"],
       wrapperClass: "-mt-20 sm:-mt-30 md:-mt-32",
       colAlign: "justify-start",
       imgW: "w-[clamp(7rem,15vh,10rem)]",
     },
     {
-      images: ["/images/login/login-3.png", "/images/login/login-6.png"],
+      images: ["/images/login/login-3.webp", "/images/login/login-6.webp"],
       wrapperClass: "-mr-3 -mt-4 sm:-mr-4 md:-mr-5",
       colAlign: "justify-start",
       imgW: "w-[clamp(6.5rem,14vh,10rem)]",
@@ -67,6 +67,7 @@ export default function LoginPage() {
                     fill
                     sizes="(max-width: 768px) 34vw, 10rem"
                     quality={85}
+                    priority={ii === 0}
                     className="object-cover"
                   />
                 </div>
@@ -81,7 +82,7 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="relative h-[clamp(6.5rem,25.5dvh,15.5rem)] w-[clamp(6.5rem,25.5dvh,15.5rem)] flex-none">
           <Image
-            src="/images/logos/login-logo.png"
+            src="/images/logos/login-logo.webp"
             alt="Snibto"
             fill
             sizes="(max-width: 640px) 50vw, 15.5rem"

@@ -2,6 +2,7 @@
 
 import { cn } from '@/lib/cn';
 import Image from 'next/image';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 import { useState, useEffect, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslations } from 'next-intl';
@@ -12,6 +13,7 @@ type Service = {
   id: string;
   label: string;
   img: string;
+  fallbackImg: string;
   includedItems: { text: string; icon: string }[];
   notIncludedItems: { text: string; icon: string }[];
 };
@@ -134,8 +136,9 @@ export default function ServiceDrawer({
                       isActive ? 'opacity-100' : 'opacity-60',
                     )}
                   >
-                    <Image
+                    <OptimizedImage
                       src={service.img}
+                      fallbackSrc={service.fallbackImg}
                       alt=""
                       width={28}
                       height={28}

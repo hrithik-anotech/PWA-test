@@ -10,6 +10,7 @@ import {
   getAppState,
   getRootEntryPath,
 } from "@/lib/storage";
+import { preloadImages, CRITICAL_IMAGES } from "@/utils/preloader";
 
 
 export default function RootPage() {
@@ -76,19 +77,15 @@ export default function RootPage() {
 
         if (!navigator.onLine) {
           setIsOffline(true);
-
           setIsInitializing(false);
-
           return;
         }
 
         // -----------------------------
-        // SPLASH DELAY
+        // PRELOAD CRITICAL ASSETS
         // -----------------------------
-
-        await new Promise((resolve) =>
-          setTimeout(resolve, 1500)
-        );
+        // Preload essential images so they are ready when we navigate to Home
+        await preloadImages(CRITICAL_IMAGES);
 
         // -----------------------------
         // APP STATE

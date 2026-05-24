@@ -4,7 +4,7 @@ import { cn } from '@/lib/cn';
 import { useEffect, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslations, useLocale } from 'next-intl';
-import { usePathname } from '@/i18n/routing';
+import { usePathname, useRouter } from '@/i18n/routing';
 
 type LanguageDrawerProps = {
   open: boolean;
@@ -30,6 +30,7 @@ export default function LanguageDrawer({ open, onClose }: LanguageDrawerProps) {
   const t = useTranslations('Profile');
   const currentLocale = useLocale();
   const pathname = usePathname();
+  const router = useRouter();
 
   const hasPortalTarget = useSyncExternalStore(
     subscribeToPortalTarget,
@@ -54,10 +55,16 @@ export default function LanguageDrawer({ open, onClose }: LanguageDrawerProps) {
       return;
     }
     
-    // Use a full page reload to ensure the new locale is correctly applied 
-    // across all components and the middleware.
-    const newPath = `/${locale}${pathname}`;
-    window.location.assign(newPath);
+    // Set cookie for middleware persistence
+    document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=31536000; SameSite=Lax`;
+    
+    // Set localStorage for client-side persistence (used by AppRouteGuard)
+    localStorage.setItem('NEXT_LOCALE', locale);
+    
+    // Use router.replace for a smooth transition without full page reload
+    router.replace(pathname, { locale: locale as any });
+    
+    onClose();
   };
 
   if (!hasPortalTarget) {

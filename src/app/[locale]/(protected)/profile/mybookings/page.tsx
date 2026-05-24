@@ -22,52 +22,6 @@ const cn = (...classes: (string | undefined | null | false)[]): string => {
     return classes.filter(Boolean).join(' ');
 };
 
-const BookingTypeIcon = ({ type }: { type: Booking['type'] }) => {
-    if (type === 'single') {
-        return (
-            <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                className="h-10 w-10 text-[#6C35DE]"
-                fill="currentColor"
-            >
-                <path d="M13 2L4.5 13.5H11L10 22L19.5 10.5H13V2Z" />
-            </svg>
-        );
-    }
-
-    return (
-        <svg
-            aria-hidden="true"
-            viewBox="0 0 24 24"
-            className="h-10 w-10 text-[#6C35DE]"
-            fill="none"
-        >
-            <rect
-                x="3"
-                y="4.75"
-                width="18"
-                height="16.25"
-                rx="3"
-                fill="currentColor"
-                opacity="0.14"
-            />
-            <path
-                d="M7 3v3M17 3v3M4 9h16"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-            />
-            <path
-                d="M8 13h.01M12 13h.01M16 13h.01M8 17h.01M12 17h.01"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="round"
-            />
-        </svg>
-    );
-};
-
 const bookingsData: Booking[] = [
     {
         id: '1',
@@ -209,7 +163,11 @@ export default function MyBookingsPage() {
                                             'bg-gray-100'
                                         )}
                                     >
-                                        <BookingTypeIcon type={booking.type} />
+                                        {booking.type === 'single' ? (
+                                            <Image alt="flash fill" src="/images/icons/flash-fill.svg" width={40} height={40} className="h-10 w-10" priority unoptimized />
+                                        ) : (
+                                            <Image alt="calendar fill" src="/images/icons/calender-fill.svg" width={40} height={40} className="h-10 w-10" priority unoptimized />
+                                        )}
                                     </div>
                                 </div>
 

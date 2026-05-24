@@ -2,6 +2,7 @@
 
 import { useMemo, useSyncExternalStore, useState } from "react";
 import Image from "next/image";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Link, useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import {
@@ -71,8 +72,10 @@ export default function ProfilePage() {
             {/* ── USER CARD ── */}
             <div className="mx-4 bg-white rounded-2xl px-4 py-4 flex items-center gap-3 shadow-sm">
                 <div className="relative w-14 h-14 rounded-full overflow-hidden flex-shrink-0 border-2 border-[#EDE8FF]">
-                    <Image
-                        src="/images/login/profile-placeholder.png"
+                    <OptimizedImage
+                        src="/profile/avatars/user.png"
+                        ikPath={true}
+                        fallbackSrc="/images/login/profile-placeholder.png"
                         alt={profile.name}
                         fill
                         className="object-cover"

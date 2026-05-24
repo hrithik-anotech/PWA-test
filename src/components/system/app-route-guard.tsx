@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-
+import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/routing";
 import {
   APP_ROUTES,
@@ -81,8 +81,24 @@ function canStayOnPath(
 export function AppRouteGuard() {
   const pathname = usePathname();
   const router = useRouter();
+  const currentLocale = useLocale();
 
   useEffect(() => {
+    // Check if the current locale matches the user's preferred locale
+    // This handles the "back button" issue where the user might navigate back
+    // to a URL with a different locale prefix.
+    const preferredLocale = localStorage.getItem("NEXT_LOCALE");
+    
+    if (preferredLocale) {
+      if (preferredLocale !== currentLocale) {
+        router.replace(pathname, { locale: preferredLocale as any });
+        return;
+      }
+    } else {
+      // If no preferred locale is set, initialize it with the current locale
+      localStorage.setItem("NEXT_LOCALE", currentLocale);
+    }
+
     const normalizedPathname =
       normalizePathname(pathname);
 

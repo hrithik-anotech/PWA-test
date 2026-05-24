@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";
 import HomeServicesSection from "@/components/services/HomeServicesSection";
+import { getIKUrl, HOME_SERVICE_IMAGE_TRANSFORM } from "@/lib/imagekit";
 
 export const viewport: Viewport = {
   themeColor: "#5F30CA",
@@ -17,22 +18,26 @@ const services = [
   {
     key: "cleaning",
     Icon: "/images/icons/spray.svg",
-    image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=800&auto=format&fit=crop",
+    image: getIKUrl("/services/cleaning.jpg", HOME_SERVICE_IMAGE_TRANSFORM),
+    fallback: "/images/services/cleaning.png",
   },
   {
     key: "bathroom",
     Icon: "/images/icons/bath.svg",
-    image: "https://images.unsplash.com/photo-1620626011761-996317b8d101?q=80&w=800&auto=format&fit=crop",
+    image: getIKUrl("/services/bathroom.jpg", HOME_SERVICE_IMAGE_TRANSFORM),
+    fallback: "/images/services/bathroom.png",
   },
   {
     key: "laundry",
     Icon: "/images/icons/wash.svg",
-    image: "https://images.unsplash.com/photo-1517677208171-0bc6725a3e60?q=80&w=800&auto=format&fit=crop",
+    image: getIKUrl("/services/laundry.jpg", HOME_SERVICE_IMAGE_TRANSFORM),
+    fallback: "/images/services/laundry.png",
   },
   {
     key: "utensils",
     Icon: "/images/icons/utensils.svg",
-    image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?q=80&w=800&auto=format&fit=crop",
+    image: getIKUrl("/services/utensils.jpg", HOME_SERVICE_IMAGE_TRANSFORM),
+    fallback: "/images/services/utensils.png",
   },
 ] as const;
 
@@ -100,7 +105,8 @@ export default async function HomePage() {
     return {
       id: service.key,
       icon: service.Icon,
-      image: service.image,
+      image: service.image || service.fallback,
+      fallbackImage: service.fallback,
       label: t(`services.list.${service.key}.title`),
       subtitle: t(`services.list.${service.key}.subtitle`),
       includedItems: copy.included.map((text) => ({
@@ -254,11 +260,12 @@ export default async function HomePage() {
             {/* Person — right side, full card height */}
             <div className="absolute -top-5 bottom-0 right-0 w-[48%]">
               <Image
-                src="/images/helper.png"
+                src="/images/helper.webp"
                 alt="Helper"
                 fill
                 sizes="(max-width: 640px) 24vw, 8rem"
                 quality={85}
+                priority
                 className="object-cover object-top"
               />
             </div>
@@ -286,7 +293,7 @@ export default async function HomePage() {
           >
             <Image
               alt="banner"
-              src="/images/banners/how-to-book.png"
+              src="/images/banners/how-to-book.webp"
               width={700}
               height={240}
               sizes="(max-width: 640px) calc(100vw - 2rem), 400px"

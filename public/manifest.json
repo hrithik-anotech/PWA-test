@@ -8,7 +8,7 @@
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["fullscreen", "standalone"],
+  "display_override": ["standalone"],
   "orientation": "portrait",
   "background_color": "#FCFCFF",
   "theme_color": "#5F30CA",
@@ -16,22 +16,36 @@
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/images/logos/snibto_appicon.png",
+      "src": "/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/images/logos/snibto_appicon.png",
+      "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/images/logos/snibto_appicon.png",
+      "src": "/icons/maskable-icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/images/screenshots/screenshot1.png",
+      "sizes": "640x480",
+      "type": "image/png",
+      "label": "Snibto home screen"
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+snibto",
+      "url": "/?uri=%s"
     }
   ],
   "shortcuts": [
@@ -42,7 +56,7 @@
       "url": "/home?source=pwa-shortcut",
       "icons": [
         {
-          "src": "/images/logos/snibto_appicon.png",
+          "src": "/icons/icon-192.png",
           "sizes": "192x192",
           "type": "image/png"
         }

@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import InstantBookingDrawer from '@/components/services/InstantBookingDrawer';
 import ServiceDrawer from '@/components/services/ServiceDrawer';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 import { useRouter } from '@/i18n/routing';
 import { useState } from 'react';
 
@@ -10,6 +11,7 @@ type ServiceItem = {
   icon: string;
   id: string;
   image: string;
+  fallbackImage: string;
   includedItems: { icon: string; text: string }[];
   label: string;
   notIncludedItems: { icon: string; text: string }[];
@@ -79,7 +81,7 @@ export default function HomeServicesSection({
         </div>
 
         <div className="mt-4 grid grid-cols-2 gap-3">
-          {services.map((service) => (
+          {services.map((service, index) => (
             <button
               key={service.id}
               type="button"
@@ -88,11 +90,13 @@ export default function HomeServicesSection({
               style={{ border: '1px solid rgba(0,0,0,0.05)' }}
             >
               <div className="relative aspect-3/2 w-full overflow-hidden">
-                <Image
+                <OptimizedImage
                   fill
                   sizes="(max-width: 640px) 50vw, 200px"
                   src={service.image}
+                  fallbackSrc={service.fallbackImage}
                   alt={service.label}
+                  priority={index < 2}
                   className="rounded-xl object-cover"
                 />
 
@@ -139,6 +143,7 @@ export default function HomeServicesSection({
           id: service.id,
           label: service.label,
           img: service.image,
+          fallbackImg: service.fallbackImage,
           includedItems: service.includedItems,
           notIncludedItems: service.notIncludedItems,
         }))}
