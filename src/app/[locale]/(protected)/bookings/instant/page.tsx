@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useSyncExternalStore } from 'react';
+import { useState, useSyncExternalStore, useEffect } from 'react';
 import Image from 'next/image';
 import { UPIPaymentFooter } from '@/components/payments';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
+import InstantSplash from '@/components/system/instant-splash';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -59,6 +60,26 @@ export default function InstantPage() {
   const [selectedDuration, setSelectedDuration] = useState<DurationOption>('60');
   const [showAll, setShowAll] = useState(false);
 
+  // Splash screen transition states
+  const [showSplash, setShowSplash] = useState(true);
+  const [isExiting, setIsExiting] = useState(false);
+
+  useEffect(() => {
+    // Play entry sequence for 2.0s, then transition out over 600ms
+    const exitTimer = setTimeout(() => {
+      setIsExiting(true);
+    }, 2000);
+
+    const removeTimer = setTimeout(() => {
+      setShowSplash(false);
+    }, 2600);
+
+    return () => {
+      clearTimeout(exitTimer);
+      clearTimeout(removeTimer);
+    };
+  }, []);
+
   const visibleDurationCount = useSyncExternalStore(
     subscribeToViewportChanges,
     getVisibleDurationCount,
@@ -89,6 +110,7 @@ export default function InstantPage() {
 
   return (
     <div className="min-h-dvh bg-[#F9FAF9]">
+      {showSplash && <InstantSplash isExiting={isExiting} />}
 
       {/* ── HEADER ─────────────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-40 border-b border-[#DCDCDC] bg-white pt-[env(safe-area-inset-top)]">

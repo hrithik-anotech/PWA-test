@@ -20,7 +20,7 @@ export const onboardingSteps = {
     titleKey: "step3.title",
     descriptionKey: "step3.description",
     image: "/images/onboarding/onboarding3.webp",
-    next: "/login",
+    next: "/onboarding/notifications",
     previous: "/onboarding/step-2",
   },
 } as const;

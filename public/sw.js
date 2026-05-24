@@ -1,9 +1,8 @@
-const CACHE_VERSION = "snibto-pwa-v12";
+const CACHE_VERSION = "snibto-pwa-v15";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
 const STATIC_ASSETS = [
-  "/",
   "/offline.html",
   "/manifest.json",
   "/icons/icon-192.png",
@@ -22,6 +21,31 @@ const STATIC_ASSETS = [
 const isHttpRequest = (request) =>
   request.url.startsWith("http://") ||
   request.url.startsWith("https://");
+
+const isRedirectResponse = (response) =>
+  response && response.status >= 300 && response.status < 400;
+
+const matchCache = async (request) => {
+  const cacheNames = await caches.keys();
+
+  for (const cacheName of cacheNames) {
+    const cache = await caches.open(cacheName);
+    const response = await cache.match(request);
+
+    if (response == null) {
+      continue;
+    }
+
+    if (isRedirectResponse(response)) {
+      await cache.delete(request);
+      continue;
+    }
+
+    return response;
+  }
+
+  return null;
+};
 
 const addAssetsToCache = async () => {
   const cache = await caches.open(STATIC_CACHE);
@@ -56,37 +80,36 @@ self.addEventListener("activate", (event) => {
             .map((cacheName) => caches.delete(cacheName))
         )
       )
+      .then(async () => {
+        const cleanupCaches = [STATIC_CACHE, RUNTIME_CACHE];
+
+        await Promise.all(
+          cleanupCaches.map(async (cacheName) => {
+            const cache = await caches.open(cacheName);
+            await cache.delete(new Request("/"));
+          })
+        );
+      })
       .then(() => self.clients.claim())
   );
 });
 
-const staleWhileRevalidateNavigation = async (request) => {
-  const cachedPage = await caches.match(request);
-
-  const networkResponsePromise = fetch(request)
-    .then(async (response) => {
-      if (response && response.ok) {
-        const cache = await caches.open(RUNTIME_CACHE);
-        cache.put(request, response.clone());
-      }
-
-      return response;
-    })
-    .catch((error) => {
-      if (cachedPage) {
-        return cachedPage;
-      }
-
-      throw error;
-    });
-
-  if (cachedPage) {
-    return cachedPage;
-  }
+const fetchNavigation = async (request) => {
+  const cachedPage = await matchCache(request);
 
   try {
-    return await networkResponsePromise;
+    const response = await fetch(request);
+
+    if (response) {
+      return response;
+    }
+
+    throw new Error("No response received");
   } catch {
+    if (cachedPage) {
+      return cachedPage;
+    }
+
     const offlinePage = await caches.match("/offline.html");
 
     return (
@@ -101,7 +124,7 @@ const staleWhileRevalidateNavigation = async (request) => {
 };
 
 const staleWhileRevalidate = async (request) => {
-  const cachedResponse = await caches.match(request);
+  const cachedResponse = await matchCache(request);
   const cache = await caches.open(RUNTIME_CACHE);
 
   const networkResponsePromise = fetch(request)
@@ -135,7 +158,7 @@ self.addEventListener("fetch", (event) => {
   }
 
   if (request.mode === "navigate") {
-    event.respondWith(staleWhileRevalidateNavigation(request));
+    event.respondWith(fetchNavigation(request));
     return;
   }
 

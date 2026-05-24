@@ -23,6 +23,7 @@ type OnboardingStep = {
   next:
     | "/onboarding/step-2"
     | "/onboarding/step-3"
+    | "/onboarding/notifications"
     | "/login";
   previous:
     | "/onboarding/step-1"
@@ -123,12 +124,12 @@ export function OnboardingScreen({
             </Link>
 
             <Link
-              replace={isLastStep}
+              replace={isLastStep && step.next === "/login"}
               href={step.next}
               onClick={() => {
                 handleForward();
 
-                if (isLastStep) {
+                if (isLastStep && step.next === "/login") {
                   handleComplete();
                 }
               }}

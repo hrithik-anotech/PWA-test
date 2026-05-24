@@ -15,7 +15,13 @@
     "next": "Next",
     "getStarted": "Get Started",
     "skip": "Skip",
-    "start": "Start"
+    "start": "Start",
+    "notifications": {
+      "title": "Stay Updated with Snibto",
+      "description": "Enable push notifications to receive instant updates about your helper, booking confirmations, and exclusive discounts.",
+      "allow": "Enable Notifications",
+      "notNow": "Not Now"
+    }
   },
   "Login": {
     "title": "Login",
