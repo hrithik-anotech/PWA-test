@@ -9,6 +9,7 @@ import {
   useRef,
   useState,
   useSyncExternalStore,
+  useTransition,
 } from "react";
 import { useTranslations } from "next-intl";
 
@@ -88,6 +89,8 @@ export default function LocationAccessPage() {
 
   // ───────────────── DETECT DEVICE & SCREEN ─────────────────
 
+  const [isPending, startTransition] = useTransition();
+
   // ───────────────── NAVIGATE ─────────────────
 
   const goToMap = useCallback(
@@ -118,10 +121,10 @@ export default function LocationAccessPage() {
         log("location storage error", error);
       }
 
-      setStatus("idle");
-
       markForwardNavigation();
-      router.push("/location/map");
+      startTransition(() => {
+        router.push("/location/map");
+      });
     },
     [router]
   );
@@ -362,7 +365,7 @@ export default function LocationAccessPage() {
     };
   }, []);
 
-  const isLoading = status === "loading";
+  const isLoading = status === "loading" || isPending;
   const isBlocked = status === "blocked";
 
 

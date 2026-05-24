@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Image from "next/image";
 import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
@@ -11,13 +11,23 @@ export default function ProfileSetupPage() {
   const t = useTranslations('ProfileSetup');
   const router = useRouter();
   const [name, setName] = useState("");
+  
+  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
-  const handleContinue = () => {
+  const isButtonLoading = isLoading || isPending;
+
+  const handleContinue = async () => {
     const trimmedName = name.trim();
 
-    if (!trimmedName) {
+    if (!trimmedName || isButtonLoading) {
       return;
     }
+
+    setIsLoading(true);
+
+    // Simulate API call to save profile
+    await new Promise((resolve) => setTimeout(resolve, 800));
 
     localStorage.setItem("userName", trimmedName);
     setAppState({
@@ -26,7 +36,12 @@ export default function ProfileSetupPage() {
       addressCompleted: false,
     });
     markForwardNavigation();
-    router.replace("/location/access");
+    
+    setIsLoading(false);
+    
+    startTransition(() => {
+      router.replace("/location/access");
+    });
   };
 
   return (
@@ -76,11 +91,18 @@ export default function ProfileSetupPage() {
           <button
             type="button"
             onClick={handleContinue}
-            className="w-full flex items-center justify-center rounded-2xl py-4 text-white font-semibold tracking-widest text-sm uppercase shadow-md transition-opacity hover:opacity-90"
+            disabled={isButtonLoading}
+            className="w-full flex items-center justify-center gap-2 rounded-2xl py-4 text-white font-semibold tracking-widest text-sm uppercase shadow-md transition-opacity hover:opacity-90 disabled:opacity-80"
             style={{
               background: "linear-gradient(135deg, #8b5fd4 0%, #7c4bc8 50%, #8b6bd4 100%)",
             }}
           >
+            {isButtonLoading ? (
+              <svg className="h-5 w-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            ) : null}
             {t('continue')}
           </button>
         </div>

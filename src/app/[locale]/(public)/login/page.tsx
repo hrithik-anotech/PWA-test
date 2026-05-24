@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
@@ -11,9 +11,19 @@ export default function LoginPage() {
   const t = useTranslations('Login');
   const router = useRouter();
   const [phone, setPhone] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
-  const handleConfirm = () => {
-    if (phone.length < 10) return;
+  const isButtonLoading = isLoading || isPending;
+
+  const handleConfirm = async () => {
+    if (phone.length < 10 || isButtonLoading) return;
+    
+    setIsLoading(true);
+    
+    // Simulate an API call to send OTP (Replace this with real fetch later)
+    await new Promise((resolve) => setTimeout(resolve, 1200));
+
     markForwardNavigation();
     localStorage.setItem("phone", phone);
     setAppState({
@@ -22,7 +32,12 @@ export default function LoginPage() {
       locationSelected: false,
       addressCompleted: false,
     });
-    router.push("/otp");
+    
+    setIsLoading(false);
+    
+    startTransition(() => {
+      router.push("/otp");
+    });
   };
 
   const columns = [
@@ -136,11 +151,19 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={handleConfirm}
-            className={`mt-[clamp(0.5rem,1.4dvh,0.75rem)] h-[clamp(2.75rem,6dvh,3.15rem)] w-full rounded-2xl text-sm font-bold uppercase tracking-[0.15em] text-white transition-opacity active:opacity-80 ${phone.length >= 10
-              ? "bg-linear-to-br from-primary to-accent"
-              : "bg-[#c4b5fd]"
-              }`}
+            disabled={isButtonLoading}
+            className={`mt-[clamp(0.5rem,1.4dvh,0.75rem)] flex h-[clamp(2.75rem,6dvh,3.15rem)] w-full items-center justify-center gap-2 rounded-2xl text-sm font-bold uppercase tracking-[0.15em] text-white transition-opacity active:opacity-80 ${
+              phone.length >= 10 && !isButtonLoading
+                ? "bg-linear-to-br from-primary to-accent"
+                : "bg-[#c4b5fd]"
+            }`}
           >
+            {isButtonLoading ? (
+              <svg className="h-5 w-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            ) : null}
             {t('confirm')}
           </button>
         </div>

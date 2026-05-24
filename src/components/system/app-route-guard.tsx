@@ -47,35 +47,42 @@ function canStayOnPath(
   nextPath: AppRoute,
   appState: AppState
 ) {
-  if (
-    isOnboardingPath(pathname) &&
-    !isAppSetupComplete(appState)
-  ) {
-    return true;
+  // If fully setup, cannot visit ANY setup path
+  if (isAppSetupComplete(appState)) {
+    return !isSetupPath(pathname);
   }
 
-  switch (nextPath) {
-    case APP_ROUTES.onboarding:
-      return isOnboardingPath(pathname);
-
-    case APP_ROUTES.login:
-      return isAuthPath(pathname);
-
-    case APP_ROUTES.profileSetup:
-      return pathname === APP_ROUTES.profileSetup;
-
-    case APP_ROUTES.locationAccess:
-      return isLocationPath(pathname);
-
-    case APP_ROUTES.addressDetails:
-      return (
-        pathname === APP_ROUTES.addressDetails ||
-        pathname === "/location/map"
-      );
-
-    case APP_ROUTES.home:
-      return !isSetupPath(pathname);
+  // Not fully setup, so cannot visit home
+  if (!isSetupPath(pathname)) {
+    return false;
   }
+
+  // Onboarding cannot be revisited once completed
+  if (isOnboardingPath(pathname)) {
+    return !appState.onboardingCompleted;
+  }
+
+  // Login/OTP cannot be revisited once logged in
+  if (isAuthPath(pathname)) {
+    return appState.onboardingCompleted && !appState.isLoggedIn;
+  }
+
+  // Profile setup can be revisited to edit, as long as they are logged in
+  if (pathname === APP_ROUTES.profileSetup) {
+    return appState.isLoggedIn;
+  }
+
+  // Location pages can be revisited as long as profile is completed
+  if (isLocationPath(pathname)) {
+    return appState.profileCompleted;
+  }
+
+  // Address details can be revisited as long as location is selected
+  if (pathname === APP_ROUTES.addressDetails) {
+    return appState.locationSelected;
+  }
+
+  return false;
 }
 
 export function AppRouteGuard() {
