@@ -1,11 +1,26 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import InstantBookingDrawer from '@/components/services/InstantBookingDrawer';
-import ServiceDrawer from '@/components/services/ServiceDrawer';
 import { OptimizedImage } from '@/components/ui/optimized-image';
 import { useRouter } from '@/i18n/routing';
-import { useState } from 'react';
+import { runWhenIdle } from '@/utils/preloader';
+import { useEffect, useState } from 'react';
+
+const ServiceDrawer = dynamic(
+  () => import('@/components/services/ServiceDrawer'),
+  { ssr: false }
+);
+
+const InstantBookingDrawer = dynamic(
+  () => import('@/components/services/InstantBookingDrawer'),
+  { ssr: false }
+);
+
+function prewarmDrawerBundles() {
+  void import('@/components/services/ServiceDrawer');
+  void import('@/components/services/InstantBookingDrawer');
+}
 
 type ServiceItem = {
   icon: string;
@@ -32,6 +47,8 @@ export default function HomeServicesSection({
   const router = useRouter();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isInstantDrawerOpen, setIsInstantDrawerOpen] = useState(false);
+  const [hasMountedServiceDrawer, setHasMountedServiceDrawer] = useState(false);
+  const [hasMountedInstantDrawer, setHasMountedInstantDrawer] = useState(false);
   const [selectedServiceId, setSelectedServiceId] = useState(services[0]?.id ?? '');
 
   const orderedServices = [
@@ -43,6 +60,7 @@ export default function HomeServicesSection({
 
   const openService = (serviceId: string) => {
     setSelectedServiceId(serviceId);
+    setHasMountedServiceDrawer(true);
     setIsDrawerOpen(true);
   };
 
@@ -53,6 +71,8 @@ export default function HomeServicesSection({
   const closeInstantDrawer = () => {
     setIsInstantDrawerOpen(false);
   };
+
+  useEffect(() => runWhenIdle(prewarmDrawerBundles), []);
 
   return (
     <>
@@ -92,7 +112,7 @@ export default function HomeServicesSection({
               <div className="relative aspect-3/2 w-full overflow-hidden">
                 <OptimizedImage
                   fill
-                  sizes="(max-width: 640px) 50vw, 200px"
+                  sizes="(max-width: 36rem) calc((100vw - 2.75rem) / 2), 16rem"
                   src={service.image}
                   fallbackSrc={service.fallbackImage}
                   alt={service.label}
@@ -135,33 +155,38 @@ export default function HomeServicesSection({
         </div>
       </div>
 
-      <ServiceDrawer
-        key={selectedServiceId}
-        open={isDrawerOpen}
-        onClose={closeDrawer}
-        services={orderedServices.map((service) => ({
-          id: service.id,
-          label: service.label,
-          img: service.image,
-          fallbackImg: service.fallbackImage,
-          includedItems: service.includedItems,
-          notIncludedItems: service.notIncludedItems,
-        }))}
-        onSchedule={() => {
-          closeDrawer();
-          router.push('/bookings/schedule');
-        }}
-        onBookInstant={() => {
-          closeDrawer();
-          setIsInstantDrawerOpen(true);
-        }}
-      />
+      {hasMountedServiceDrawer ? (
+        <ServiceDrawer
+          key={selectedServiceId}
+          open={isDrawerOpen}
+          onClose={closeDrawer}
+          services={orderedServices.map((service) => ({
+            id: service.id,
+            label: service.label,
+            img: service.image,
+            fallbackImg: service.fallbackImage,
+            includedItems: service.includedItems,
+            notIncludedItems: service.notIncludedItems,
+          }))}
+          onSchedule={() => {
+            closeDrawer();
+            router.push('/bookings/schedule');
+          }}
+          onBookInstant={() => {
+            closeDrawer();
+            setHasMountedInstantDrawer(true);
+            setIsInstantDrawerOpen(true);
+          }}
+        />
+      ) : null}
 
-      <InstantBookingDrawer
-        open={isInstantDrawerOpen}
-        onClose={closeInstantDrawer}
-        serviceLabel={selectedService?.label}
-      />
+      {hasMountedInstantDrawer ? (
+        <InstantBookingDrawer
+          open={isInstantDrawerOpen}
+          onClose={closeInstantDrawer}
+          serviceLabel={selectedService?.label}
+        />
+      ) : null}
     </>
   );
 }

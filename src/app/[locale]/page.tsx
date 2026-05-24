@@ -10,7 +10,12 @@ import {
   getAppState,
   getRootEntryPath,
 } from "@/lib/storage";
-import { preloadImages, CRITICAL_IMAGES } from "@/utils/preloader";
+import {
+  preloadImages,
+  CRITICAL_IMAGES,
+  getWarmImagesForPath,
+  warmImages,
+} from "@/utils/preloader";
 
 
 export default function RootPage() {
@@ -81,19 +86,22 @@ export default function RootPage() {
           return;
         }
 
-        // -----------------------------
-        // PRELOAD CRITICAL ASSETS
-        // -----------------------------
-        // Preload essential images so they are ready when we navigate to Home
-        await preloadImages(CRITICAL_IMAGES);
+        void preloadImages(CRITICAL_IMAGES, {
+          concurrency: 1,
+          fetchPriority: "high",
+          timeoutMs: 1200,
+        });
 
         // -----------------------------
         // APP STATE
         // -----------------------------
 
-        router.replace(
-          getRootEntryPath(getAppState())
+        const nextPath = getRootEntryPath(
+          getAppState()
         );
+
+        router.replace(nextPath);
+        warmImages(getWarmImagesForPath(nextPath));
       } catch (error) {
         console.error(
           "App initialization failed:",

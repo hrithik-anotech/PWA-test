@@ -8,7 +8,7 @@ import { isLocale } from '@/i18n/routing';
 
 import { urbanist } from "@/lib/fonts";
 import { NavigationTransitionManager } from "@/components/system/navigation-transition-manager";
-import { PWAInstallManager } from "@/components/pwa/PWAInstallManager";
+import { DeferredPWAInstallManager } from "@/components/pwa/DeferredPWAInstallManager";
 import { StatusBarManager } from "@/components/pwa/StatusBarManager";
 import { AppRouteGuard } from "@/components/system/app-route-guard";
 
@@ -105,7 +105,7 @@ export default async function RootLayout({
           <StatusBarManager />
           <AppRouteGuard />
           <NavigationTransitionManager />
-          <PWAInstallManager />
+          <DeferredPWAInstallManager />
           {children}
         </NextIntlClientProvider>
       </body>

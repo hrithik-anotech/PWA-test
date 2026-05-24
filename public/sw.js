@@ -1,4 +1,4 @@
-const CACHE_VERSION = "snibto-pwa-v11";
+const CACHE_VERSION = "snibto-pwa-v12";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -9,7 +9,14 @@ const STATIC_ASSETS = [
   "/icons/icon-192.png",
   "/icons/icon-512.png",
   "/icons/maskable-icon-512.png",
-  "/icons/apple-touch-icon.png"
+  "/icons/apple-touch-icon.png",
+  "/images/logos/splash-logo.webp",
+  "/images/logos/login-logo.webp",
+  "/images/login/profile-placeholder.png",
+  "/images/helper.webp",
+  "/images/icons/nav-home.svg",
+  "/images/icons/nav-book.svg",
+  "/images/icons/nav-wallet.svg"
 ];
 
 const isHttpRequest = (request) =>
