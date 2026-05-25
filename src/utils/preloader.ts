@@ -48,7 +48,7 @@ const LOCATION_WARM_IMAGES = [
 
 const ADDRESS_WARM_IMAGES = [
   "/images/location/home.svg",
-  "/images/location/family.svg",
+  "/images/location/friend.svg",
   "/images/location/other.svg",
   "/images/location/location-fill.svg",
 ];

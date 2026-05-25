@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Link } from '@/i18n/routing';
+import { Link, useRouter } from '@/i18n/routing';
 
 const cn = (...classes: (string | undefined | null | false)[]): string => {
   return classes.filter(Boolean).join(' ');
@@ -25,7 +25,15 @@ const transactionsData: Transaction[] = [
 export default function WalletPage() {
   const t = useTranslations('Wallet');
   const tCommon = useTranslations('Common');
-  const tProfile = useTranslations('Profile');
+  const router = useRouter();
+
+  const handleBack = () => {
+    if (typeof window !== 'undefined' && document.referrer && document.referrer.includes(window.location.host)) {
+      router.back();
+    } else {
+      router.push('/home');
+    }
+  };
 
   const [balance, setBalance] = useState('0');
   const [cashAmount, setCashAmount] = useState('0');
@@ -39,8 +47,8 @@ export default function WalletPage() {
         <div className="px-4 py-4 sm:px-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Link
-                href="/home"
+              <button
+                onClick={handleBack}
                 className="-ml-2 flex h-10 w-10 items-center justify-center rounded-lg text-black transition-colors hover:bg-gray-100 active:scale-95"
                 aria-label={tCommon('back')}
               >
@@ -57,7 +65,7 @@ export default function WalletPage() {
                     d="M15 19l-7-7 7-7"
                   />
                 </svg>
-              </Link>
+              </button>
               <h1 className="text-xl font-semibold text-black">{t('title')}</h1>
             </div>
 
@@ -66,7 +74,7 @@ export default function WalletPage() {
               className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#666666] transition-colors"
             >
               <div className='bg-[#F1EDFD] p-1 rounded-full'>
-              <Image alt="secure" src="/images/icons/secure.svg" width={15} height={15} />
+                <Image alt="secure" src="/images/icons/secure.svg" width={15} height={15} />
               </div>
               <span>Secure</span>
             </button>
@@ -118,42 +126,42 @@ export default function WalletPage() {
         <div className="mb-6 grid grid-cols-2 gap-4 sm:gap-5">
           {/* Cash Card */}
           <button
-            className="group flex items-center justify-between rounded-xl border border-[#D8D8D8] bg-white px-4 py-5 transition-all hover:shadow-md active:scale-95 sm:px-5 sm:py-6"
+            className="group flex items-center justify-between rounded-xl bg-white px-4 py-5 transition-all shadow-[0px_0px_4px_1px_#00000040] sm:px-5 sm:py-6"
           >
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#DFF7EC] sm:h-12 sm:w-12">
-                <span className="text-lg sm:text-xl">💵</span>
+                <Image alt='cash' src="/images/icons/cash.svg" width={25} height={25} />
               </div>
               <div className="text-left">
-                <p className="text-xs font-medium text-[#666666] sm:text-sm">Cash</p>
-                <p className="mt-1 text-base font-bold text-black sm:text-lg">
+                <p className="text-sm font-medium text-[#666666] sm:text-base">Cash</p>
+                <p className="mt-1 text-lg font-bold text-black sm:text-xl">
                   ₹{cashAmount}
                 </p>
               </div>
             </div>
-            <svg className="h-5 w-5 text-[#CCCCCC] transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {/* <svg className="h-5 w-5 text-[#CCCCCC] transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+            </svg> */}
           </button>
 
           {/* Bonus Card */}
           <button
-            className="group flex items-center justify-between rounded-xl border border-[#D8D8D8] bg-white px-4 py-5 transition-all hover:shadow-md active:scale-95 sm:px-5 sm:py-6"
+            className="group flex items-center justify-between rounded-xl bg-white px-4 py-5 transition-all shadow-[0px_0px_4px_1px_#00000040] sm:px-5 sm:py-6"
           >
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F1EEFC] sm:h-12 sm:w-12">
-                <span className="text-lg sm:text-xl">🎁</span>
+                <Image alt='bonus' src="/images/icons/bonus.svg" width={25} height={25} />
               </div>
               <div className="text-left">
-                <p className="text-xs font-medium text-[#666666] sm:text-sm">Bonus</p>
-                <p className="mt-1 text-base font-bold text-black sm:text-lg">
+                <p className="text-sm font-medium text-[#666666] sm:text-base">Bonus</p>
+                <p className="mt-1 text-lg font-bold text-black sm:text-xl">
                   ₹{bonusAmount}
                 </p>
               </div>
             </div>
-            <svg className="h-5 w-5 text-[#CCCCCC] transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {/* <svg className="h-5 w-5 text-[#CCCCCC] transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+            </svg> */}
           </button>
         </div>
 
@@ -161,24 +169,22 @@ export default function WalletPage() {
         <div className="mb-6 flex items-center justify-between rounded-xl bg-[#F7F3FD] px-5 py-5 sm:px-6 sm:py-6">
           <div className="flex items-center gap-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#DFF7EC] sm:h-14 sm:w-14">
-              <span className="text-2xl">🎉</span>
+              <Image alt='refer' src="/images/icons/refer.svg" width={25} height={25} />
             </div>
             <div>
               <h3 className="font-semibold text-black sm:text-base">
-                {tProfile('referTitle')}
+                {t('referTitle')}
               </h3>
               <p className="mt-1 text-xs text-[#666666] sm:text-sm">
-                {tProfile('referSub')}
+                {t('referSub')}
               </p>
             </div>
           </div>
           <button
-            className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-gray-100 active:scale-95 sm:h-11 sm:w-11"
+            className="flex h-10 w-10 items-center justify-center bg-[#BA9CF1] rounded-full sm:h-[2.75rem] sm:w-[2.75rem]"
             aria-label="Refer"
           >
-            <svg className="h-6 w-6 text-[#8B5CF6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+            <Image alt='left-arrow' src="/images/icons/arrow-left-white.svg" width={22} height={22} />
           </button>
         </div>
 
@@ -236,15 +242,14 @@ export default function WalletPage() {
         </div>
 
         {/* Security Footer */}
-        <div className="flex items-center justify-between rounded-2xl border border-[#D8D8D8] bg-white px-5 py-4 sm:px-6 sm:py-5">
+        <div className="flex w-full items-center justify-between rounded-2xl border border-[#D8D8D8] bg-white px-5 py-4 sm:px-6 sm:py-5">
           <div className="flex items-center gap-3">
-            <svg className="h-5 w-5 text-[#8B5CF6]" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
-            </svg>
+            <Image alt="secure" src="/images/icons/secure.svg" width={15} height={15} />
             <p className="text-sm font-medium text-[#666666]">
               Your payments are <span className="font-semibold">100% secure</span>
             </p>
           </div>
+          <Image alt="lock" src="/images/icons/lock.svg" width={15} height={15} className="shrink-0" />
         </div>
       </main>
 

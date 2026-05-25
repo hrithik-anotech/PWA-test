@@ -1,10 +1,105 @@
 'use client';
 
+import { useEffect } from 'react';
+
 type Props = {
   isExiting?: boolean;
 };
 
+function playLightningSound() {
+  try {
+    const AudioContext =
+      window.AudioContext ||
+      (window as Window & { webkitAudioContext?: typeof window.AudioContext }).webkitAudioContext;
+    if (!AudioContext) return;
+    
+    const ctx = new AudioContext();
+    const now = ctx.currentTime;
+    
+    // --- 1. THE LIGHTNING CRACKLE (High frequency energy sparks) ---
+    for (let i = 0; i < 3; i++) {
+      const crackleOsc = ctx.createOscillator();
+      const crackleGain = ctx.createGain();
+      
+      crackleOsc.type = 'triangle';
+      crackleOsc.frequency.setValueAtTime(3000 + Math.random() * 2000, now + i * 0.04);
+      crackleOsc.frequency.exponentialRampToValueAtTime(100, now + i * 0.04 + 0.03);
+      
+      crackleGain.gain.setValueAtTime(0.08, now + i * 0.04);
+      crackleGain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.04 + 0.03);
+      
+      crackleOsc.connect(crackleGain);
+      crackleGain.connect(ctx.destination);
+      
+      crackleOsc.start(now + i * 0.04);
+      crackleOsc.stop(now + i * 0.04 + 0.03);
+    }
+    
+    // --- 2. THE ZAP (Main energy discharge) ---
+    const mainOsc = ctx.createOscillator();
+    const mainGain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+    
+    mainOsc.type = 'sawtooth';
+    mainOsc.frequency.setValueAtTime(800, now);
+    mainOsc.frequency.exponentialRampToValueAtTime(180, now + 0.4);
+    
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(1500, now);
+    filter.frequency.exponentialRampToValueAtTime(300, now + 0.4);
+    
+    mainGain.gain.setValueAtTime(0.18, now);
+    mainGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+    
+    mainOsc.connect(filter);
+    filter.connect(mainGain);
+    mainGain.connect(ctx.destination);
+    
+    mainOsc.start(now);
+    mainOsc.stop(now + 0.4);
+    
+    // --- 3. THE RUMBLE (Low-end thunder decay) ---
+    const bufferSize = ctx.sampleRate * 1.2;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const channelData = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      channelData[i] = Math.random() * 2 - 1;
+    }
+    
+    const noiseNode = ctx.createBufferSource();
+    noiseNode.buffer = buffer;
+    
+    const noiseFilter = ctx.createBiquadFilter();
+    noiseFilter.type = 'lowpass';
+    noiseFilter.frequency.setValueAtTime(200, now);
+    noiseFilter.frequency.exponentialRampToValueAtTime(35, now + 1.2);
+    
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.25, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+    
+    noiseNode.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(ctx.destination);
+    
+    noiseNode.start(now);
+    noiseNode.stop(now + 1.2);
+  } catch (error) {
+    console.error('Failed to play instant splash sound effect:', error);
+  }
+}
+
 export default function InstantSplash({ isExiting = false }: Props) {
+  useEffect(() => {
+    if (isExiting) return;
+    
+    // Play the lightning strike sound effect exactly at the strike frame (1.0s)
+    const timer = setTimeout(() => {
+      playLightningSound();
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, [isExiting]);
   return (
     <div
       className={`fixed inset-0 z-100 flex items-center justify-center overflow-hidden bg-linear-to-b from-[#5F30CA] via-[#311782] to-[#0D002B] transition-opacity duration-600 ease-out-sine ${

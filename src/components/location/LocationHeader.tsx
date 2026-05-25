@@ -13,7 +13,7 @@ export type Address = {
   areaText?: string;
 };
 
-const INITIAL_ADDRESSES: Address[] = [
+export const INITIAL_ADDRESSES: Address[] = [
   { id: '1', type: 'Home', details: 'Genex Exotica, Asansol WB' },
   { id: '2', type: 'Work', details: 'Tech Park, Bangalore KA' },
 ];
@@ -116,4 +116,3 @@ export default function LocationHeader() {
     </>
   );
 }
-

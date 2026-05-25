@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
-import { Link } from '@/i18n/routing';
+import { Link, useRouter } from '@/i18n/routing';
+import { cn } from '@/lib/cn';
 
 type FilterType = 'all' | 'single' | 'multiple';
 type BookingStatus = 'confirmed' | 'cancelled';
@@ -18,9 +19,6 @@ interface Booking {
     icon: string;
 }
 
-const cn = (...classes: (string | undefined | null | false)[]): string => {
-    return classes.filter(Boolean).join(' ');
-};
 
 const bookingsData: Booking[] = [
     {
@@ -82,6 +80,16 @@ function getBookingDetailsHref(booking: Booking) {
 export default function MyBookingsPage() {
     const t = useTranslations('MyBookings');
     const tCommon = useTranslations('Common');
+    const router = useRouter();
+
+    const handleBack = () => {
+        if (typeof window !== 'undefined' && document.referrer && document.referrer.includes(window.location.host)) {
+            router.back();
+        } else {
+            router.push('/home');
+        }
+    };
+
     const [activeFilter, setActiveFilter] = useState<FilterType>('all');
 
     const filteredBookings =
@@ -95,8 +103,8 @@ export default function MyBookingsPage() {
             <header className="sticky top-0 z-40 bg-[#F9F8FD] pt-[env(safe-area-inset-top)]">
                 <div className="px-4 py-4 sm:px-6">
                     <div className="flex items-center gap-3">
-                        <Link
-                            href="/home"
+                        <button
+                            onClick={handleBack}
                             className="-ml-2 flex h-10 w-10 items-center justify-center rounded-lg text-black transition-colors hover:bg-gray-100 active:scale-95"
                             aria-label={tCommon('back')}
                         >
@@ -113,7 +121,7 @@ export default function MyBookingsPage() {
                                     d="M15 19l-7-7 7-7"
                                 />
                             </svg>
-                        </Link>
+                        </button>
                         <h1 className="text-xl font-semibold text-black">{t('title')}</h1>
                     </div>
                 </div>

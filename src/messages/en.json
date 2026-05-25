@@ -57,7 +57,7 @@
     "change": "Change",
     "saveAs": "Save As",
     "home": "Home",
-    "family": "Family",
+    "friend": "Friend",
     "other": "Other",
     "confirm": "Confirm Address"
   },
@@ -237,7 +237,7 @@
     "subscribeSub": "Faster bookings & many more",
     "subscribeButton": "Up to 20% off",
     "referTitle": "Invite friends & earn",
-    "referSub": "Refer your friends and get rewards",
+    "referSub": "Invite friends and earn rewards",
     "referButton": "Earn up to ₹100",
     "savedAddresses": "Saved Addresses",
     "manageAccount": "Manage Account",
@@ -250,7 +250,9 @@
     "addMoney": "Add Money",
     "enterAmount": "Enter Amount",
     "selectAmount": "Select Amount",
-    "transactions": "Recent Transactions",
+    "referTitle": "Refer & Earn ₹100",
+    "referSub": "Invite friends and earn rewards",
+    "transactions": "Transactions",
     "noTransactions": "No transactions yet"
   },
   "Error": {

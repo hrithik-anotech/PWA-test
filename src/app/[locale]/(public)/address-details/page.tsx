@@ -11,7 +11,7 @@ import {
 import { setAppState } from "@/lib/storage";
 import { useSearchParams } from "next/navigation";
 
-type AddressType = "home" | "family" | "other";
+type AddressType = "home" | "friend" | "other";
 
 type AddressTypeOption = {
   iconHeight: number;
@@ -37,8 +37,8 @@ const ADDRESS_TYPE_OPTIONS: AddressTypeOption[] = [
   {
     iconHeight: 20,
     iconWidth: 29,
-    label: "Family",
-    value: "family",
+    label: "Friend",
+    value: "friend",
   },
   {
     iconHeight: 20,
@@ -69,8 +69,8 @@ function AddressTextField({
         htmlFor={id}
         className={`pointer-events-none absolute transition-all duration-200 ease-out ${
           shouldFloatLabel
-            ? "-top-[10px] left-3 sm:left-4 bg-[#ffffff] px-2 text-[11px] sm:text-[12px] text-[#9E9E9E]"
-            : "left-4 sm:left-5 top-1/2 -translate-y-1/2 px-0 text-sm sm:text-[16px] text-[#7E7E7E]"
+            ? "-top-[0.625rem] left-3 sm:left-4 bg-[#ffffff] px-2 text-[2.75vw] sm:text-[3vw] text-[#9E9E9E]" /* ↓ was -top-[10px]/text-[11px]/text-[12px] → -top-[0.625rem]/text-[2.75vw]/text-[3vw] */
+            : "left-4 sm:left-5 top-1/2 -translate-y-1/2 px-0 text-sm sm:text-base text-[#7E7E7E]"
         }`}
       >
         {label}
@@ -83,7 +83,7 @@ function AddressTextField({
         onChange={(event) => onChange(event.target.value)}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        className="h-[52px] sm:h-[58px] w-full bg-transparent text-sm sm:text-[16px] text-black outline-none"
+        className="h-[3.25rem] sm:h-[3.625rem] w-full bg-transparent text-sm sm:text-base text-black outline-none"
         style={{ WebkitTapHighlightColor: "transparent" }}
       />
     </div>
@@ -163,7 +163,7 @@ function AddressDetailsContent() {
     // Map selectedType to capitalized string
     const typeMap: Record<AddressType, string> = {
       home: 'Home',
-      family: 'Family',
+      friend: 'Friend',
       other: 'Other'
     };
     const capitalizedType = typeMap[selectedType] || 'Home';
@@ -264,11 +264,11 @@ function AddressDetailsContent() {
           </button>
 
           <div>
-            <h1 className="text-lg sm:text-[22px] font-semibold tracking-[-0.3px] text-black leading-tight">
+            <h1 className="text-lg sm:text-[5.5vw] font-semibold tracking-[-0.3px] text-black leading-tight"> {/* ↓ was sm:text-[22px] → sm:text-[5.5vw] */}
               {action === 'edit' ? "Edit address" : t('title')}
             </h1>
 
-            <p className="mt-0.5 text-xs sm:text-[13px] text-[#8B8B8B]">
+            <p className="mt-0.5 text-xs sm:text-sm text-[#8B8B8B]">
               {action === 'edit' ? "Update details for better accuracy" : t('subtitle')}
             </p>
           </div>
@@ -299,10 +299,10 @@ function AddressDetailsContent() {
           />
 
           {/* Area Card */}
-          <div className="relative rounded-[18px] border border-[#D9D9D9] bg-white p-3 sm:p-4">
+          <div className="relative rounded-[1.125rem] border border-[#D9D9D9] bg-white p-3 sm:p-4">
             {/* Floating Label */}
-            <div className="absolute -top-[14px] left-4 bg-[#ffffff] px-1">
-              <span className="text-[11px] sm:text-[12px] text-[#9E9E9E]">
+            <div className="absolute -top-[0.875rem] left-4 bg-[#ffffff] px-1">
+              <span className="text-[2.75vw] sm:text-[3vw] text-[#9E9E9E]"> {/* ↓ was text-[11px]/text-[12px] → text-[2.75vw]/text-[3vw] */}
                 {t('area')}
               </span>
             </div>
@@ -310,27 +310,28 @@ function AddressDetailsContent() {
             <div className="flex items-center gap-3 sm:gap-4">
               {/* Address text */}
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] sm:text-[15px] leading-[1.55] text-[#4B4B4B]">
+                <p className="text-sm sm:text-[3.75vw] leading-[1.55] text-[#4B4B4B]"> {/* ↓ was sm:text-[15px] → sm:text-[3.75vw] */}
                   {areaText}
                 </p>
               </div>
 
               {/* Map Preview */}
-              <div className="relative h-[80px] w-[80px] sm:h-[92px] sm:w-[92px] shrink-0 overflow-hidden rounded-[16px] sm:rounded-[18px]">
+              <div className="relative h-20 w-20 sm:h-[5.75rem] sm:w-[5.75rem] shrink-0 overflow-hidden rounded-2xl sm:rounded-[1.125rem]">
                 <div
                   aria-hidden="true"
                   className="absolute inset-0 bg-[#eee9f7]"
                 >
-                  <div className="absolute left-[-10px] top-6 h-1 w-28 rotate-[-16deg] rounded-full bg-white/80" />
-                  <div className="absolute left-8 top-[-8px] h-28 w-1 rotate-[10deg] rounded-full bg-white/70" />
-                  <div className="absolute bottom-5 right-[-12px] h-1 w-24 rotate-[24deg] rounded-full bg-white/75" />
+                  <div className="absolute -left-[0.625rem] top-6 h-1 w-28 rotate-[-16deg] rounded-full bg-white/80" />
+                  <div className="absolute left-8 -top-2 h-28 w-1 rotate-[10deg] rounded-full bg-white/70" />
+                  <div className="absolute bottom-5 -right-3 h-1 w-24 rotate-[24deg] rounded-full bg-white/75" />
                   <div className="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#6C35FF]/20" />
                   <div className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#6C35FF]" />
                 </div>
 
                 <Link
                   href={`/location/map?action=${action}${id ? `&id=${id}` : ''}`}
-                  className="absolute left-1/2 top-1/2 z-10 flex h-[26px] sm:h-[28px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-black px-2.5 sm:px-3 text-[9px] sm:text-[10px] font-semibold text-white whitespace-nowrap"
+                  className="absolute left-1/2 top-1/2 z-10 flex h-[1.625rem] sm:h-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-black px-2.5 sm:px-3 text-[2.25vw] sm:text-[2.5vw] font-semibold text-white whitespace-nowrap"
+                  /* ↓ was text-[9px]/text-[10px] → text-[2.25vw]/text-[2.5vw] */
                   style={{ WebkitTapHighlightColor: "transparent" }}
                 >
                   {t('change')}
@@ -341,7 +342,7 @@ function AddressDetailsContent() {
 
           {/* Save As */}
           <div className="pt-1">
-            <p className="text-sm sm:text-[16px] font-medium text-[#6C35FF]">
+            <p className="text-sm sm:text-base font-medium text-[#6C35FF]">
               {t('saveAs')}
             </p>
 
@@ -357,10 +358,10 @@ function AddressDetailsContent() {
                       handleSelectType(option.value)
                     }
                     style={{
-                      minHeight: "44px", // iOS minimum tap target
+                      minHeight: "2.75rem", // was 44px (iOS minimum tap target)
                       WebkitTapHighlightColor: "transparent",
                     }}
-                    className={`flex h-[48px] sm:h-[52px] flex-1 items-center justify-center gap-1.5 sm:gap-2 rounded-[12px] border text-[13px] sm:text-[15px] font-medium transition-all active:scale-95 ${
+                    className={`flex h-12 sm:h-[3.25rem] flex-1 items-center justify-center gap-1.5 sm:gap-2 rounded-xl border text-sm sm:text-[3.75vw] font-medium transition-all active:scale-95 ${ /* ↓ was sm:text-[15px] → sm:text-[3.75vw] */
                       isSelected
                         ? "border-[#6C35FF] bg-[#F5F0FF] text-[#6C35FF]"
                         : "border-transparent bg-[#EDEDED] text-[#4B4B4B]"
@@ -399,7 +400,7 @@ function AddressDetailsContent() {
             type="button"
             onClick={handleFinish}
             disabled={isButtonLoading}
-            className="flex gap-2 h-13 sm:h-14.5 w-full items-center justify-center rounded-2xl bg-[#6C35FF] text-base sm:text-[18px] font-semibold text-white shadow-sm transition-all active:scale-[0.98] disabled:opacity-80 disabled:active:scale-100"
+            className="flex gap-2 h-13 sm:h-14.5 w-full items-center justify-center rounded-2xl bg-[#6C35FF] text-base sm:text-lg font-semibold text-white shadow-sm transition-all active:scale-[0.98] disabled:opacity-80 disabled:active:scale-100"
             style={{ WebkitTapHighlightColor: "transparent" }}
           >
             {isButtonLoading ? (

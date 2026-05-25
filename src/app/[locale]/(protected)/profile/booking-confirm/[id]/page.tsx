@@ -7,14 +7,14 @@ import { cn } from "@/lib/cn";
 
 // ── Icon paths — point these to your actual files in /public/icons/ ───────────
 const ICONS = {
-  back:     "/images/icons/back-arrow.svg",
-  check:    "/images/icons/badge-check.svg",
+  back: "/images/icons/back-black.svg",
+  check: "/images/icons/badge-check.svg",
   calender: "/images/icons/calender-outline.svg",
   location: "/images/icons/location-pin.svg",
-  rupee:    "/images/icons/rupee.svg",
-  headset:  "/images/icons/headset.svg",
-  share:    "/images/icons/share.svg",
-  chevron:  "/images/icons/chevron-right.svg",
+  rupee: "/images/icons/rupee.svg",
+  headset: "/images/icons/headset.svg",
+  share: "/images/icons/share.svg",
+  chevron: "/images/icons/chevron-right.svg",
 } as const;
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -68,11 +68,10 @@ function ListRow({
         </p>
       </div>
       <Image
-        src={ICONS.chevron}
-        alt=""
-        width={17}
-        height={17}
-        className="shrink-0 opacity-40"
+        src={ICONS.back}
+        alt="Back"
+        width={12}
+        height={12}
       />
     </button>
   );
@@ -84,8 +83,6 @@ const OTP_DIGITS = ["1", "2", "2", "9"];
 
 export default function BookingConfirmedPage() {
   const router = useRouter();
-  const params = useParams<{ id: string }>();
-  const bookingId = params.id;
 
   return (
     <div className="h-dvh max-h-dvh w-full overflow-hidden bg-[#F4F5FA] flex flex-col">
@@ -96,14 +93,14 @@ export default function BookingConfirmedPage() {
         {/* back button */}
         <button
           aria-label="Go back"
-          onClick={() => router.push("/profile/mybookings")}
+          onClick={() => router.replace("/profile/mybookings")}
           className="absolute left-4 top-9 p-1.5 rounded-full active:bg-white/20 transition-colors [@media(min-height:720px)]:top-12"
         >
           <Image
             src={ICONS.back}
             alt="Back"
-            width={20}
-            height={20}
+            width={12}
+            height={12}
             className="brightness-0 invert"
           />
         </button>
@@ -127,11 +124,6 @@ export default function BookingConfirmedPage() {
           You will be able to track your assigned Expert 15 min before your
           scheduled time
         </p>
-        {bookingId ? (
-          <p className="mt-2 text-xs font-semibold text-white/80 [@media(min-height:720px)]:mt-3">
-            Booking ID #{bookingId}
-          </p>
-        ) : null}
       </div>
 
       {/* ── BOTTOM SHEET ──────────────────────────────────────────────────── */}

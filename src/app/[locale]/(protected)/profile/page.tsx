@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useSyncExternalStore, useState } from "react";
+import { useEffect, useMemo, useSyncExternalStore, useState } from "react";
 import Image from "next/image";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Link } from "@/i18n/routing";
@@ -8,9 +8,56 @@ import { useTranslations } from "next-intl";
 import {
     defaultUserProfile,
     getUserProfile,
+    STORAGE_KEYS,
+    type UserProfile,
 } from "@/lib/storage";
 import LanguageDrawer from "@/components/system/language-drawer";
+import AddressDrawer from "@/components/location/AddressDrawer";
+import EditProfileDrawer from "@/components/profile/EditProfileDrawer";
+import {
+    type Address,
+    INITIAL_ADDRESSES,
+} from "@/components/location/LocationHeader";
 
+const PROFILE_BANNER_IMAGE_TRANSFORM = {
+    width: 384,
+    quality: 90,
+    format: "auto",
+} as const;
+
+const PROFILE_BANNER_IMAGES = {
+    subscription: {
+        imageKitPath: "/profile/c 1.png",
+        fallbackSrc: "/images/profile/c 1.png",
+    },
+    referral: {
+        imageKitPath: "/profile/g 3.png",
+        fallbackSrc: "/images/profile/g 3.png",
+    },
+} as const;
+
+const QUICK_ACTIONS = [
+    {
+        icon: "/images/icons/calender-outline.svg",
+        labelKey: "myBookings",
+        href: "/profile/mybookings",
+    },
+    {
+        icon: "/images/icons/wallet.svg",
+        labelKey: "wallet",
+        href: "/wallet",
+    },
+    {
+        icon: "/images/icons/offers.svg",
+        labelKey: "offers",
+        href: "/profile/offers",
+    },
+    {
+        icon: "/images/icons/headset.svg",
+        labelKey: "support",
+        href: "/profile/support",
+    },
+] as const;
 function subscribeToProfileStorage() {
     return () => {};
 }
@@ -29,6 +76,11 @@ export default function ProfilePage() {
     const t = useTranslations('Profile');
     const tCommon = useTranslations('Common');
     const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+    const [isAddressDrawerOpen, setIsAddressDrawerOpen] = useState(false);
+    const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+    const [addresses, setAddresses] = useState<Address[]>(INITIAL_ADDRESSES);
+    const [selectedAddressId, setSelectedAddressId] = useState('1');
+    const [profileRevision, setProfileRevision] = useState(0);
 
     const profileSnapshot = useSyncExternalStore(
         subscribeToProfileStorage,
@@ -37,23 +89,79 @@ export default function ProfilePage() {
     );
 
     const profile = useMemo(() => {
+        const currentProfile = getUserProfile();
         const [name, phone] = profileSnapshot.split("\u0000");
 
         return {
-            name,
-            phone,
+            name: currentProfile.name || name,
+            phone: currentProfile.phone || phone,
         };
-    }, [profileSnapshot]);
+    }, [profileRevision, profileSnapshot]);
 
     const formattedPhone = profile.phone
         ? `+91 ${profile.phone}`
         : t('phoneNotAdded');
 
+    const refreshAddresses = () => {
+        const stored = localStorage.getItem('user_addresses');
+
+        if (!stored) {
+            localStorage.setItem('user_addresses', JSON.stringify(INITIAL_ADDRESSES));
+            setAddresses(INITIAL_ADDRESSES);
+            return;
+        }
+
+        try {
+            const parsed: unknown = JSON.parse(stored);
+
+            if (!Array.isArray(parsed) || parsed.length === 0) {
+                localStorage.setItem('user_addresses', JSON.stringify(INITIAL_ADDRESSES));
+                setAddresses(INITIAL_ADDRESSES);
+                return;
+            }
+
+            const nextAddresses = parsed as Address[];
+            const storedSelected = localStorage.getItem('selected_address_id');
+            const nextSelected =
+                storedSelected && nextAddresses.some((address) => address.id === storedSelected)
+                    ? storedSelected
+                    : nextAddresses[0].id;
+
+            setAddresses(nextAddresses);
+            setSelectedAddressId(nextSelected);
+            localStorage.setItem('selected_address_id', nextSelected);
+        } catch {
+            localStorage.setItem('user_addresses', JSON.stringify(INITIAL_ADDRESSES));
+            setAddresses(INITIAL_ADDRESSES);
+        }
+    };
+
+    useEffect(() => {
+        refreshAddresses();
+    }, []);
+
+    const handleSelectAddress = (id: string) => {
+        setSelectedAddressId(id);
+        localStorage.setItem('selected_address_id', id);
+    };
+
+    const openAddressDrawer = () => {
+        refreshAddresses();
+        setIsAddressDrawerOpen(true);
+    };
+
+    const handleSaveProfile = (updates: UserProfile) => {
+        localStorage.setItem(STORAGE_KEYS.userName, updates.name);
+        localStorage.setItem(STORAGE_KEYS.phone, updates.phone);
+        setProfileRevision((revision) => revision + 1);
+        setIsEditProfileOpen(false);
+    };
+
     return (
         <div className="min-h-dvh bg-[#F9F8FD] pb-[max(1.25rem,env(safe-area-inset-bottom))]">
             <div className="mx-auto flex w-full max-w-[36rem] flex-col px-[clamp(0.875rem,4vw,1.5rem)] pt-[max(0.5rem,env(safe-area-inset-top))]">
             {/* ── HEADER ── */}
-            <div className="flex items-center gap-[clamp(0.5rem,2vw,0.75rem)] py-[clamp(0.75rem,2.5dvh,1rem)]">
+            <div className="flex items-center gap-[clamp(0.5rem,2vw,0.75rem)] py-[clamp(0.2rem,1dvh,1rem)]">
                 <Link
                     href="/home"
                     className="-ml-[0.5rem] flex h-[clamp(2.25rem,10vw,2.75rem)] w-[clamp(2.25rem,10vw,2.75rem)] items-center justify-center rounded-full transition-transform active:scale-95"
@@ -72,14 +180,14 @@ export default function ProfilePage() {
 
             {/* ── USER CARD ── */}
             <div className="flex items-center gap-[clamp(0.75rem,3vw,1.125rem)] px-[clamp(0.25rem,1vw,0.75rem)] py-[clamp(0.75rem,2.5dvh,1.125rem)]">
-                <div className="relative h-[clamp(3.75rem,15vw,4.5rem)] w-[clamp(3.75rem,15vw,4.5rem)] flex-shrink-0 overflow-hidden rounded-full border-2 border-[#EDE8FF]">
-                    <OptimizedImage
-                        src="/profile/avatars/user.png"
-                        ikPath={true}
-                        fallbackSrc="/images/login/profile-placeholder.png"
+                <div className="relative h-[clamp(3.8rem,15vw,4.5rem)] w-[clamp(3.8rem,15vw,4.5rem)] shrink-0 overflow-hidden rounded-full border-2 border-[#EDE8FF]">
+                    <Image
+                        src="/images/login/profile-placeholder.png"
                         alt={profile.name}
                         fill
+                        sizes="(max-width: 36rem) 15vw, 4.5rem"
                         className="object-cover"
+                        priority
                     />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -89,38 +197,45 @@ export default function ProfilePage() {
                     <p className="mt-0.5 truncate text-[clamp(0.875rem,3.8vw,1rem)] text-gray-400">
                         {formattedPhone}
                     </p>
-                    <Link
-                        href="/profile/edit"
-                        className="mt-0.5 inline-block text-[clamp(0.8125rem,3.3vw,0.9375rem)] font-semibold text-[#7B5CF5]"
+                    <button
+                        type="button"
+                        onClick={() => setIsEditProfileOpen(true)}
+                        className="mt-0.5 inline-flex items-center gap-1 text-left text-[clamp(0.8125rem,3.3vw,0.9375rem)] font-semibold text-[#7B5CF5]"
                     >
-                        {t('viewEdit')} &gt;
-                    </Link>
+                        {t('viewEdit')}
+                        <Image
+                            src="/images/icons/arrow-right-color.svg"
+                            alt=""
+                            width={12}
+                            height={12}
+                            className="h-[clamp(0.625rem,2.5vw,0.75rem)] w-auto"
+                        />
+                    </button>
                 </div>
             </div>
 
             {/* ── QUICK ACTIONS ── */}
             <div className="mt-[clamp(0.625rem,2dvh,1rem)] rounded-[clamp(1rem,4vw,1.25rem)] bg-white px-[clamp(0.5rem,2vw,0.75rem)] py-[clamp(0.875rem,2.5dvh,1.125rem)] shadow-sm">
                 <div className="grid grid-cols-4 gap-[clamp(0.25rem,2vw,0.75rem)]">
-                    {[
-                        { icon: "/images/icons/calender-outline.svg", label: t('myBookings'), key: 'myBookings' },
-                        { icon: "/images/icons/wallet.svg", label: t('wallet'), key: 'wallet' },
-                        { icon: "/images/icons/offers.svg", label: t('offers'), key: 'offers' },
-                        { icon: "/images/icons/headset.svg", label: t('support'), key: 'support' },
-                    ].map(({ icon, label, key }) => (
-                        <button key={key} className="flex min-w-0 flex-col items-center gap-[clamp(0.375rem,1.6vw,0.5rem)]">
+                    {QUICK_ACTIONS.map(({ icon, labelKey, href }) => {
+                        const label = t(labelKey);
+
+                        return (
+                        <Link key={labelKey} href={href} className="flex min-w-0 flex-col items-center gap-[clamp(0.375rem,1.6vw,0.5rem)] active:scale-95">
                             <div className="flex h-[clamp(2.75rem,11vw,3.25rem)] w-[clamp(2.75rem,11vw,3.25rem)] items-center justify-center rounded-full bg-[#F4F0FF]">
                                 <Image src={icon} alt={label} width={24} height={24} className="h-[clamp(1.25rem,5vw,1.5rem)] w-auto" />
                             </div>
                             <span className="text-center text-[clamp(0.625rem,2.6vw,0.75rem)] font-medium leading-tight text-gray-500">
                                 {label}
                             </span>
-                        </button>
-                    ))}
+                        </Link>
+                        );
+                    })}
                 </div>
             </div>
 
             {/* ── SUBSCRIPTION BANNER ── */}
-            <div className="relative mt-[clamp(0.625rem,2dvh,1rem)] flex min-h-[clamp(6.25rem,24vw,7.5rem)] items-center justify-between overflow-hidden rounded-[clamp(1rem,4vw,1.25rem)] bg-[#EDE8FF] px-[clamp(1rem,4vw,1.5rem)] py-[clamp(0.875rem,2.5dvh,1.125rem)]">
+            <div className="relative mt-[clamp(0.625rem,2dvh,1rem)] flex min-h-[clamp(6.25rem,24vw,7.5rem)] items-center justify-between overflow-hidden rounded-[clamp(1rem,4vw,1.25rem)] bg-linear-to-br from-[#EDE1FC] to-[#F2EBFC] px-[clamp(1rem,4vw,1.5rem)] py-[clamp(0.875rem,2.5dvh,1.125rem)]">
                 <div className="z-10 max-w-[62%]">
                     <p className="text-[clamp(0.875rem,3.4vw,1rem)] font-bold leading-snug text-gray-800">
                         {t('subscribeTitle')}
@@ -128,23 +243,27 @@ export default function ProfilePage() {
                     <p className="mt-0.5 text-[clamp(0.6875rem,2.8vw,0.8125rem)] text-gray-500">
                         {t('subscribeSub')}
                     </p>
-                    <button className="mt-[clamp(0.625rem,2dvh,0.875rem)] rounded-full bg-[#7B5CF5] px-[clamp(1rem,4vw,1.375rem)] py-[clamp(0.45rem,1.6vw,0.625rem)] text-[clamp(0.75rem,3vw,0.875rem)] font-semibold text-white">
+                    <button className="mt-[clamp(0.625rem,2dvh,0.875rem)] rounded-xl bg-white px-[clamp(1rem,4vw,1.375rem)] py-[clamp(0.45rem,1.6vw,0.625rem)] text-[clamp(0.75rem,3vw,0.875rem)] font-bold text-accent">
                         {t('subscribeButton')}
                     </button>
                 </div>
                 {/* Illustration */}
-                <div className="absolute bottom-0 right-[clamp(0.5rem,3vw,1rem)] h-[clamp(5.75rem,23vw,7.25rem)] w-[clamp(6.25rem,26vw,8rem)]">
-                    <Image
-                        src="/assets/images/subscription-illustration.png"
+                <div className="absolute right-[clamp(0.5rem,3vw,1rem)] top-1/2 h-[clamp(5.75rem,23vw,7.25rem)] w-[clamp(6.25rem,26vw,8rem)] -translate-y-1/2">
+                    <OptimizedImage
+                        src={PROFILE_BANNER_IMAGES.subscription.imageKitPath}
+                        ikPath
+                        fallbackSrc={PROFILE_BANNER_IMAGES.subscription.fallbackSrc}
+                        transform={PROFILE_BANNER_IMAGE_TRANSFORM}
                         alt="Subscribe"
                         fill
+                        sizes="(max-width: 36rem) 26vw, 8rem"
                         className="object-contain object-bottom"
                     />
                 </div>
             </div>
 
             {/* ── REFERRAL BANNER ── */}
-            <div className="relative mt-[clamp(0.625rem,2dvh,1rem)] flex min-h-[clamp(6.25rem,24vw,7.5rem)] items-center justify-between overflow-hidden rounded-[clamp(1rem,4vw,1.25rem)] bg-[#EDE8FF] px-[clamp(1rem,4vw,1.5rem)] py-[clamp(0.875rem,2.5dvh,1.125rem)]">
+            <div className="relative mt-[clamp(0.625rem,2dvh,1rem)] flex min-h-[clamp(6.25rem,24vw,7.5rem)] items-center justify-between overflow-hidden rounded-[clamp(1rem,4vw,1.25rem)]  bg-linear-to-br from-[#EDE1FC] to-[#F2EBFC] px-[clamp(1rem,4vw,1.5rem)] py-[clamp(0.875rem,2.5dvh,1.125rem)]">
                 <div className="z-10 max-w-[62%]">
                     <p className="text-[clamp(0.875rem,3.4vw,1rem)] font-bold leading-snug text-gray-800">
                         {t('referTitle')}
@@ -152,17 +271,21 @@ export default function ProfilePage() {
                     <p className="mt-0.5 text-[clamp(0.6875rem,2.8vw,0.8125rem)] text-gray-500">
                         {t('referSub')}
                     </p>
-                    <button className="mt-[clamp(0.625rem,2dvh,0.875rem)] flex items-center gap-[clamp(0.2rem,1vw,0.375rem)] text-[clamp(0.75rem,3vw,0.875rem)] font-semibold text-[#7B5CF5]">
+                    <button className="mt-[clamp(0.625rem,2dvh,0.875rem)] flex items-center gap-[clamp(0.2rem,1vw,0.375rem)] rounded-xl bg-white p-2 text-[clamp(0.75rem,3vw,0.875rem)] font-bold text-accent">
                         {t('referButton')}
-                        <Image src="/assets/icons/arrow-right-grey-purple.svg" alt="" width={14} height={14} className="h-[clamp(0.75rem,3vw,0.875rem)] w-auto" />
+                        <Image src="/images/icons/arrow-right-color.svg" alt="" width={14} height={14} className="h-[clamp(0.75rem,3vw,0.875rem)] w-auto" />
                     </button>
                 </div>
                 {/* Illustration */}
                 <div className="absolute bottom-0 right-[clamp(0.5rem,3vw,1rem)] h-[clamp(5.75rem,23vw,7.25rem)] w-[clamp(5.75rem,24vw,7.25rem)]">
-                    <Image
-                        src="/assets/images/referral-illustration.png"
+                    <OptimizedImage
+                        src={PROFILE_BANNER_IMAGES.referral.imageKitPath}
+                        ikPath
+                        fallbackSrc={PROFILE_BANNER_IMAGES.referral.fallbackSrc}
+                        transform={PROFILE_BANNER_IMAGE_TRANSFORM}
                         alt="Referral"
                         fill
+                        sizes="(max-width: 36rem) 24vw, 7.25rem"
                         className="object-contain object-bottom"
                     />
                 </div>
@@ -170,9 +293,10 @@ export default function ProfilePage() {
 
             {/* ── LIST ITEMS ── */}
             <div className="mt-[clamp(0.625rem,2dvh,1rem)] divide-y divide-gray-100 rounded-[clamp(1rem,4vw,1.25rem)] bg-white shadow-sm">
-                <Link
-                    href="/profile/addresses"
-                    className="flex items-center justify-between px-[clamp(1rem,4vw,1.375rem)] py-[clamp(0.875rem,2.6dvh,1.125rem)]"
+                <button
+                    type="button"
+                    onClick={openAddressDrawer}
+                    className="flex w-full items-center justify-between px-[clamp(1rem,4vw,1.375rem)] py-[clamp(0.875rem,2.6dvh,1.125rem)] text-left"
                 >
                     <div className="flex min-w-0 items-center gap-[clamp(0.75rem,3vw,1rem)]">
                         <div className="rounded-full bg-[#F7F3FD] p-[clamp(0.625rem,2.5vw,0.75rem)]">
@@ -187,7 +311,7 @@ export default function ProfilePage() {
                         height={6}
                         className="mr-[clamp(0.25rem,1.5vw,0.5rem)] h-[clamp(0.375rem,1.5vw,0.5rem)] w-auto"
                     />
-                </Link>
+                </button>
 
                 <Link
                     href="/profile/manage"
@@ -213,8 +337,8 @@ export default function ProfilePage() {
                     className="flex w-full items-center justify-between px-[clamp(1rem,4vw,1.375rem)] py-[clamp(0.875rem,2.6dvh,1.125rem)] text-left"
                 >
                     <div className="flex min-w-0 items-center gap-[clamp(0.75rem,3vw,1rem)]">
-                        <div className="rounded-full bg-[#F7F3FD] p-[clamp(0.625rem,2.5vw,0.75rem)]">
-                            <Image src="/images/icons/manage-account.svg" alt={t('manageAccount')} width={20} height={20} className="h-[clamp(1.125rem,4.5vw,1.25rem)] w-auto" />
+                         <div className="rounded-full bg-[#F7F3FD] p-[clamp(0.625rem,2.5vw,0.75rem)]">
+                            <Image src="/images/icons/language.svg" alt={t('language')} width={20} height={20} className="h-[clamp(1.125rem,4.5vw,1.25rem)] w-auto" />
                         </div>
                         <span className="truncate text-[clamp(0.875rem,3.4vw,0.96875rem)] font-medium text-gray-700">{t('language')}</span>
                     </div>
@@ -244,6 +368,20 @@ export default function ProfilePage() {
             <LanguageDrawer
                 open={isLanguageOpen}
                 onClose={() => setIsLanguageOpen(false)}
+            />
+            <AddressDrawer
+                open={isAddressDrawerOpen}
+                onClose={() => setIsAddressDrawerOpen(false)}
+                addresses={addresses}
+                selectedAddressId={selectedAddressId}
+                onSelectAddress={handleSelectAddress}
+                onRefresh={refreshAddresses}
+            />
+            <EditProfileDrawer
+                open={isEditProfileOpen}
+                profile={profile}
+                onClose={() => setIsEditProfileOpen(false)}
+                onSave={handleSaveProfile}
             />
         </div>
     );

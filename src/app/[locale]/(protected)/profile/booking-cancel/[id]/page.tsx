@@ -1,19 +1,18 @@
 "use client";
 
 import Image from "next/image";
-import { useParams } from "next/navigation";
 import { useRouter } from "@/i18n/routing";
 
 // ── Icon paths — place your files in /public/icons/ ───────────────────────────
 const ICONS = {
-  back: "/images/icons/back-arrow.svg",
-  paymentFailed: "/icons/payment-failed.svg",   // ← red receipt with ✕
-  hourglass: "/icons/hourglass.svg",         // ← hourglass / timer
+  back: "/images/icons/back-black.svg",
+  paymentFailed: "/images/icons/badge-cross.svg",
+  hourglass: "/images/icons/hourglass.svg",
   calender: "/images/icons/calender-outline.svg",
   location: "/images/icons/location-pin.svg",
   rupee: "/images/icons/rupee.svg",
   headset: "/images/icons/headset.svg",
-  chevron: "/images/icons/chevron-right.svg",    // ← › arrow
+  chevron: "/images/icons/chevron-right.svg",
 } as const;
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -59,9 +58,9 @@ function ListRow({
       <Image
         src={ICONS.chevron}
         alt=""
-        width={17}
-        height={17}
-        className="shrink-0 opacity-40"
+        width={10}
+        height={10}
+        className="shrink-0"
       />
     </button>
   );
@@ -70,10 +69,7 @@ function ListRow({
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function PaymentFailedPage() {
-  const router = useRouter();
-  const params = useParams<{ id: string }>();
-  const bookingId = params.id;
-
+  const router = useRouter()
   return (
     <div className="h-dvh max-h-dvh w-full overflow-hidden bg-[#F4F5FA] flex flex-col">
 
@@ -83,7 +79,7 @@ export default function PaymentFailedPage() {
         {/* back button */}
         <button
           aria-label="Go back"
-          onClick={() => router.push("/profile/mybookings")}
+          onClick={() => router.replace("/profile/mybookings")}
           className="absolute left-4 top-9 p-1.5 rounded-full active:bg-black/10 transition-colors [@media(min-height:720px)]:top-12"
         >
           {/*
@@ -93,8 +89,8 @@ export default function PaymentFailedPage() {
           <Image
             src={ICONS.back}
             alt="Back"
-            width={22}
-            height={22}
+            width={12}
+            height={12}
           />
         </button>
 
@@ -114,11 +110,6 @@ export default function PaymentFailedPage() {
         <h1 className="text-[#1C1C1E] text-xl font-bold tracking-tight [@media(min-height:720px)]:text-[22px]">
           Payment failed
         </h1>
-        {bookingId ? (
-          <p className="mt-2 text-xs font-semibold text-[#1C1C1E]/60 [@media(min-height:720px)]:mt-3">
-            Booking ID #{bookingId}
-          </p>
-        ) : null}
       </div>
 
       {/* ── BOTTOM SHEET ──────────────────────────────────────────────────── */}

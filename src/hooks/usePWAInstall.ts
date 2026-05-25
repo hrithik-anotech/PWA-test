@@ -77,17 +77,6 @@ function getInitialDismissalState() {
   };
 }
 
-function getInitialInstallRecord() {
-  if (typeof window === "undefined") {
-    return false;
-  }
-
-  return (
-    localStorage.getItem(PWA_STORAGE_KEYS.installed) ===
-    "true"
-  );
-}
-
 export function usePWAInstall() {
   const device = useDeviceDetection();
 
@@ -98,8 +87,6 @@ export function usePWAInstall() {
   );
   const [isInstalling, setIsInstalling] =
     useState(false);
-  const [hasInstallRecord, setHasInstallRecord] =
-    useState(getInitialInstallRecord);
   const [toast, setToast] =
     useState<InstallToast | null>(null);
 
@@ -171,7 +158,6 @@ export function usePWAInstall() {
         dismissedUntil: 0,
         isDismissed: false,
       });
-      setHasInstallRecord(true);
       setIsInstalling(false);
       showToast("Snibto installed successfully.", "success");
       trackPWAEvent("app_installed");
@@ -198,8 +184,7 @@ export function usePWAInstall() {
     };
   }, [device.isHydrated, showToast]);
 
-  const isInstalled =
-    device.isStandalone || hasInstallRecord;
+  const isInstalled = device.isStandalone;
   const { isDismissed } = dismissalState;
   const hasNativeInstallPrompt = Boolean(deferredPrompt);
   const hasIOSInstallGuide =

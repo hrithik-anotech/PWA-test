@@ -85,15 +85,14 @@ export function PWAInstallManager() {
     clearToast,
     device,
     dismissInstallPrompt,
-    hasNativeInstallPrompt,
     isInstalling,
     platform,
     requestInstall,
     toast,
   } = usePWAInstall();
-  const [isNativePromptOpen, setIsNativePromptOpen] =
-    useState(false);
   const [isIOSGuideOpen, setIsIOSGuideOpen] =
+    useState(false);
+  const [isInstallPromptOpen, setIsInstallPromptOpen] =
     useState(false);
 
   useEffect(() => registerServiceWorker(), []);
@@ -105,25 +104,20 @@ export function PWAInstallManager() {
       return;
     }
 
-    if (hasNativeInstallPrompt) {
-      setIsNativePromptOpen(true);
-      return;
-    }
+    setIsInstallPromptOpen(true);
+  }, [platform]);
 
-    void requestInstall();
-  }, [hasNativeInstallPrompt, platform, requestInstall]);
-
-  const handleNativeInstall = async () => {
+  const handleInstall = async () => {
     const result = await requestInstall();
 
     if (result !== "unavailable") {
-      setIsNativePromptOpen(false);
+      setIsInstallPromptOpen(false);
     }
   };
 
   const handleDismiss = () => {
     dismissInstallPrompt();
-    setIsNativePromptOpen(false);
+    setIsInstallPromptOpen(false);
     setIsIOSGuideOpen(false);
   };
 
@@ -133,7 +127,7 @@ export function PWAInstallManager() {
 
   const shouldShowFloatingInstallButton =
     !device.isStandalone &&
-    !isNativePromptOpen &&
+    !isInstallPromptOpen &&
     !isIOSGuideOpen;
 
   return (
@@ -147,13 +141,14 @@ export function PWAInstallManager() {
               : "Install Snibto"
           }
           onClick={openInstallExperience}
+          disabled={isInstalling}
         />
       )}
 
       <InstallPrompt
-        open={isNativePromptOpen}
+        open={isInstallPromptOpen}
         isInstalling={isInstalling}
-        onInstall={handleNativeInstall}
+        onInstall={handleInstall}
         onDismiss={handleDismiss}
       />
 
