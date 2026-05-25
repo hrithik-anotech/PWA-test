@@ -39,7 +39,7 @@ const bookingsData: Booking[] = [
         type: 'multiple',
         duration: '60 Mins',
         status: 'cancelled',
-        icon: '/icons/calendar.png',
+        icon: '/icons/calender.png',
     },
     {
         id: '3',
@@ -57,7 +57,7 @@ const bookingsData: Booking[] = [
         type: 'multiple',
         duration: '60 Mins',
         status: 'cancelled',
-        icon: '/icons/calendar.png',
+        icon: '/icons/calender.png',
     },
     {
         id: '5',
@@ -66,7 +66,7 @@ const bookingsData: Booking[] = [
         type: 'multiple',
         duration: '60 Mins',
         status: 'cancelled',
-        icon: '/icons/calendar.png',
+        icon: '/icons/calender.png',
     },
 ];
 
@@ -177,7 +177,7 @@ export default function MyBookingsPage() {
                                         {booking.type === 'single' ? (
                                             <Image alt="flash fill" src="/images/icons/flash-fill.svg" width={40} height={40} className="h-10 w-10" priority unoptimized />
                                         ) : (
-                                            <Image alt="calendar fill" src="/images/icons/calender-fill.svg" width={40} height={40} className="h-10 w-10" priority unoptimized />
+                                            <Image alt="calender fill" src="/images/icons/calender-fill.svg" width={40} height={40} className="h-10 w-10" priority unoptimized />
                                         )}
                                     </div>
                                 </div>

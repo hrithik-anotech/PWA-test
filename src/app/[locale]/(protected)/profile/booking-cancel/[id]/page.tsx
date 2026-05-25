@@ -6,14 +6,14 @@ import { useRouter } from "@/i18n/routing";
 
 // ── Icon paths — place your files in /public/icons/ ───────────────────────────
 const ICONS = {
-  back:           "/icons/back-arrow.svg",       // ← left arrow  (dark)
-  paymentFailed:  "/icons/payment-failed.svg",   // ← red receipt with ✕
-  hourglass:      "/icons/hourglass.svg",         // ← hourglass / timer
-  calendar:       "/icons/calendar.svg",          // ← calendar outline
-  location:       "/icons/location-pin.svg",      // ← map pin
-  rupee:          "/icons/rupee.svg",             // ← Indian rupee symbol
-  headset:        "/icons/headset.svg",           // ← headphones / support
-  chevron:        "/icons/chevron-right.svg",     // ← › arrow
+  back: "/images/icons/back-arrow.svg",
+  paymentFailed: "/icons/payment-failed.svg",   // ← red receipt with ✕
+  hourglass: "/icons/hourglass.svg",         // ← hourglass / timer
+  calender: "/images/icons/calender-outline.svg",
+  location: "/images/icons/location-pin.svg",
+  rupee: "/images/icons/rupee.svg",
+  headset: "/images/icons/headset.svg",
+  chevron: "/images/icons/chevron-right.svg",    // ← › arrow
 } as const;
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -147,7 +147,7 @@ export default function PaymentFailedPage() {
 
             {/* duration */}
             <div className="flex items-center gap-3">
-              <IconBubble src={ICONS.calendar} alt="Duration" size={20} />
+              <IconBubble src={ICONS.calender} alt="Duration" size={20} />
               <span className="text-[14px] font-medium text-[#1C1C1E] leading-snug">
                 60 min visit
               </span>

@@ -3,7 +3,6 @@
 import {
   useCallback,
   useEffect,
-  useRef,
   useState,
 } from "react";
 import { InstallButton } from "@/components/pwa/InstallButton";
@@ -18,9 +17,6 @@ import {
   registerServiceWorker,
   trackPWAEvent,
 } from "@/utils/pwa";
-
-const INSTALL_PROMPT_AUTO_OPEN_DELAY_MS = 10000;
-const INSTALL_UI_TRIGGER_DELAY_MS = 1300;
 
 function InstallToastView({
   onClose,
@@ -86,7 +82,6 @@ function InstallToastView({
 
 export function PWAInstallManager() {
   const {
-    canShowInstallUI,
     clearToast,
     device,
     dismissInstallPrompt,
@@ -96,27 +91,10 @@ export function PWAInstallManager() {
     requestInstall,
     toast,
   } = usePWAInstall();
-  const autoOpenedRef = useRef(false);
   const [isNativePromptOpen, setIsNativePromptOpen] =
     useState(false);
   const [isIOSGuideOpen, setIsIOSGuideOpen] =
     useState(false);
-  const [showInstallTriggers, setShowInstallTriggers] =
-    useState(false);
-
-  useEffect(() => {
-    if (!canShowInstallUI) {
-      setShowInstallTriggers(false);
-      return;
-    }
-
-    const timeout = window.setTimeout(
-      () => setShowInstallTriggers(true),
-      INSTALL_UI_TRIGGER_DELAY_MS
-    );
-
-    return () => window.clearTimeout(timeout);
-  }, [canShowInstallUI]);
 
   useEffect(() => registerServiceWorker(), []);
 
@@ -134,25 +112,6 @@ export function PWAInstallManager() {
 
     void requestInstall();
   }, [hasNativeInstallPrompt, platform, requestInstall]);
-
-  useEffect(() => {
-    if (
-      !canShowInstallUI ||
-      autoOpenedRef.current
-    ) {
-      return;
-    }
-
-    const timeout = window.setTimeout(() => {
-      autoOpenedRef.current = true;
-      openInstallExperience();
-    }, INSTALL_PROMPT_AUTO_OPEN_DELAY_MS);
-
-    return () => window.clearTimeout(timeout);
-  }, [
-    canShowInstallUI,
-    openInstallExperience,
-  ]);
 
   const handleNativeInstall = async () => {
     const result = await requestInstall();
@@ -172,31 +131,23 @@ export function PWAInstallManager() {
     return null;
   }
 
-  const shouldShowTriggers =
-    showInstallTriggers &&
-    canShowInstallUI &&
+  const shouldShowFloatingInstallButton =
+    !device.isStandalone &&
     !isNativePromptOpen &&
     !isIOSGuideOpen;
 
   return (
     <>
-      {shouldShowTriggers && (
-        <>
-          <InstallButton
-            variant="banner"
-            label={
-              platform === "ios"
-                ? "Add Snibto to Home Screen"
-                : "Install Snibto"
-            }
-            onClick={openInstallExperience}
-          />
-          <InstallButton
-            variant="fab"
-            label="Install Snibto"
-            onClick={openInstallExperience}
-          />
-        </>
+      {shouldShowFloatingInstallButton && (
+        <InstallButton
+          variant="fab"
+          label={
+            platform === "ios"
+              ? "Add Snibto to Home Screen"
+              : "Install Snibto"
+          }
+          onClick={openInstallExperience}
+        />
       )}
 
       <InstallPrompt

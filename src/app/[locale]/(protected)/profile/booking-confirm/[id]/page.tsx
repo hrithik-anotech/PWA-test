@@ -9,10 +9,10 @@ import { cn } from "@/lib/cn";
 const ICONS = {
   back:     "/images/icons/back-arrow.svg",
   check:    "/images/icons/badge-check.svg",
-  calendar: "/images/icons/calendar-outline.svg",
+  calender: "/images/icons/calender-outline.svg",
   location: "/images/icons/location-pin.svg",
   rupee:    "/images/icons/rupee.svg",
-  headset:  "/images/icons/headphone.svg",
+  headset:  "/images/icons/headset.svg",
   share:    "/images/icons/share.svg",
   chevron:  "/images/icons/chevron-right.svg",
 } as const;
@@ -182,7 +182,7 @@ export default function BookingConfirmedPage() {
           {/* ── CARD 2 – Date & Location ──────────────────────────────────── */}
           <div className="bg-white rounded-2xl px-4 py-3 shadow-sm space-y-3 [@media(min-height:720px)]:space-y-[14px] [@media(min-height:720px)]:py-[14px]">
             <div className="flex items-center gap-3">
-              <IconBubble src={ICONS.calendar} alt="Date" size={20} />
+              <IconBubble src={ICONS.calender} alt="Date" size={20} />
               <span className="text-[14px] font-medium text-[#1C1C1E] leading-snug">
                 16th May, 01:15 PM&nbsp;·&nbsp;60 min visit
               </span>

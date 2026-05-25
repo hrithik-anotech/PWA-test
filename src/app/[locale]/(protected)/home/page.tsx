@@ -164,7 +164,7 @@ export default async function HomePage() {
         {/* ── PAGE CONTENT ───────────────────────────────────────────────────── */}
         <div className="mx-4 mt-4 grid grid-cols-2 gap-3">
 
-          {/* Schedule — dark purple with ghost calendar */}
+          {/* Schedule — dark purple with ghost calender */}
           {/* ↓ minHeight:140 replaced with aspect-ratio so card scales with column width */}
           <Link
             href="/bookings/schedule"
@@ -175,7 +175,7 @@ export default async function HomePage() {
             <div className="relative z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white">
               <Image
                 alt="calender"
-                src="/images/icons/calendar.svg"
+                src="/images/icons/calender.svg"
                 width={14}
                 height={15}
                 className="h-[1.125rem] w-auto"
@@ -199,11 +199,11 @@ export default async function HomePage() {
               </p>
             </div>
 
-            {/* Ghost calendar — large, bottom-right */}
+            {/* Ghost calender — large, bottom-right */}
             <div className="pointer-events-none absolute bottom-5 right-1 md:right-3 z-0 w-20 sm:w-20 md:w-24 aspect-square">
               <Image
-                src="/images/icons/calendar-bg.svg"
-                alt="calendar"
+                src="/images/icons/calender-bg.svg"
+                alt="calender"
                 fill
                 className="object-contain"
               />
