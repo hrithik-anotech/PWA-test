@@ -65,7 +65,7 @@ export default function SchedulePage() {
 
             <div className="min-w-0">
               <h1 className="text-base font-normal leading-none text-black">{t('title')}</h1>
-              <div className="mt-1 flex items-center gap-1 text-[0.6rem] leading-none text-[#6F6F6F]">
+              <div className="mt-1 flex items-center gap-1 text-[2.5vw] leading-tight text-[#6F6F6F] sm:text-xs"> {/* ↓ was text-[0.6rem] → text-[2.5vw] */}
                 <span className="truncate">Genex Exotica, Asansol WB</span>
                 <svg className="h-2 w-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 9l6 6 6-6" />
@@ -84,7 +84,7 @@ export default function SchedulePage() {
       >
         {/* Select Date */}
         <section className="rounded-xl border border-[#D8D8D8] bg-white px-3 py-3 shadow-[0_0.0625rem_0.3125rem_rgba(0,0,0,0.18)]">
-          <h2 className="mb-3 text-sm font-normal text-black">{t('selectDate')}</h2>
+          <h2 className="mb-3 text-[3.5vw] font-normal text-black sm:text-sm">{t('selectDate')}</h2>
           <div className="grid grid-cols-3 gap-3 py-3">
             {[
               { label: t('today'), value: 'today' as const },
@@ -100,7 +100,7 @@ export default function SchedulePage() {
                   onClick={() => setSelectedDate(option.value)}
                   style={{ fontWeight: isSelected ? 800 : 400 }}
                   className={cn(
-                    'h-10 rounded-[0.625rem] border text-sm transition-all active:scale-[0.98]',
+                    'h-10 rounded-[0.625rem] border text-[3.5vw] sm:text-sm transition-all active:scale-[0.98]',
                     isSelected
                       ? 'border-[#6C35DE] bg-[#F7F2FF] text-[#6C35DE] font-bold'
                       : 'border-[#D7D7D7] bg-[#EFEFEF] text-[#646464] font-normal'
@@ -115,7 +115,7 @@ export default function SchedulePage() {
 
         {/* Duration */}
         <section className="rounded-xl border border-[#D8D8D8] bg-white px-3 py-3 shadow-[0_0.0625rem_0.3125rem_rgba(0,0,0,0.18)]">
-          <h2 className="mb-3 text-sm font-normal text-black">{t('duration')}</h2>
+          <h2 className="mb-3 text-[3.5vw] font-normal text-black sm:text-sm">{t('duration')}</h2>
           <div className="flex gap-3 py-2">
             {[
               { value: '60' as const },
@@ -137,10 +137,10 @@ export default function SchedulePage() {
                       : 'border-[#D7D7D7] bg-[#EFEFEF] text-[#555555] font-normal'
                   )}
                 >
-                  <span className="text-sm">{option.value} {tCommon('mins')}</span>
-                  <span className="text-sm">
+                  <span className="text-[2.5vw] font-semibold leading-tight min-[24rem]:text-xs sm:text-sm">{option.value} {tCommon('mins')}</span>
+                  <span className="text-[2.5vw] font-bold leading-tight min-[24rem]:text-xs sm:text-sm">
                     {price.priceLabel}{' '}
-                    <span className="text-[0.6rem] font-normal text-[#777777] line-through">
+                    <span className="text-[2vw] font-normal leading-tight line-through min-[24rem]:text-[2.5vw] sm:text-xs text-[#777777]"> {/* ↓ was text-[0.6rem] → text-[2vw] */}
                       {price.originalLabel}
                     </span>
                   </span>
@@ -152,7 +152,7 @@ export default function SchedulePage() {
 
         {/* Timing */}
         <section className="rounded-xl border border-[#D8D8D8] bg-white px-3 py-3 shadow-[0_0.0625rem_0.3125rem_rgba(0,0,0,0.18)]">
-          <h2 className="mb-3 text-sm font-normal text-black">{t('timings')}</h2>
+          <h2 className="mb-3 text-[3.5vw] font-normal text-black sm:text-sm">{t('timings')}</h2>
 
           <div className="mb-4 grid grid-cols-3 gap-3 py-3">
             {timeTabs.map((tab) => {
@@ -171,7 +171,7 @@ export default function SchedulePage() {
                   }}
                   style={{ fontWeight: isSelected ? 800 : 400 }}
                   className={cn(
-                    'h-10 rounded-full border text-sm transition-all',
+                    'h-10 rounded-full border text-[3.5vw] sm:text-sm transition-all',
                     isUnavailable
                       ? 'cursor-not-allowed border-[#D7D7D7] bg-[#EFEFEF] font-normal text-[#B9B9B9]'
                       : isSelected
@@ -202,7 +202,7 @@ export default function SchedulePage() {
                   }}
                   style={{ fontWeight: isSelected ? 800 : 400 }}
                   className={cn(
-                    'h-10 rounded-[0.625rem] border text-xs transition-all',
+                    'h-10 rounded-[0.625rem] border text-[3vw] sm:text-xs transition-all',
                     isUnavailable
                       ? 'cursor-not-allowed border-[#E0E0E0] bg-[#F3F3F3] font-normal text-[#C9C9C9]'
                       : isSelected

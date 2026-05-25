@@ -128,7 +128,7 @@ export default function InstantPage() {
               <h1 className="text-base font-normal leading-none text-black sm:text-lg">
                 {t('title')}
               </h1>
-              <div className="mt-1 flex items-center gap-1 text-[0.625rem] leading-tight text-[#6F6F6F] sm:text-xs">
+              <div className="mt-1 flex items-center gap-1 text-[2.5vw] leading-tight text-[#6F6F6F] sm:text-xs"> {/* ↓ was text-[0.625rem] → text-[2.5vw] */}
                 <span className="truncate">Genex Exotica, Asansol WB</span>
                 <svg className="h-2 w-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 9l6 6 6-6" />
@@ -145,7 +145,7 @@ export default function InstantPage() {
         style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0rem) + 7.5rem)' }}
       >
         <section className="rounded-xl bg-white p-3 shadow-sm sm:p-4">
-          <h2 className="mb-3 text-[3.5vw] font-normal text-black sm:text-base">{t('duration')}</h2>
+          <h2 className="mb-3 text-[3.5vw] font-normal text-black sm:text-sm">{t('duration')}</h2>
 
           <div className="grid grid-cols-3 gap-2 min-[24rem]:gap-3 sm:gap-4 lg:grid-cols-4">
             {visibleOptions.map((option) => {
@@ -166,25 +166,26 @@ export default function InstantPage() {
                   {/* Label */}
                   <span
                     className={[
-                      'w-full whitespace-normal wrap-break-word text-[2.75vw] font-semibold leading-tight text-sm sm:text-lg md:text-xl',
+                      'w-full whitespace-normal break-words text-[2.5vw] font-semibold leading-tight min-[24rem]:text-xs sm:text-sm', /* ↓ was text-[2.75vw]/text-sm → text-[2.5vw] */
                       isSelected ? 'text-[#6C35DE]' : 'text-[#595959]',
                     ].join(' ')}
                   >
                     {getDurationLabel(option.value)}
                   </span>
-
+ 
                   {/* Price row */}
                   <div className="flex w-full flex-wrap items-baseline gap-x-1 gap-y-0.5">
                     <span
                       className={[
-                        'text-[2.75vw] font-bold leading-tight sm:text-sm',
+                        'text-[2.5vw] font-bold leading-tight min-[24rem]:text-xs sm:text-sm', /* ↓ was text-[2.75vw]/sm:text-sm → text-[2.5vw] */
                         isSelected ? 'text-[#6C35DE]' : 'text-[#111]',
                       ].join(' ')}
                     >
                       ₹{parseFloat(option.amount).toFixed(0)}
                     </span>
                     <span
-                      className="text-[2.25vw] font-normal leading-tight line-through sm:text-xs text-[#999]"
+                      className="text-[2vw] font-normal leading-tight line-through min-[24rem]:text-[2.5vw] sm:text-xs text-[#999]"
+                      /* ↓ was text-[2.25vw]/sm:text-xs → text-[2vw]/text-[2.5vw] */
                     >
                       {option.originalPrice}
                     </span>

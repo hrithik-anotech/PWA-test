@@ -6,6 +6,7 @@ import { getTranslations } from "next-intl/server";
 import HomeServicesSection from "@/components/services/HomeServicesSection";
 import { getIKUrl, HOME_SERVICE_IMAGE_TRANSFORM } from "@/lib/imagekit";
 import LocationHeader from "@/components/location/LocationHeader";
+import LiveTrackingSection from "@/components/booking/LiveTrackingSection";
 
 export const viewport: Viewport = {
   themeColor: "#5F30CA",
@@ -97,10 +98,11 @@ const serviceDrawerCopy = {
 
 export default async function HomePage() {
   const t = await getTranslations('Home');
+
   const serviceCards = services.map((service) => {
     const copy =
       serviceDrawerCopy[
-        service.key as keyof typeof serviceDrawerCopy
+      service.key as keyof typeof serviceDrawerCopy
       ];
 
     return {
@@ -213,7 +215,7 @@ export default async function HomePage() {
           {/* Instant — gradient bg, person image right */}
           {/* ↓ minHeight:140 replaced with matching aspect-ratio */}
           <Link
-          href="/bookings/instant"
+            href="/bookings/instant"
             className="relative rounded-[1.25rem] bg-[linear-gradient(110.16deg,#E1DBFD_0%,#E8D1F9_100%)] p-4 shadow-[2px_2px_4px_1px_#000000/40]"
             style={{ aspectRatio: "1.45 / 1" }}
           >
@@ -264,6 +266,8 @@ export default async function HomePage() {
             </div>
           </Link>
         </div>
+        {/* Tracking Section */}
+        <LiveTrackingSection />
 
         {/* ── SERVICES SECTION ────────────────────────────────────────────────── */}
         <HomeServicesSection

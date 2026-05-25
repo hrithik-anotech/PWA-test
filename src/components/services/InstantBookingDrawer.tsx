@@ -163,7 +163,7 @@ export default function InstantBookingDrawer({
         aria-modal="true"
         aria-label={t('title')}
         className={cn(
-          'fixed inset-x-0 bottom-0 z-[80] flex max-h-[92dvh] flex-col rounded-t-[1.25rem] bg-white transition-transform duration-300 ease-out',
+          'fixed inset-x-0 bottom-0 z-[80] mx-auto flex max-h-[92dvh] w-full max-w-[36rem] flex-col rounded-t-[1.25rem] bg-white transition-transform duration-300 ease-out',
           (open && animateIn) ? 'translate-y-0' : 'translate-y-full'
         )}
         style={{ paddingBottom: 'env(safe-area-inset-bottom, 0rem)' }}
@@ -173,10 +173,10 @@ export default function InstantBookingDrawer({
         </div>
 
         <div className="shrink-0 px-4 pb-3 pt-2">
-          <h2 className="text-[1.125rem] font-bold leading-snug text-black">
+          <h2 className="text-lg font-bold leading-snug text-black">
             {tHome('quickActions.instant.title')}
           </h2>
-          <p className="mt-0.5 text-[0.8125rem] text-[#6F6F6F]">
+          <p className="mt-0.5 text-sm text-[#6F6F6F]">
             {serviceLabel}
           </p>
         </div>
@@ -211,18 +211,18 @@ export default function InstantBookingDrawer({
                           : 'border-transparent bg-[#EFEFEF] text-[#555555] active:scale-[0.98]'
                     )}
                   >
-                    <span className="w-full min-w-0 whitespace-normal break-words text-[0.625rem] font-semibold leading-tight min-[24rem]:text-xs sm:text-sm">
+                    <span className="w-full min-w-0 whitespace-normal break-words text-[2.5vw] font-semibold leading-tight min-[24rem]:text-xs sm:text-sm"> {/* ↓ was text-[0.625rem] → text-[2.5vw] */}
                       {getDurationLabel(option.value)}
                     </span>
 
-                    <span className="flex w-full min-w-0 flex-wrap items-baseline gap-x-1 gap-y-0.5 text-[0.625rem] font-semibold leading-tight min-[24rem]:text-xs sm:text-sm">
+                    <span className="flex w-full min-w-0 flex-wrap items-baseline gap-x-1 gap-y-0.5 text-[2.5vw] font-semibold leading-tight min-[24rem]:text-xs sm:text-sm"> {/* ↓ was text-[0.625rem] → text-[2.5vw] */}
                       <span>
                         {'\u20B9'}
                         {parseFloat(option.amount).toFixed(0)}
                       </span>
                       <span
                         className={cn(
-                          'text-[0.5rem] font-normal leading-tight line-through min-[24rem]:text-[0.625rem] sm:text-xs',
+                          'text-[2vw] font-normal leading-tight line-through min-[24rem]:text-[2.5vw] sm:text-xs', /* ↓ was text-[0.5rem]/text-[0.625rem] → text-[2vw]/text-[2.5vw] */
                           isUnavailable ? 'text-[#A0A0A0]' : 'text-[#777777]'
                         )}
                       >
@@ -231,7 +231,7 @@ export default function InstantBookingDrawer({
                     </span>
 
                     {isUnavailable ? (
-                      <span className="w-full min-w-0 break-words text-[0.5rem] font-medium leading-tight text-[#7F7F7F] min-[24rem]:text-[0.625rem] sm:text-xs">
+                      <span className="w-full min-w-0 break-words text-[2vw] font-medium leading-tight text-[#7F7F7F] min-[24rem]:text-[2.5vw] sm:text-xs"> {/* ↓ was text-[0.5rem]/text-[0.625rem] → text-[2vw]/text-[2.5vw] */}
                         {tCommon('unavailable')}
                       </span>
                     ) : null}
@@ -244,7 +244,8 @@ export default function InstantBookingDrawer({
               <button
                 type="button"
                 onClick={() => setShowAll((v) => !v)}
-                className="mt-3 flex items-center gap-0.5 text-[0.625rem] font-semibold text-[#6C35DE] active:scale-[0.98] min-[24rem]:text-xs sm:text-sm"
+                className="mt-3 flex items-center gap-0.5 text-[2.5vw] font-semibold text-[#6C35DE] active:scale-[0.98] min-[24rem]:text-xs sm:text-sm"
+                /* ↓ was text-[0.625rem] → text-[2.5vw] */
               >
                 {showAll ? tCommon('viewLess') : tCommon('viewAll')}
                 <svg
