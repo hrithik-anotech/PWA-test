@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/cn";
 
 type InstallButtonVariant = "banner" | "fab" | "inline";
@@ -46,6 +47,17 @@ export function InstallButton({
   supportingText = "Open Snibto faster from your home screen.",
   variant = "inline",
 }: InstallButtonProps) {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setIsVisible(true));
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  const entranceClasses = isVisible
+    ? "opacity-100 translate-y-0"
+    : "opacity-0 translate-y-3";
+
   if (variant === "fab") {
     return (
       <button
@@ -57,8 +69,9 @@ export function InstallButton({
           "fixed right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full",
           "bottom-[calc(env(safe-area-inset-bottom)+6rem)]",
           "bg-[#6C35FF] text-white shadow-[0_16px_40px_rgba(108,53,255,0.32)]",
-          "transition-transform active:scale-95 disabled:opacity-60",
+          "transition-all duration-300 ease-out active:scale-95 disabled:opacity-60",
           "dark:bg-[#8B5CF6] dark:shadow-[0_16px_40px_rgba(139,92,246,0.28)]",
+          entranceClasses,
           className
         )}
       >
@@ -75,9 +88,10 @@ export function InstallButton({
         disabled={disabled}
         className={cn(
           "fixed left-4 right-4 top-[max(1rem,env(safe-area-inset-top))] z-40 mx-auto flex max-w-md items-center gap-3 rounded-2xl",
-          "border border-white/70 bg-white/92 p-3 text-left text-[#111111] shadow-[0_18px_60px_rgba(22,18,43,0.14)] backdrop-blur-xl",
-          "transition-transform active:scale-[0.98] disabled:opacity-60",
+          "border border-white/70 bg-white/92 p-3 text-left text-text shadow-[0_18px_60px_rgba(22,18,43,0.14)] backdrop-blur-xl",
+          "transition-all duration-300 ease-out active:scale-[0.98] disabled:opacity-60",
           "dark:border-white/10 dark:bg-[#171225]/92 dark:text-white dark:shadow-[0_18px_60px_rgba(0,0,0,0.35)]",
+          entranceClasses,
           className
         )}
       >
@@ -103,8 +117,9 @@ export function InstallButton({
       disabled={disabled}
       className={cn(
         "inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#6C35FF] px-5 text-sm font-bold text-white",
-        "shadow-[0_12px_30px_rgba(108,53,255,0.24)] transition-transform active:scale-[0.98] disabled:opacity-60",
+        "shadow-[0_12px_30px_rgba(108,53,255,0.24)] transition-all duration-300 ease-out active:scale-[0.98] disabled:opacity-60",
         "dark:bg-[#8B5CF6]",
+        entranceClasses,
         className
       )}
     >

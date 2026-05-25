@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { InstallButton } from "@/components/pwa/InstallButton";
+import { cn } from "@/lib/cn";
 
 type InstallPromptProps = {
   isInstalling: boolean;
@@ -35,22 +37,47 @@ export function InstallPrompt({
   onInstall,
   open,
 }: InstallPromptProps) {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const timeout = window.setTimeout(
+      () => setIsVisible(true),
+      16
+    );
+
+    return () => window.clearTimeout(timeout);
+  }, []);
+
   if (!open) {
     return null;
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/45 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-sm animate-[pwa-fade-in_180ms_ease-out]">
+    <div
+      className={cn(
+        "fixed inset-0 z-50 flex items-end justify-center bg-black/45 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-sm",
+        "transition-opacity duration-300 ease-out",
+        isVisible
+          ? "opacity-100"
+          : "opacity-0 pointer-events-none"
+      )}
+    >
       <section
         role="dialog"
         aria-modal="true"
         aria-labelledby="install-app-title"
-        className="w-full max-w-md rounded-[1.75rem] border border-white/70 bg-white p-5 text-[#111111] shadow-[0_24px_80px_rgba(0,0,0,0.28)] animate-[pwa-slide-up_260ms_cubic-bezier(0.22,1,0.36,1)] dark:border-white/10 dark:bg-[#171225] dark:text-white"
+        className={cn(
+          "w-full max-w-md rounded-[1.75rem] border border-white/70 bg-white p-5 text-text shadow-[0_24px_80px_rgba(0,0,0,0.28)] dark:border-white/10 dark:bg-[#171225] dark:text-white",
+          "transition-all duration-300 ease-out",
+          isVisible
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-6"
+        )}
       >
         <div className="mx-auto mb-5 h-1.5 w-12 rounded-full bg-black/10 dark:bg-white/14" />
 
         <div className="flex items-start gap-4">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#6C35FF] to-[#9F7AEA] text-white shadow-[0_16px_36px_rgba(108,53,255,0.3)]">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-[#6C35FF] to-[#9F7AEA] text-white shadow-[0_16px_36px_rgba(108,53,255,0.3)]">
             <SparkIcon />
           </div>
 

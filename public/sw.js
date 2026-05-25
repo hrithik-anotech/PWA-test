@@ -1,4 +1,4 @@
-const CACHE_VERSION = "snibto-pwa-v15";
+const CACHE_VERSION = "snibto-pwa-v16";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -91,6 +91,72 @@ self.addEventListener("activate", (event) => {
         );
       })
       .then(() => self.clients.claim())
+  );
+});
+
+const getPushNotificationPayload = (event) => {
+  const fallbackPayload = {
+    title: "Snibto",
+    body: "You have a new update.",
+    url: "/"
+  };
+
+  if (!event.data) {
+    return fallbackPayload;
+  }
+
+  const text = event.data.text();
+
+  try {
+    return {
+      ...fallbackPayload,
+      ...JSON.parse(text)
+    };
+  } catch {
+    return {
+      ...fallbackPayload,
+      body: text || fallbackPayload.body
+    };
+  }
+};
+
+self.addEventListener("push", (event) => {
+  const payload = getPushNotificationPayload(event);
+
+  event.waitUntil(
+    self.registration.showNotification(payload.title, {
+      body: payload.body,
+      icon: payload.icon || "/icons/icon-192.png",
+      badge: payload.badge || "/icons/icon-192.png",
+      data: {
+        url: payload.url || "/"
+      }
+    })
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  const url = event.notification.data?.url || "/";
+
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true })
+      .then((clientList) => {
+        const matchingClient = clientList.find((client) =>
+          "focus" in client && new URL(client.url).origin === self.location.origin
+        );
+
+        if (matchingClient) {
+          return matchingClient.focus();
+        }
+
+        if (self.clients.openWindow) {
+          return self.clients.openWindow(url);
+        }
+
+        return undefined;
+      })
   );
 });
 

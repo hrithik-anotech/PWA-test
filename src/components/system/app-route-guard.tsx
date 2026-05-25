@@ -14,10 +14,26 @@ import {
 
 const ROOT_PATH = "/";
 
-function normalizePathname(pathname: string) {
-  return pathname.length > 1 && pathname.endsWith("/")
-    ? pathname.slice(0, -1)
-    : pathname;
+function stripLocalePrefix(pathname: string, locale: string) {
+  const prefix = `/${locale}`;
+
+  if (pathname === prefix) {
+    return "/";
+  }
+
+  if (pathname.startsWith(`${prefix}/`)) {
+    return pathname.slice(prefix.length);
+  }
+
+  return pathname;
+}
+
+function normalizePathname(pathname: string, locale: string) {
+  const pathWithoutLocale = stripLocalePrefix(pathname, locale);
+
+  return pathWithoutLocale.length > 1 && pathWithoutLocale.endsWith("/")
+    ? pathWithoutLocale.slice(0, -1)
+    : pathWithoutLocale;
 }
 
 function isOnboardingPath(pathname: string) {
@@ -106,16 +122,17 @@ export function AppRouteGuard() {
       localStorage.setItem("NEXT_LOCALE", currentLocale);
     }
 
-    const normalizedPathname =
-      normalizePathname(pathname);
+    const normalizedPathname = normalizePathname(
+      pathname,
+      currentLocale
+    );
 
     if (normalizedPathname === ROOT_PATH) {
       return;
     }
 
     const appState = getAppState();
-    const nextPath =
-      getNextRequiredPath(appState);
+    const nextPath = getNextRequiredPath(appState);
 
     if (
       !canStayOnPath(
@@ -124,7 +141,7 @@ export function AppRouteGuard() {
         appState
       )
     ) {
-      router.replace(nextPath);
+      router.replace(nextPath, { locale: currentLocale as any });
     }
   }, [pathname, router]);
 

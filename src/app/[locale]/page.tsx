@@ -110,7 +110,7 @@ export default function RootPage() {
         // We want to preload the destination route's warm images so there's no loading flash.
         // The user requested a minimum splash screen duration of 3 seconds, 
         // and a maximum timeout of 10 seconds as a fallback.
-        const minSplashTimeMs = 2500;
+        const minSplashTimeMs = 2000;
         const maxSplashTimeMs = 10000;
         
         const destinationImages = getWarmImagesForPath(nextPath);

@@ -70,6 +70,15 @@ const bookingsData: Booking[] = [
     },
 ];
 
+function getBookingDetailsHref(booking: Booking) {
+    const path =
+        booking.status === 'confirmed'
+            ? '/profile/booking-confirm'
+            : '/profile/booking-cancel';
+
+    return `${path}/${encodeURIComponent(booking.id)}`;
+}
+
 export default function MyBookingsPage() {
     const t = useTranslations('MyBookings');
     const tCommon = useTranslations('Common');
@@ -148,11 +157,13 @@ export default function MyBookingsPage() {
                 <div className="space-y-3 sm:space-y-4">
                     {filteredBookings.length > 0 ? (
                         filteredBookings.map((booking) => (
-                            <div
+                            <Link
                                 key={booking.id}
+                                href={getBookingDetailsHref(booking)}
+                                aria-label={`${booking.date} ${booking.time} booking details`}
                                 className={cn(
                                     'flex items-center gap-4 rounded-2xl border px-4 py-4 transition-all shadow-[0px_0px_4px_1px_#000000/40] sm:px-5 sm:py-5',
-                                    'border-[#595959]/33 bg-white'
+                                    'border-[#595959]/33 bg-white active:scale-[0.99]'
                                 )}
                             >
                                 {/* Icon */}
@@ -200,7 +211,7 @@ export default function MyBookingsPage() {
                                         </span>
                                     </div>
                                 </div>
-                            </div>
+                            </Link>
                         ))
                     ) : (
                         <div className="flex flex-col items-center justify-center py-20 text-center">

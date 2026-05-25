@@ -10,6 +10,8 @@ export default function NotificationsOnboardingPage() {
   const t = useTranslations('Onboarding');
   const router = useRouter();
   const [checking, setChecking] = useState(true);
+  const [permissionError, setPermissionError] = useState('');
+  const [requestingPermission, setRequestingPermission] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -32,12 +34,39 @@ export default function NotificationsOnboardingPage() {
 
   const handleEnableNotifications = async () => {
     markForwardNavigation();
-    if (typeof window !== 'undefined' && 'Notification' in window) {
-      try { await Notification.requestPermission(); }
-      catch (error) { console.error('Failed to request notification permission:', error); }
+    setPermissionError('');
+
+    if (typeof window === 'undefined' || !('Notification' in window)) {
+      setPermissionError('Notifications are not supported on this browser.');
+      return;
     }
-    handleCompleteOnboarding();
-    router.replace('/login');
+
+    if (!window.isSecureContext) {
+      setPermissionError('Notifications need a secure connection to be enabled.');
+      return;
+    }
+
+    try {
+      setRequestingPermission(true);
+      const permission = await Notification.requestPermission();
+
+      if (permission !== 'granted') {
+        setPermissionError(
+          permission === 'denied'
+            ? 'Notifications are blocked. You can enable them from browser settings.'
+            : 'Please allow notifications to continue with alerts enabled.'
+        );
+        return;
+      }
+
+      handleCompleteOnboarding();
+      router.replace('/login');
+    } catch (error) {
+      console.error('Failed to request notification permission:', error);
+      setPermissionError('Could not ask for notification access. Please try again.');
+    } finally {
+      setRequestingPermission(false);
+    }
   };
 
   const handleSkipNotifications = () => {
@@ -119,8 +148,13 @@ return (
 
       {/* CTA */}
       <div className="flex flex-col gap-[10px] w-full">
-        <button type="button" onClick={handleEnableNotifications} className="np-allow flex w-full items-center justify-center gap-2 rounded-2xl" style={{ height:52, background:'#5B2FD1', border:'none', fontFamily:'inherit', fontSize:15, fontWeight:600, color:'#fff', cursor:'pointer' }}>
-          Allow notifications
+        {permissionError ? (
+          <p role="status" className="text-center" style={{ fontSize:12.5, color:'#D14343', lineHeight:1.4 }}>
+            {permissionError}
+          </p>
+        ) : null}
+        <button type="button" onClick={handleEnableNotifications} disabled={requestingPermission} className="np-allow flex w-full items-center justify-center gap-2 rounded-2xl disabled:opacity-70" style={{ height:52, background:'#5B2FD1', border:'none', fontFamily:'inherit', fontSize:15, fontWeight:600, color:'#fff', cursor: requestingPermission ? 'wait' : 'pointer' }}>
+          {requestingPermission ? 'Asking permission...' : 'Allow notifications'}
         </button>
         <button type="button" onClick={handleSkipNotifications} className="np-skip w-full" style={{ height:40, background:'none', border:'none', fontFamily:'inherit', fontSize:13.5, color:'#B0A3CC', cursor:'pointer' }}>
           Not now

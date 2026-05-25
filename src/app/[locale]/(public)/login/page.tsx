@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
@@ -13,6 +13,11 @@ export default function LoginPage() {
   const [phone, setPhone] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    requestAnimationFrame(() => setIsReady(true));
+  }, []);
 
   const isButtonLoading = isLoading || isPending;
 
@@ -62,7 +67,13 @@ export default function LoginPage() {
   ];
 
   return (
-    <div className="relative flex h-[100dvh] max-h-[100dvh] flex-col overflow-hidden bg-white">
+    <div
+      className={`relative flex h-[100dvh] max-h-[100dvh] flex-col overflow-hidden bg-white transition-all duration-700 ease-out will-change-transform will-change-opacity ${
+        isReady
+          ? "opacity-100 translate-y-0 scale-100"
+          : "opacity-0 translate-y-6 scale-95"
+      }`}
+    >
       {/* Top Gallery */}
       <div className="relative min-h-0 flex-1 overflow-hidden bg-white">
         <div className="flex h-full items-stretch justify-between">

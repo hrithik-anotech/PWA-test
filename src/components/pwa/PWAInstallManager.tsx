@@ -20,6 +20,7 @@ import {
 } from "@/utils/pwa";
 
 const INSTALL_PROMPT_AUTO_OPEN_DELAY_MS = 10000;
+const INSTALL_UI_TRIGGER_DELAY_MS = 1300;
 
 function InstallToastView({
   onClose,
@@ -28,6 +29,25 @@ function InstallToastView({
   onClose: () => void;
   toast: InstallToast | null;
 }) {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    if (!toast) {
+      setIsVisible(false);
+      return;
+    }
+
+    const timeout = window.setTimeout(
+      () => setIsVisible(true),
+      120
+    );
+
+    return () => {
+      window.clearTimeout(timeout);
+      setIsVisible(false);
+    };
+  }, [toast]);
+
   if (!toast) {
     return null;
   }
@@ -37,8 +57,12 @@ function InstallToastView({
       role="status"
       aria-live="polite"
       className={cn(
-        "fixed left-4 right-4 z-60 mx-auto flex max-w-md items-center justify-between gap-3 rounded-2xl px-4 py-3 text-sm font-bold shadow-[0_16px_50px_rgba(0,0,0,0.16)] animate-[pwa-slide-up_220ms_ease-out]",
-        "bottom-[calc(env(safe-area-inset-bottom)+1rem)]",
+        "fixed left-4 right-4 z-60 mx-auto flex max-w-md items-center justify-between gap-3 rounded-2xl px-4 py-3 text-sm font-bold shadow-[0_16px_50px_rgba(0,0,0,0.16)] bottom-[calc(env(safe-area-inset-bottom)+1rem)]",
+        "transition-all duration-300 ease-out",
+        isVisible
+          ? "opacity-100 translate-y-0"
+          : "opacity-0 translate-y-3"
+        ,
         toast.tone === "success" &&
           "bg-[#16A34A] text-white",
         toast.tone === "info" &&
@@ -77,6 +101,22 @@ export function PWAInstallManager() {
     useState(false);
   const [isIOSGuideOpen, setIsIOSGuideOpen] =
     useState(false);
+  const [showInstallTriggers, setShowInstallTriggers] =
+    useState(false);
+
+  useEffect(() => {
+    if (!canShowInstallUI) {
+      setShowInstallTriggers(false);
+      return;
+    }
+
+    const timeout = window.setTimeout(
+      () => setShowInstallTriggers(true),
+      INSTALL_UI_TRIGGER_DELAY_MS
+    );
+
+    return () => window.clearTimeout(timeout);
+  }, [canShowInstallUI]);
 
   useEffect(() => registerServiceWorker(), []);
 
@@ -133,6 +173,7 @@ export function PWAInstallManager() {
   }
 
   const shouldShowTriggers =
+    showInstallTriggers &&
     canShowInstallUI &&
     !isNativePromptOpen &&
     !isIOSGuideOpen;

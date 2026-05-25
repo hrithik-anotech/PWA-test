@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/cn";
+
 type IOSInstallGuideProps = {
   onClose: () => void;
   onDismiss: () => void;
@@ -54,6 +57,17 @@ export function IOSInstallGuide({
   onDismiss,
   open,
 }: IOSInstallGuideProps) {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const timeout = window.setTimeout(
+      () => setIsVisible(true),
+      16
+    );
+
+    return () => window.clearTimeout(timeout);
+  }, []);
+
   if (!open) {
     return null;
   }
@@ -72,12 +86,26 @@ export function IOSInstallGuide({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/45 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-sm animate-[pwa-fade-in_180ms_ease-out]">
+    <div
+      className={cn(
+        "fixed inset-0 z-50 flex items-end justify-center bg-black/45 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-sm",
+        "transition-opacity duration-300 ease-out",
+        isVisible
+          ? "opacity-100"
+          : "opacity-0 pointer-events-none"
+      )}
+    >
       <section
         role="dialog"
         aria-modal="true"
         aria-labelledby="ios-install-title"
-        className="w-full max-w-md rounded-[1.75rem] border border-white/70 bg-white p-5 text-[#111111] shadow-[0_24px_80px_rgba(0,0,0,0.28)] animate-[pwa-slide-up_260ms_cubic-bezier(0.22,1,0.36,1)] dark:border-white/10 dark:bg-[#171225] dark:text-white"
+        className={cn(
+          "w-full max-w-md rounded-[1.75rem] border border-white/70 bg-white p-5 text-text shadow-[0_24px_80px_rgba(0,0,0,0.28)] dark:border-white/10 dark:bg-[#171225] dark:text-white",
+          "transition-all duration-300 ease-out",
+          isVisible
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-6"
+        )}
       >
         <div className="mb-5 flex items-center justify-between">
           <div className="h-1.5 w-12 rounded-full bg-black/10 dark:bg-white/14" />
