@@ -91,7 +91,7 @@ export function BottomNavigation() {
   const router = useRouter();
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-10 flex justify-center bg-transparent px-5 pb-[calc(env(safe-area-inset-bottom,0)+0.75rem)] pt-2">
+    <div className="fixed inset-x-0 bottom-0 z-10 flex justify-center bg-transparent px-5 pb-[calc(env(safe-area-inset-bottom,0)+0.5rem)] pt-2">
       <nav className="flex h-[6vh] min-h-12.5 w-full max-w-sm items-center justify-around rounded-[1.75rem] bg-white px-5 shadow-[0_0.25rem_1rem_rgba(17,17,17,0.04)]">
         {tabs.map(({ label, href, Icon }) => {
           const isActive = pathname.startsWith(href);
