@@ -98,7 +98,7 @@ export default function RootPage() {
         await preloadImages(CRITICAL_IMAGES, {
           concurrency: 1,
           fetchPriority: "high",
-          timeoutMs: 1200,
+          timeoutMs: 2000,
         });
 
         // -----------------------------

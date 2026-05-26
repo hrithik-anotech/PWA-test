@@ -128,12 +128,16 @@ export default function InstantBookingDrawer({
     ...value,
   }));
 
+  const availableDurationOptions = durationOptions.filter(
+    (option) => option.available
+  );
+
   const visibleOptions = showAll
-    ? durationOptions
-    : durationOptions.slice(0, visibleDurationCount);
+    ? availableDurationOptions
+    : availableDurationOptions.slice(0, visibleDurationCount);
 
   const currentPrice = durationPrices[selectedDuration];
-  const hasMoreOptions = durationOptions.length > visibleDurationCount;
+  const hasMoreOptions = availableDurationOptions.length > visibleDurationCount;
 
   if (!hasPortalTarget) {
     return null;
@@ -181,7 +185,7 @@ export default function InstantBookingDrawer({
           </p>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 pb-4">
+        <div className="flex-1 overflow-y-auto px-4 pb-[calc(5rem+env(safe-area-inset-bottom,0rem))]">
           <section className="rounded-xl border border-[#F0F0F0] bg-white p-3">
             <h3 className="mb-3 text-sm font-normal text-black sm:text-base">
               {t('duration')}
@@ -190,25 +194,17 @@ export default function InstantBookingDrawer({
             <div className="grid grid-cols-3 gap-2 min-[24rem]:gap-3 sm:gap-4 lg:grid-cols-4">
               {visibleOptions.map((option) => {
                 const isSelected = selectedDuration === option.value;
-                const isUnavailable = !option.available;
 
                 return (
                   <button
                     key={option.value}
                     type="button"
-                    disabled={isUnavailable}
-                    onClick={() => {
-                      if (!isUnavailable) {
-                        setSelectedDuration(option.value);
-                      }
-                    }}
+                    onClick={() => setSelectedDuration(option.value)}
                     className={cn(
                       'flex aspect-square min-h-[4.25rem] min-w-0 flex-col items-start justify-between rounded-[0.625rem] border p-2 text-left transition-all min-[24rem]:p-2.5 sm:p-3',
-                      isUnavailable
-                        ? 'cursor-not-allowed border-[#D8D8D8] bg-[#F8F8F8] text-[#8F8F8F] opacity-100'
-                        : isSelected
-                          ? 'border-[#6C35DE] bg-[#F7F2FF] text-[#6C35DE] active:scale-[0.98]'
-                          : 'border-transparent bg-[#EFEFEF] text-[#555555] active:scale-[0.98]'
+                      isSelected
+                        ? 'border-[#6C35DE] bg-[#F7F2FF] text-[#6C35DE] active:scale-[0.98]'
+                        : 'border-transparent bg-[#EFEFEF] text-[#555555] active:scale-[0.98]'
                     )}
                   >
                     <span className="w-full min-w-0 whitespace-normal break-words text-[2.5vw] font-semibold leading-tight min-[24rem]:text-xs sm:text-sm"> {/* ↓ was text-[0.625rem] → text-[2.5vw] */}
@@ -220,21 +216,10 @@ export default function InstantBookingDrawer({
                         {'\u20B9'}
                         {parseFloat(option.amount).toFixed(0)}
                       </span>
-                      <span
-                        className={cn(
-                          'text-[2vw] font-normal leading-tight line-through min-[24rem]:text-[2.5vw] sm:text-xs', /* ↓ was text-[0.5rem]/text-[0.625rem] → text-[2vw]/text-[2.5vw] */
-                          isUnavailable ? 'text-[#A0A0A0]' : 'text-[#777777]'
-                        )}
-                      >
+                      <span className="text-[2vw] font-normal leading-tight line-through min-[24rem]:text-[2.5vw] sm:text-xs text-[#777777]">
                         {option.originalPrice}
                       </span>
                     </span>
-
-                    {isUnavailable ? (
-                      <span className="w-full min-w-0 break-words text-[2vw] font-medium leading-tight text-[#7F7F7F] min-[24rem]:text-[2.5vw] sm:text-xs"> {/* ↓ was text-[0.5rem]/text-[0.625rem] → text-[2vw]/text-[2.5vw] */}
-                        {tCommon('unavailable')}
-                      </span>
-                    ) : null}
                   </button>
                 );
               })}

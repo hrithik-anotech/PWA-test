@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { cn } from "@/lib/cn";
 
@@ -182,13 +184,23 @@ export default function LiveTrackingDrawer({
   onChat,
   onCall,
 }: LiveTrackingDrawerProps) {
-  return (
+  const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    setPortalRoot(document.body);
+  }, []);
+
+  if (!portalRoot) {
+    return null;
+  }
+
+  return createPortal(
     <>
       {/* ── Backdrop ───────────────────────────────────────────────────── */}
       <div
         onClick={onClose}
         className={cn(
-          "fixed inset-0 bg-black/40 z-40",
+          "fixed inset-0 bg-black/40 z-50",
           "transition-opacity duration-300",
           open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}
@@ -198,7 +210,7 @@ export default function LiveTrackingDrawer({
       <div
         className={cn(
           // positioning
-          "fixed bottom-0 left-0 right-0 z-50",
+          "fixed bottom-0 left-0 right-0 z-[100]",
           // shape
           /* ↓ was rounded-t-[24px] */
           "bg-white rounded-t-3xl",
@@ -369,6 +381,7 @@ export default function LiveTrackingDrawer({
 
         </div>
       </div>
-    </>
+    </>,
+    portalRoot
   );
 }

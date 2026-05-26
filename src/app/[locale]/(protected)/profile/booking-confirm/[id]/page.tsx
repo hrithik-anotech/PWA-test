@@ -14,7 +14,7 @@ const ICONS = {
   rupee: "/images/icons/rupee.svg",
   headset: "/images/icons/headset.svg",
   share: "/images/icons/share.svg",
-  chevron: "/images/icons/chevron-right.svg",
+    chevron: "/images/icons/chevron-right.svg",
 } as const;
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -68,7 +68,7 @@ function ListRow({
         </p>
       </div>
       <Image
-        src={ICONS.back}
+        src={ICONS.chevron}
         alt="Back"
         width={12}
         height={12}
