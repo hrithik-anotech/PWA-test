@@ -7,18 +7,18 @@ import { cn } from "@/lib/cn";
 
 // ── Icon & image paths ────────────────────────────────────────────────────────
 const ICONS = {
-  close:          "/icons/close.svg",          // × close button
-  scooter:        "/icons/scooter-small.svg",  // scooter on map route
-  house:          "/icons/house-white.svg",    // house inside destination pin
-  star:           "/icons/star.svg",           // filled star
-  chat:           "/icons/chat-bubble.svg",    // message/chat icon
-  phone:          "/icons/phone.svg",          // phone icon
-  checkmark:      "/icons/check-white.svg",   // white tick inside done step
+  close:          "/images/icons/close.svg",          // × close button
+  scooter:        "/images/icons/figure.svg",         // scooter on map route
+  house:          "/images/icons/home-white.svg",    // house inside destination pin
+  star:           "/images/icons/star.svg",           // filled star
+  chat:           "/images/icons/chat-dots.svg",    // message/chat icon
+  phone:          "/images/icons/call.svg",          // phone icon
+  checkmark:      "/images/icons/check-white.svg",   // white tick inside done step
 } as const;
 
 const IMAGES = {
   map:         "/images/map.jpg",          // street map background
-  workerPhoto: "/images/worker-photo.jpg", // worker profile photo
+  workerPhoto: "/images/login/profile-placeholder.png", // worker profile photo
 } as const;
 
 // ── Timeline data type ────────────────────────────────────────────────────────
@@ -47,10 +47,9 @@ function RoundIconBtn({
     <button
       onClick={onClick}
       className={cn(
-        "w-11 h-11 rounded-xl",
-        "border-2 border-gray-200",
-        "flex items-center justify-center",
-        "active:bg-gray-50 transition-colors"
+        "w-16 h-11 rounded-lg",
+        "border-2 border-accent",
+        "flex items-center justify-center"
       )}
     >
       <Image src={src} alt={alt} width={20} height={20} />
@@ -79,7 +78,8 @@ function TimelineRow({ step, isLast }: { step: TimelineStep; isLast: boolean }) 
           )}
         >
           {isDone && (
-            <Image src={ICONS.checkmark} alt="✓" width={12} height={12} />
+            // <Image src={ICONS.checkmark} alt="✓" width={12} height={12} />
+            <span className="text-white">&#10004;</span>
           )}
           {isActive && (
             <div className="w-2 h-2 rounded-full bg-white" />
@@ -89,7 +89,7 @@ function TimelineRow({ step, isLast }: { step: TimelineStep; isLast: boolean }) 
         {!isLast && (
           <div
             className={cn(
-              "w-[0.125rem] flex-1 mt-1", /* ↓ was w-[2px] */
+              "w-[0.125rem] flex-1", /* ↓ was w-[2px] */
               isDone   ? "bg-[#5B21B6]" : "bg-gray-200"
             )}
             style={{ minHeight: "1.5rem" }} /* ↓ was minHeight: 24 */
@@ -239,9 +239,10 @@ export default function LiveTrackingDrawer({
             </h2>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center active:bg-gray-200 transition-colors -mt-0.5"
+              className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center -mt-0.5"
             >
-              <Image src={ICONS.close} alt="Close" width={14} height={14} />
+              {/* <Image src={ICONS.close} alt="Close" width={14} height={14} /> */}
+              &#10005;
             </button>
           </div>
 

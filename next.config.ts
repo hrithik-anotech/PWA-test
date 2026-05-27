@@ -6,7 +6,7 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 const nextConfig: NextConfig = {
   reactCompiler: true,
 
-  allowedDevOrigins: ['192.168.1.16', '10.71.55.216'],
+  allowedDevOrigins: ['192.168.1.10', '10.71.55.216'],
 
   images: {
     formats: ["image/avif", "image/webp"],

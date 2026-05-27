@@ -85,8 +85,8 @@ export default function ServiceTrackingCard({
           <Image
             src={ICONS.scooterTitle}
             alt="Scooter"
-            width={28}
-            height={28}
+            width={14}
+            height={14}
             className="shrink-0"
           />
         </div>
@@ -95,7 +95,7 @@ export default function ServiceTrackingCard({
         <div className="flex items-center gap-3">
           {/* avatar */}
           {/* ↓ was w-[72px] h-[72px] */}
-          <div className="w-[4.5rem] h-[4.5rem] rounded-full overflow-hidden bg-[#EDE9FF] shrink-0 ring-2 ring-[#EDE9FF]">
+          <div className="w-14 h-14 rounded-full overflow-hidden bg-[#EDE9FF] shrink-0 ring-2 ring-[#EDE9FF]">
             <Image
               src={workerPhoto}
               alt={workerName}

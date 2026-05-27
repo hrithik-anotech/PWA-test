@@ -1,268 +1,325 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { cn } from '@/lib/cn';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { cn } from "@/lib/cn";
+
+// ── Icon paths — /public/icons/ ───────────────────────────────────────────────
+const ICONS = {
+  back: "/images/icons/back-black.svg",
+  scooter: "/images/icons/figure.svg",
+  star: "/images/icons/star.svg",
+  calendar: "/images/icons/calender-outline.svg",
+  reschedule: "/images/icons/calender-outline.svg",    // calendar / reschedule icon
+  cancel: "/images/icons/cross-circle.svg",      // X icon (red-tinted)
+  mapPin: "/images/icons/map-pin.svg",       // small pin for "Your location"
+  location: "/images/icons/location-pin.svg",  // purple-bubble location icon
+  share: "/images/icons/share.svg",
+  rupee: "/images/icons/rupee.svg",
+  headset: "/images/icons/headset.svg",
+  chevron: "/images/icons/chevron-right.svg",
+} as const;
+
+// ── Shared pieces ─────────────────────────────────────────────────────────────
+
+function IconBubble({ src, alt, size = 20 }: { src: string; alt: string; size?: number }) {
+  return (
+    <div className="w-11 h-11 rounded-full bg-[#EDE9FF] flex items-center justify-center shrink-0">
+      <Image src={src} alt={alt} width={size} height={size} />
+    </div>
+  );
+}
+
+function OtpDigit({ digit }: { digit: string }) {
+  return (
+    <div className="w-9 h-10 rounded-md bg-[#1C1C1E] flex items-center justify-center">
+      <span className="text-white font-bold text-lg leading-none">{digit}</span>
+    </div>
+  );
+}
+
+function ListRow({ iconSrc, iconAlt, title, subtitle, onClick }: {
+  iconSrc: string; iconAlt: string;
+  title: string; subtitle: string;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="w-full flex items-center gap-3 px-4 py-[14px] text-left active:bg-gray-50 transition-colors"
+    >
+      <IconBubble src={iconSrc} alt={iconAlt} size={20} />
+      <div className="flex-1 min-w-0">
+        <p className="text-[14px] font-semibold text-[#1C1C1E] leading-tight">{title}</p>
+        <p className="text-[12px] text-gray-400 mt-[3px] leading-tight">{subtitle}</p>
+      </div>
+      <Image src={ICONS.chevron} alt="" width={10} height={10} className="shrink-0 " />
+    </button>
+  );
+}
+
+// ── Props ─────────────────────────────────────────────────────────────────────
 
 interface ServiceDetailPageProps {
-  // Worker details
-  workerName: string;
-  workerRole: string;
-  workerImage: string;
-  rating: number;
-  reviewCount: number;
-  
-  // Booking details
-  arrivingInMins: number;
-  progress: number;
-  
-  // Service details
-  serviceDate: string;
-  serviceTime: string;
-  duration: number;
-  location: string;
-  checkInOTP: string;
-  
-  // Additional
-  bookingId?: string;
-  isLiveTracking?: boolean;
+  workerName?: string;
+  workerRole?: string;
+  workerImage?: string;
+  rating?: number;
+  reviewCount?: number;
+  arrivingInMins?: number;
+  eta?: string;
+  progress?: number;
+  serviceDate?: string;
+  serviceTime?: string;
+  duration?: number;
+  location?: string;
+  checkInOTP?: string;
+  onReschedule?: () => void;
+  onCancel?: () => void;
 }
+
+// ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function ServiceDetailPage({
   workerName = "Riya Sharma",
   workerRole = "Cleaning Expert",
-  workerImage = "/images/worker-photo.jpg",
+  workerImage = "/images/login/profile-placeholder.png",
   rating = 4.9,
   reviewCount = 236,
   arrivingInMins = 6,
+  eta = "6:21 PM",
   progress = 0.38,
-  serviceDate = "Mon, 25 May",
-  serviceTime = "6:00 PM",
-  duration = 120,
-  location = "Dhansal Cinema, Opposite Maa Kali Road, Near Bhogat Singh More",
-  checkInOTP = "4826",
-  bookingId = "SNB-9843",
-  isLiveTracking = true,
+  serviceDate = "16th May",
+  serviceTime = "01:15 PM",
+  duration = 60,
+  location = "Genex Exotica, Grand Trunk Road, Kumarpur, Asansol, West Bengal, 713304, near Bhagat Singh More",
+  checkInOTP = "1229",
+  onReschedule,
+  onCancel,
 }: ServiceDetailPageProps) {
   const router = useRouter();
-  const [copiedOTP, setCopiedOTP] = useState(false);
-
-  const handleCopyOTP = () => {
-    navigator.clipboard.writeText(checkInOTP || "4826");
-    setCopiedOTP(true);
-    setTimeout(() => setCopiedOTP(false), 2000);
-  };
+  const digits = checkInOTP.split("");
+  const pct = `${Math.min(1, Math.max(0, progress)) * 100}%`;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white pb-8">
-      {/* Header */}
-      <div className="sticky top-0 bg-white border-b border-slate-200 z-10">
-        <div className="flex items-center justify-between p-4">
-          <button
-            onClick={() => router.back()}
-            className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
-          >
-            <div className="w-6 h-6 bg-slate-200 rounded" />
-          </button>
-          <div className="flex items-center gap-2">
-            <div className="relative flex items-center gap-1.5">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-xs font-semibold text-green-700 tracking-wide">
-                LIVE TRACKING
-              </span>
-            </div>
-          </div>
-          <div className="w-6" /> {/* Spacer for alignment */}
-        </div>
+    <div className="min-h-dvh w-full bg-[#F4F5FA]">
+
+      {/* back arrow */}
+      <div className="px-4 pt-2 pb-2">
+        <button
+          onClick={() => router.back()}
+          aria-label="Go back"
+          className="p-1 rounded-full active:bg-black/10 transition-colors inline-flex"
+        >
+          <Image src={ICONS.back} alt="Back" width={10} height={10} />
+        </button>
       </div>
 
-      {/* Main Content */}
-      <div className="px-4 pt-6 space-y-4">
-        {/* Worker Card */}
-        <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
-          <div className="flex items-start justify-between">
-            <div className="flex gap-3 flex-1">
-              <div className="relative">
-                <img
+      <div className="px-4 pb-14 space-y-3 max-w-lg mx-auto w-full">
+
+        {/* ══════════════════════════════════════════════════════════════════
+            CARD 1 — Live Tracking + Worker
+        ══════════════════════════════════════════════════════════════════ */}
+        <div
+          className={cn(
+            "cursor-pointer transition-opacity",
+            // card shell
+            "bg-white rounded-2xl shadow-[0_2px_16px_rgba(0,0,0,0.08)]",
+            // left accent border
+            "border-l-[0.21875rem] border-l-[#5B21B6]",
+            // inner padding + layout: stacked on small, two-column on sm+
+            "px-5 py-4 flex items-start",
+            "w-[calc(100%-1.5rem)] mt-4"
+          )}
+        >
+          {/* ── TOP TWO-COLUMN SECTION ── */}
+          <div className="flex flex-col gap-3 p-4 pb-3">
+
+            {/* LEFT — tracking numbers */}
+            <div className="flex-1 min-w-0 flex flex-col">
+
+              {/* live badge */}
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <span className="w-[7px] h-[7px] rounded-full bg-[#22C55E] animate-pulse shrink-0" />
+                <span className="text-[10px] font-bold text-[#22C55E] tracking-[0.12em] uppercase">
+                  Live Tracking
+                </span>
+              </div>
+
+              {/* title + scooter icon inline */}
+              <div className="flex items-center gap-1.5 flex-wrap mb-1">
+                <span className="text-[16px] font-extrabold text-[#1C1C1E] leading-tight tracking-tight">
+                  Worker on the way
+                </span>
+                <Image src={ICONS.scooter} alt="" width={22} height={22} className="shrink-0" />
+              </div>
+
+              {/* arriving in label */}
+              <p className="text-[11px] text-gray-500 leading-none mb-0.5">Arriving in</p>
+
+              {/* 6 mins — large purple */}
+              <p className="text-[32px] font-extrabold text-[#5B21B6] leading-none tracking-tight">
+                {arrivingInMins} mins
+              </p>
+
+              {/* ETA */}
+              <p className="text-[11px] text-gray-400 leading-none mt-1">ETA {eta}</p>
+
+              {/* thin progress bar */}
+              <div className="mt-2.5 w-full h-[5px] bg-[#D9D0F5] rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-[#5B21B6] rounded-full transition-all duration-500"
+                  style={{ width: pct }}
+                />
+              </div>
+            </div>
+
+            <div>
+
+              {/* row: pin + label + "Open map >" */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <Image src={ICONS.mapPin} alt="" width={13} height={13} className="opacity-50 shrink-0" />
+                  <span className="text-[12px] font-semibold text-gray-500">Your location</span>
+                </div>
+                <button className="text-[8px] font-semibold text-[#5B21B6] whitespace-nowrap ml-2">
+                  Open map &rsaquo;
+                </button>
+              </div>
+
+              {/* address */}
+              <p className="text-xs text-gray-400">
+                {location}
+              </p>
+            </div>
+          </div>
+
+          {/* ── YOUR LOCATION SECTION (full-width, below divider) ── */}
+          {/* <div className="border-r border-[#ccc] mx-4" /> */}
+          <div className="w-32.5 flex flex-col items-center gap-2 shrink-0">
+
+            <div className="flex px-1 py-4">
+              {/* avatar */}
+              <div className="w-16 h-16 rounded-full overflow-hidden bg-[#D9D0F5] ring-[3px] ring-white shadow-sm">
+                <Image
                   src={workerImage}
                   alt={workerName}
-                  className="w-14 h-14 rounded-full object-cover"
+                  width={60}
+                  height={60}
+                  className="w-full h-full object-cover"
                 />
-                <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 border border-slate-200">
-                  <div className="w-4 h-4 bg-green-200 rounded-full" />
-                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-slate-900 text-sm leading-snug">
+
+              {/* name */}
+              <div className="text-center w-full">
+                <p className="text-[13px] font-bold text-[#1C1C1E] leading-tight">
                   {workerName}
-                </h3>
-                <p className="text-xs text-slate-500 mt-0.5">{workerRole}</p>
-                <div className="flex items-center gap-1.5 mt-1.5">
-                  <div className="flex items-center gap-0.5">
-                    <span className="text-xs font-semibold text-slate-900">★ {rating}</span>
-                    <span className="text-xs text-slate-500">({reviewCount})</span>
-                  </div>
+                </p>
+
+                {/* star rating */}
+                <div className="flex items-center justify-center gap-[3px] mt-[3px]">
+                  <Image src={ICONS.star} alt="★" width={12} height={12} />
+                  <span className="text-[11px] font-bold text-[#1C1C1E] leading-none">
+                    {rating.toFixed(1)}
+                  </span>
+                  <span className="text-[10px] text-gray-400 leading-none">
+                    ({reviewCount})
+                  </span>
                 </div>
-              </div>
-            </div>
-            <div className="flex flex-col gap-2 ml-3">
-              <button className="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap">
-                Reschedule
-              </button>
-              <button className="px-3 py-1.5 rounded-lg bg-red-50 border border-red-200 text-xs font-medium text-red-600 hover:bg-red-100 transition-colors whitespace-nowrap">
-                Cancel
-              </button>
-            </div>
-          </div>
 
-          {/* Arriving Status */}
-          <div className="mt-4 pt-4 border-t border-slate-200">
-            <div className="space-y-2">
-              <div className="flex items-baseline justify-between">
-                <span className="text-xs text-slate-600">Arriving in</span>
-                <span className="text-sm font-semibold text-slate-900">{arrivingInMins} mins</span>
-              </div>
-              <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full transition-all duration-500"
-                  style={{ width: `${progress * 100}%` }}
-                />
-              </div>
-              <p className="text-xs text-slate-500 mt-1">ETA 6:47 PM</p>
-            </div>
-          </div>
-
-          {/* Your Location */}
-          <div className="mt-4 pt-4 border-t border-slate-200">
-            <div className="flex items-start gap-2">
-              <div className="w-4 h-4 bg-slate-200 rounded mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="text-xs text-slate-600">Your location</p>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Dhansal Cinema, Opposite Maa Kali Road, Near Bhogat Singh More
+                {/* role */}
+                <p className="text-[11px] text-gray-400 mt-[3px] leading-tight">
+                  {workerRole}
                 </p>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* Check-in OTP */}
-        <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
-          <p className="text-xs font-semibold text-slate-900 mb-3">Check-in OTP</p>
-          <p className="text-xs text-slate-600 mb-3">Share with expert to start service</p>
-          <div className="flex items-center justify-between bg-slate-50 rounded-lg p-3 border border-slate-200">
-            <div className="flex gap-2">
-              {(checkInOTP || "4826").split('').map((digit, idx) => (
-                <div
-                  key={idx}
-                  className="w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center"
-                >
-                  <span className="text-white font-semibold text-lg">{digit}</span>
-                </div>
-              ))}
-            </div>
+            {/* Reschedule button */}
             <button
-              onClick={handleCopyOTP}
+              onClick={onReschedule}
               className={cn(
-                "p-2 rounded-lg transition-all duration-200",
-                copiedOTP
-                  ? "bg-green-100"
-                  : "hover:bg-slate-200"
+                "w-full flex items-center justify-center gap-1.5",
+                "bg-white border border-[#C4B5F4] rounded-lg py-1.75 px-2",
+                "text-[11px] font-semibold text-[#5B21B6]",
+                "active:bg-[#5B21B6]/5 transition-colors"
               )}
             >
-              {copiedOTP ? (
-                <div className="w-5 h-5 bg-green-200 rounded-full" />
-              ) : (
-                <div className="w-5 h-5 bg-slate-200 rounded" />
+              <Image src={ICONS.reschedule} alt="" width={12} height={12} />
+              Reschedule
+            </button>
+
+            {/* Cancel button */}
+            <button
+              onClick={onCancel}
+              className={cn(
+                "w-full flex items-center justify-center gap-1.5",
+                "bg-[#FFF0F0] border border-[#FECACA] rounded-lg py-1.75 px-2",
+                "text-[11px] font-semibold text-[#EF4444]",
+                "active:bg-red-100 transition-colors"
               )}
+            >
+              <Image src={ICONS.cancel} alt="" width={12} height={12} />
+              Cancel
+            </button>
+          </div>
+
+        </div>
+
+        {/* ══════════════════════════════════════════════════════════════════
+            CARD 2 — Check-in OTP
+        ══════════════════════════════════════════════════════════════════ */}
+        <div className="bg-white rounded-2xl px-4 py-[14px] shadow-sm">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-[15px] font-semibold text-[#1C1C1E] leading-tight">
+                Check-in OTP
+              </p>
+              <p className="text-[12px] text-gray-400 mt-[3px] leading-tight">
+                Share with expert to start service
+              </p>
+            </div>
+            <div className="flex gap-[6px] shrink-0">
+              {digits.map((d, i) => <OtpDigit key={i} digit={d} />)}
+            </div>
+          </div>
+
+          <div className="border-t border-gray-100 mt-[14px] pt-3 flex items-center justify-between">
+            <span className="text-[13.5px] text-gray-500">Booked for someone else?</span>
+            <button className="flex items-center gap-1.5 text-[13.5px] text-[#1C1C1E] font-semibold active:opacity-60 transition-opacity">
+              Share
+              <Image src={ICONS.share} alt="Share" width={15} height={15} className="opacity-70" />
             </button>
           </div>
         </div>
 
-        {/* Booked for someone else */}
-        <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-slate-900">Booked for someone else?</p>
-            <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-              <div className="w-5 h-5 bg-purple-200 rounded" />
-            </button>
+        {/* ══════════════════════════════════════════════════════════════════
+            CARD 3 — Date & Location
+        ══════════════════════════════════════════════════════════════════ */}
+        <div className="bg-white rounded-2xl px-4 py-[14px] shadow-sm space-y-[14px]">
+          <div className="flex items-center gap-3">
+            <IconBubble src={ICONS.calendar} alt="Date" size={20} />
+            <span className="text-[14px] font-medium text-[#1C1C1E] leading-snug">
+              {serviceDate}, {serviceTime}&nbsp;·&nbsp;{duration} min visit
+            </span>
+          </div>
+          <div className="flex items-start gap-3">
+            <IconBubble src={ICONS.location} alt="Location" size={20} />
+            <p className="text-[14px] text-[#1C1C1E] leading-relaxed pt-[2px]">
+              {location}
+            </p>
           </div>
         </div>
 
-        {/* Service Details */}
-        <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
-          <div className="space-y-4">
-            {/* Date & Time */}
-            <div className="flex items-start gap-3">
-              <div className="w-5 h-5 bg-purple-200 rounded mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="text-sm font-semibold text-slate-900">
-                  {serviceDate}, {serviceTime} - {duration} min visit
-                </p>
-              </div>
-            </div>
-
-            {/* Location */}
-            <div className="flex items-start gap-3">
-              <div className="w-5 h-5 bg-purple-200 rounded mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="text-sm text-slate-700">{location}</p>
-              </div>
-            </div>
-          </div>
+        {/* ══════════════════════════════════════════════════════════════════
+            CARD 4 — Payment & Support
+        ══════════════════════════════════════════════════════════════════ */}
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+          <ListRow iconSrc={ICONS.rupee} iconAlt="Payment" title="Payment Details" subtitle="View details" />
+          <div className="border-t border-gray-100" />
+          <ListRow iconSrc={ICONS.headset} iconAlt="Support" title="Contact Support" subtitle="Resolve your queries" />
         </div>
 
-        {/* Payment Details */}
-        <button className="w-full bg-white rounded-2xl p-4 border border-slate-200 shadow-sm hover:bg-slate-50 transition-colors text-left">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-5 h-5 bg-purple-200 rounded" />
-              <div>
-                <p className="text-sm font-medium text-slate-900">Payment Details</p>
-                <p className="text-xs text-slate-500 mt-0.5">View details</p>
-              </div>
-            </div>
-            <svg
-              className="w-5 h-5 text-slate-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </div>
-        </button>
-
-        {/* Contact Support */}
-        <button className="w-full bg-white rounded-2xl p-4 border border-slate-200 shadow-sm hover:bg-slate-50 transition-colors text-left">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-5 h-5 bg-purple-200 rounded" />
-              <div>
-                <p className="text-sm font-medium text-slate-900">Contact Support</p>
-                <p className="text-xs text-slate-500 mt-0.5">Resolve your queries</p>
-              </div>
-            </div>
-            <svg
-              className="w-5 h-5 text-slate-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </div>
-        </button>
       </div>
     </div>
   );
